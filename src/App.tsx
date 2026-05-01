@@ -7,19 +7,21 @@ import Loader from './components/loader';
 
 class App extends Component<
   Record<string, never>,
-  { data: Pokemons[]; error: Error | null; isLoading: boolean }
+  { data: Pokemons[]; error: Error | null; isLoading: boolean; query: string | null }
 > {
   state = {
     data: [],
     error: null,
     isLoading: false,
+    query: null,
   };
 
   async getAllPokemons(): Promise<void> {
+    this.setState({ isLoading: true });
     const requestedData = await fetch(
-      'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=1302'
+      'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20'
     ).then((res) => res.json());
-    this.setState({ data: requestedData.results });
+    this.setState({ data: requestedData.results, isLoading: false, query: '' });
   }
 
   async componentDidMount(): Promise<void> {
@@ -33,14 +35,16 @@ class App extends Component<
 
   handleSearch = async (query: string) => {
     const trimmedQuery = query.trim();
+    if (trimmedQuery === this.state.query) {
+      return;
+    }
     try {
       this.setState({ isLoading: true });
       if (!trimmedQuery) {
         await this.getAllPokemons();
-        this.setState({ isLoading: false });
         return;
       }
-      await fetch(`https://pokeapi.co/api/v2/pokemon/${trimmedQuery}`).then(
+      const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${trimmedQuery}`).then(
         (res) => {
           if (!res.ok) {
             throw new Error('Not found!');
@@ -52,11 +56,12 @@ class App extends Component<
       this.setState({
         data: [
           {
-            name: trimmedQuery,
-            url: `https://pokeapi.co/api/v2/pokemon/${trimmedQuery}`,
+            name: pokemonData.name,
+            url: `https://pokeapi.co/api/v2/pokemon/${pokemonData.name}`,
           },
         ],
         isLoading: false,
+        query: trimmedQuery,
       });
       localStorage.setItem('query', trimmedQuery);
     } catch (err) {
