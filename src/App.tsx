@@ -15,15 +15,19 @@ class App extends Component<
     isLoading: false,
   };
 
+  async getAllPokemons(): Promise<void> {
+    const requestedData = await fetch(
+      'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=1302'
+    ).then((res) => res.json());
+    this.setState({ data: requestedData.results });
+  }
+
   async componentDidMount(): Promise<void> {
     const previousQuery = localStorage.getItem('query')?.trim();
     if (previousQuery) {
       this.handleSearch(previousQuery);
     } else {
-      const requestedData = await fetch(
-        'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=1302'
-      ).then((res) => res.json());
-      this.setState({ data: requestedData.results });
+      await this.getAllPokemons();
     }
   }
 
@@ -31,6 +35,11 @@ class App extends Component<
     const trimmedQuery = query.trim();
     try {
       this.setState({ isLoading: true });
+      if (!trimmedQuery) {
+        await this.getAllPokemons();
+        this.setState({ isLoading: false });
+        return;
+      }
       await fetch(`https://pokeapi.co/api/v2/pokemon/${trimmedQuery}`).then(
         (res) => {
           if (!res.ok) {
