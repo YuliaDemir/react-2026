@@ -6,36 +6,54 @@ type ErrorBoundaryProps = {
 
 type ErrorBoundaryState = {
   hasError: boolean;
+  error: Error | null;
 };
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: Readonly<ErrorBoundaryState> = {
+  state: ErrorBoundaryState = {
     hasError: false,
+    error: null,
   };
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error(
-      'Application error caught by ErrorBoundary:',
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return {
+      hasError: true,
       error,
-      errorInfo
-    );
+    };
   }
 
-  render(): ReactNode {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
+  }
+
+  handleReload = () => {
+    window.location.reload();
+  };
+
+  render() {
     if (this.state.hasError) {
       return (
-        <div role="alert" className="error-boundary">
-          <h2>Something went wrong.</h2>
-          <p>The application encountered an unexpected error.</p>
+        <main className="error-boundary-page">
+          <section className="error-boundary-card">
+            <div className="error-boundary-icon" aria-hidden="true">
+              !
+            </div>
 
-          <button onClick={() => this.setState({ hasError: false })}>
-            Try again
-          </button>
-        </div>
+            <h2 className="error-boundary-title">Something went wrong. TTT</h2>
+
+            <p className="error-boundary-text">
+              The application encountered an unexpected error.
+            </p>
+
+            <button
+              className="error-boundary-button"
+              type="button"
+              onClick={() => this.setState({ hasError: false })}
+            >
+              Try again
+            </button>
+          </section>
+        </main>
       );
     }
 

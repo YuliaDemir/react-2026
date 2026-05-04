@@ -7,8 +7,8 @@ class CardList extends Component<ListProps> {
     return (
       <div className="container">
         <header className="header">
-          <h3>Item Name</h3>
-          <h3>Item Description</h3>
+          <h3>Name</h3>
+          <h3>Description URL</h3>
         </header>
         <main className="main">
           {this.props.data.map((card) => {

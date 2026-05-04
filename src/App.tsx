@@ -116,10 +116,10 @@ class App extends Component<Record<string, never>, AppState> {
       throw new Error('Test application error');
     }
     return (
-      <>
+      <div className="container">
         <Search value="" onSearch={this.handleSearch} />
 
-        {this.state.error && <p role="alert">{this.state.error}</p>}
+        {this.state.error && <div className="error-message">{this.state.error}</div>}
 
         {this.state.isLoading ? (
           <Loader />
@@ -127,10 +127,13 @@ class App extends Component<Record<string, never>, AppState> {
           <CardList data={this.state.data} />
         )}
 
-        <button onClick={() => this.setState({ error: 'Test error' })}>
+        <button
+          className="error-button"
+          onClick={() => this.setState({ error: new Error('Test error') })}
+        >
           Throw error
         </button>
-      </>
+      </div>
     );
   }
 }

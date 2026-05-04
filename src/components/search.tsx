@@ -16,13 +16,20 @@ class Search extends Component<SearchProps, SearchState> {
 
   render() {
     return (
-      <div>
+      <div className="search-panel">
         <input
+          className="search-input"
           type="text"
           value={this.state.value}
-          onChange={(e) => this.setState({ value: e.target.value.trim() })}
-        ></input>
-        <button onClick={() => this.props.onSearch(this.state.value)}>
+          placeholder="Search Pokémon by name..."
+          onChange={(e) => this.setState({ value: e.target.value })}
+        />
+
+        <button
+          className="search-button"
+          type="button"
+          onClick={() => this.props.onSearch(this.state.value)}
+        >
           Search
         </button>
       </div>
