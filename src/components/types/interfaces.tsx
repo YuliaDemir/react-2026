@@ -15,3 +15,10 @@ export interface Pokemons {
   name: string;
   url: string;
 }
+
+export type AppState = {
+  data: Pokemons[];
+  error: Error | string | null;
+  isLoading: boolean;
+  query: string | null;
+};

@@ -2,12 +2,12 @@ import { Component } from 'react';
 import './App.css';
 import Search from './components/search';
 import CardList from './components/card-list';
-import type { Pokemons } from './components/types/interfaces';
+import type { AppState } from './components/types/interfaces';
 import Loader from './components/loader';
 
 class App extends Component<
   Record<string, never>,
-  { data: Pokemons[]; error: Error | null; isLoading: boolean; query: string | null }
+  AppState
 > {
   state = {
     data: [],
@@ -47,7 +47,11 @@ class App extends Component<
       const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${trimmedQuery}`).then(
         (res) => {
           if (!res.ok) {
-            throw new Error('Not found!');
+            this.setState({
+              error: 'Pokemon not found. Please check the name and try again.',
+              isLoading: false,
+            });
+            return;
           }
           return res.json();
         }
@@ -65,22 +69,25 @@ class App extends Component<
       });
       localStorage.setItem('query', trimmedQuery);
     } catch (err) {
-      this.setState({ error: err as Error, isLoading: false });
+      this.setState({
+        error: 'Pokemon not found. Please check the name and try again.',
+        isLoading: false,
+      });
     }
   };
 
   render() {
-    if (this.state.error) {
-      throw this.state.error;
-    }
     return (
       <>
         <Search value="" onSearch={this.handleSearch} />
         {this.state.isLoading ? (
           <Loader />
         ) : (
-          <CardList data={this.state.data} />
-        )}
+          this.state.error ? (
+            <div className="error">{this.state.error}</div>
+          ) : (
+            <CardList data={this.state.data} />
+          ))}
         <button
           onClick={() => this.setState({ error: new Error('Test error') })}
         >
