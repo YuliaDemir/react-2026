@@ -1,37 +1,40 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
-class ErrorBoundary extends Component<
-  { children: ReactNode },
-  { hasError: boolean; message: string }
-> {
-  state: Readonly<{ hasError: boolean; message: string }> = {
+type ErrorBoundaryProps = {
+  children: ReactNode;
+};
+
+type ErrorBoundaryState = {
+  hasError: boolean;
+};
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state: Readonly<ErrorBoundaryState> = {
     hasError: false,
-    message: '',
   };
 
-  static getDerivedStateFromError(): { hasError: boolean } {
+  static getDerivedStateFromError(): ErrorBoundaryState {
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    this.setState({ message: `${error}:  ${errorInfo}` });
+    console.error('Application error caught by ErrorBoundary:', error, errorInfo);
   }
 
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <>
-          <div>
-            <h2>Something went wrong...T.T</h2>
-          </div>
-          <button
-            onClick={() => this.setState({ hasError: false, message: '' })}
-          >
-            Reset error
+        <div role="alert" className="error-boundary">
+          <h2>Something went wrong.</h2>
+          <p>The application encountered an unexpected error.</p>
+
+          <button onClick={() => this.setState({ hasError: false })}>
+            Try again
           </button>
-        </>
+        </div>
       );
     }
+
     return this.props.children;
   }
 }

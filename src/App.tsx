@@ -109,6 +109,9 @@ class App extends Component<Record<string, never>, AppState> {
   };
 
   render() {
+    if (this.state.error === 'Test error') {
+      throw new Error('Test application error');
+    }
     return (
       <>
         <Search value="" onSearch={this.handleSearch} />
