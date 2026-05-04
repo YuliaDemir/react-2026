@@ -1,14 +1,15 @@
 import { Component } from 'react';
+
 import './App.css';
+
 import Search from './components/search';
 import CardList from './components/card-list';
 import type { AppState } from './components/types/interfaces';
 import Loader from './components/loader';
 
-class App extends Component<
-  Record<string, never>,
-  AppState
-> {
+const API_URL = 'https://pokeapi.co/api/v2/pokemon';
+
+class App extends Component<Record<string, never>, AppState> {
   state = {
     data: [],
     error: null,
@@ -17,15 +18,38 @@ class App extends Component<
   };
 
   async getAllPokemons(): Promise<void> {
-    this.setState({ isLoading: true });
-    const requestedData = await fetch(
-      'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20'
-    ).then((res) => res.json());
-    this.setState({ data: requestedData.results, isLoading: false, query: '' });
+    this.setState({ isLoading: true, error: null });
+
+    try {
+      const response = await fetch(`${API_URL}/?offset=0&limit=20`);
+
+      if (!response.ok) {
+        this.setState({
+          error: 'Unable to load Pokémon list. Please try again later.',
+          isLoading: false,
+        });
+        return;
+      }
+
+      const requestedData = await response.json();
+
+      this.setState({
+        data: requestedData.results,
+        isLoading: false,
+        query: '',
+        error: null,
+      });
+    } catch {
+      this.setState({
+        error: 'Network error. Please check your internet connection and try again.',
+        isLoading: false,
+      });
+    }
   }
 
   async componentDidMount(): Promise<void> {
     const previousQuery = localStorage.getItem('query')?.trim();
+
     if (previousQuery) {
       this.handleSearch(previousQuery);
     } else {
@@ -34,43 +58,51 @@ class App extends Component<
   }
 
   handleSearch = async (query: string) => {
-    const trimmedQuery = query.trim();
+    const trimmedQuery = query.trim().toLowerCase();
+
     if (trimmedQuery === this.state.query) {
       return;
     }
+
+    this.setState({ isLoading: true, error: null });
+
     try {
-      this.setState({ isLoading: true });
       if (!trimmedQuery) {
         await this.getAllPokemons();
         return;
       }
-      const pokemonData = await fetch(`https://pokeapi.co/api/v2/pokemon/${trimmedQuery}`).then(
-        (res) => {
-          if (!res.ok) {
-            this.setState({
-              error: 'Pokemon not found. Please check the name and try again.',
-              isLoading: false,
-            });
-            return;
-          }
-          return res.json();
-        }
-      );
+
+      const response = await fetch(`${API_URL}/${encodeURIComponent(trimmedQuery)}`);
+
+      if (!response.ok) {
+        this.setState({
+          data: [],
+          error: 'Pokemon not found. Please check the name and try again.',
+          isLoading: false,
+          query: trimmedQuery,
+        });
+        return;
+      }
+
+      const pokemonData = await response.json();
 
       this.setState({
         data: [
           {
             name: pokemonData.name,
-            url: `https://pokeapi.co/api/v2/pokemon/${pokemonData.name}`,
+            url: `${API_URL}/${pokemonData.name}`,
           },
         ],
         isLoading: false,
         query: trimmedQuery,
+        error: null,
       });
+
       localStorage.setItem('query', trimmedQuery);
-    } catch (err) {
+    } catch {
       this.setState({
-        error: 'Pokemon not found. Please check the name and try again.',
+        data: [],
+        error: 'Network error. Please check your connection and try again.',
         isLoading: false,
       });
     }
@@ -80,21 +112,17 @@ class App extends Component<
     return (
       <>
         <Search value="" onSearch={this.handleSearch} />
-        {this.state.isLoading ? (
-          <Loader />
-        ) : (
-          this.state.error ? (
-            <div className="error">{this.state.error}</div>
-          ) : (
-            <CardList data={this.state.data} />
-          ))}
-        <button
-          onClick={() => this.setState({ error: new Error('Test error') })}
-        >
+
+        {this.state.error && <p role="alert">{this.state.error}</p>}
+
+        {this.state.isLoading ? <Loader /> : <CardList data={this.state.data} />}
+
+        <button onClick={() => this.setState({ error: 'Test error' })}>
           Throw error
         </button>
       </>
     );
   }
 }
+
 export default App;
