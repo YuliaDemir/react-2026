@@ -41,7 +41,8 @@ class App extends Component<Record<string, never>, AppState> {
       });
     } catch {
       this.setState({
-        error: 'Network error. Please check your internet connection and try again.',
+        error:
+          'Network error. Please check your internet connection and try again.',
         isLoading: false,
       });
     }
@@ -72,7 +73,9 @@ class App extends Component<Record<string, never>, AppState> {
         return;
       }
 
-      const response = await fetch(`${API_URL}/${encodeURIComponent(trimmedQuery)}`);
+      const response = await fetch(
+        `${API_URL}/${encodeURIComponent(trimmedQuery)}`
+      );
 
       if (!response.ok) {
         this.setState({
@@ -118,7 +121,11 @@ class App extends Component<Record<string, never>, AppState> {
 
         {this.state.error && <p role="alert">{this.state.error}</p>}
 
-        {this.state.isLoading ? <Loader /> : <CardList data={this.state.data} />}
+        {this.state.isLoading ? (
+          <Loader />
+        ) : (
+          <CardList data={this.state.data} />
+        )}
 
         <button onClick={() => this.setState({ error: 'Test error' })}>
           Throw error

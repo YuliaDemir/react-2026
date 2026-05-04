@@ -18,7 +18,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('Application error caught by ErrorBoundary:', error, errorInfo);
+    console.error(
+      'Application error caught by ErrorBoundary:',
+      error,
+      errorInfo
+    );
   }
 
   render(): ReactNode {
