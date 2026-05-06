@@ -60,6 +60,7 @@ class App extends Component<Record<string, never>, AppState> {
 
   handleSearch = async (query: string) => {
     const trimmedQuery = query.trim().toLowerCase();
+    localStorage.setItem('query', trimmedQuery);
 
     if (trimmedQuery === this.state.query) {
       return;
@@ -101,7 +102,6 @@ class App extends Component<Record<string, never>, AppState> {
         error: null,
       });
 
-      localStorage.setItem('query', trimmedQuery);
     } catch {
       this.setState({
         data: [],
