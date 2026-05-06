@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import Search from "../components/search";
 import userEvent from '@testing-library/user-event';
-import { use } from "react";
 
 describe('Search component ', () => {
     it('renders search input and search button', () => {
@@ -54,7 +53,7 @@ describe('Search component ', () => {
         const mockOnSearch = vi.fn();
         const user = userEvent.setup();
 
-        render(<Search onSearch={mockOnSearch} value=""/>);
+        render(<Search onSearch={mockOnSearch} value="" />);
 
         const input = screen.getByRole('textbox');
         const button = screen.getByRole('button', { name: /search/i });
