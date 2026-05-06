@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import Search from "../components/search";
 import userEvent from '@testing-library/user-event';
+import { use } from "react";
 
 describe('Search component ', () => {
     it('renders search input and search button', () => {
@@ -49,5 +50,19 @@ describe('Search component ', () => {
         expect(input).toHaveValue('Bulbasaur');
     })
 
-    
+    it('Triggers search callback with correct parameters', async () => {
+        const mockOnSearch = vi.fn();
+        const user = userEvent.setup();
+
+        render(<Search onSearch={mockOnSearch} value=""/>);
+
+        const input = screen.getByRole('textbox');
+        const button = screen.getByRole('button', { name: /search/i });
+
+        await user.type(input, 'Bulbasaur');
+        await user.click(button);
+
+        expect(mockOnSearch).toHaveBeenCalledTimes(1);
+        expect(mockOnSearch).toHaveBeenCalledWith('Bulbasaur');
+    })
 })
