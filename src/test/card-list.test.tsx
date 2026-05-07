@@ -61,4 +61,15 @@ describe('CardList', () => {
         expect(screen.getByText(/https:\/\/pokeapi/i)).toBeInTheDocument()
     });
 
+    it('Displays error message when API call fails', async () => {
+        mockFetchFailure(500)
+
+        render(<App />)
+
+        expect(
+            await screen.findByText(/unable to load/i)
+        ).toBeInTheDocument()
+
+        expect(screen.queryAllByTestId('card')).toHaveLength(0)
+    })
 });
