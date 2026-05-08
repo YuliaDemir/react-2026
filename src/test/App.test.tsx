@@ -1,7 +1,7 @@
 import App from '../App';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
-import { bulbasaur, mockFetchSuccess, mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
+import { bulbasaur, mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
 import { mockFetchFailure } from './test-utils/mock-fetch-failure';
 import { mockFetchSuccessWithDelay } from './test-utils/mock-fetch-with-delay';
 

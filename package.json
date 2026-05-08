@@ -7,9 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "format:fix": "prettier --write .",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test": "vitest",
     "test:run": "vitest run",
     "coverage": "vitest run --coverage"
