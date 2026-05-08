@@ -114,7 +114,6 @@ describe('App', () => {
         const loader = await screen.findByText(/loading.../i);
         expect(loader).toBeInTheDocument();
 
-        mockFetchSuccess
 
         await waitFor(
             () => {

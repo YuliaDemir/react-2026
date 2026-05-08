@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import CardList from "../components/card-list";
-import { mockFetchSuccess } from "./test-utils/mock-fetch-success";
 import type { Pokemons } from "../components/types/interfaces";
 import { mockFetchFailure } from "./test-utils/mock-fetch-failure";
 import App from "../App";
