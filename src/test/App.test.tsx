@@ -1,14 +1,14 @@
 import App from '../App';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
-import { mockFetchSuccess, mockFetchSuccessBulbasaur } from './test-utils/mock-fetch-success';
+import { bulbasaur, mockFetchSuccess, mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
 import { mockFetchFailure } from './test-utils/mock-fetch-failure';
 import { mockFetchSuccessWithDelay } from './test-utils/mock-fetch-with-delay';
 
 describe('App', () => {
     beforeEach(() => {
         localStorage.removeItem('query');
-        mockFetchSuccessBulbasaur();
+        mockFetchSuccessBulbasaurArray();
     })
 
     afterEach(() => {
@@ -101,12 +101,7 @@ describe('App', () => {
     });
 
     it('Shows loading state while fetching data', async () => {
-        mockFetchSuccessWithDelay([
-            {
-                name: 'Bulbasaur',
-                url: "https://pokeapi.co/api/v2/pokemon/1/",
-            }
-        ], 2000);
+        mockFetchSuccessWithDelay([bulbasaur], 2000);
 
         render(<App />);
 

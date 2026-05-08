@@ -1,19 +1,26 @@
-import type { Pokemons } from "../../components/types/interfaces"
+import type { MockFetchResponse } from "../../components/types/interfaces"
 
-export const mockFetchSuccess = (results: Pokemons[]) => vi.stubGlobal(
-    'fetch',
-    vi.fn().mockResolvedValue({
+export const createFetchMock = (results: MockFetchResponse) => {
+    return vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({
-            results,
-        })
-    })
-)
+        json: async () => (results),
+    });
+}
 
-export const mockFetchSuccessBulbasaur = () => mockFetchSuccess([
-    {
-        name: 'Bulbasaur',
-        url: "https://pokeapi.co/api/v2/pokemon/1/",
-    }
-]);
+export const mockFetchSuccess = (results: MockFetchResponse) => {
+    const fetchMock = createFetchMock(results);
 
+    vi.stubGlobal('fetch', fetchMock);
+
+    return fetchMock;
+};
+
+export const mockFetchSuccessBulbasaurArray = () => mockFetchSuccess({ results: [bulbasaur] });
+
+export const mockFetchSuccessBulbasaur = () => mockFetchSuccess(bulbasaur);
+
+
+export const bulbasaur = {
+    name: 'Bulbasaur',
+    url: "https://pokeapi.co/api/v2/pokemon/1/",
+};
