@@ -8,19 +8,22 @@ export interface PropsData {
 }
 
 export interface ListProps {
-  data: Pokemons[];
+  data: Item[];
 }
 
-export interface Pokemons {
-  name: string;
-  url: string;
+export interface Item {
+  id: number;
+  title: string;
+  description: string;
+  imgAlt: string;
+  imgUrl: string;
 }
 
 export type AppState = {
-  data: Pokemons[];
+  data: Item[];
   error: Error | string | null;
   isLoading: boolean;
   query: string | null;
 };
 
-export type MockFetchResponse = { results: Pokemons[] } | Pokemons;
+export type MockFetchResponse = { results: Item[] } | Item;

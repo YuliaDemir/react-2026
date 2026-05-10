@@ -4,10 +4,10 @@ import './App.css';
 
 import Search from './components/search';
 import CardList from './components/card-list';
-import type { AppState } from './components/types/interfaces';
+import type { AppState } from './types/interfaces';
 import Loader from './components/loader';
 
-const API_URL = 'https://pokeapi.co/api/v2/pokemon';
+const API_URL = 'https://dummyjson.com/products';
 
 class App extends Component<Record<string, never>, AppState> {
   state = {
@@ -21,7 +21,7 @@ class App extends Component<Record<string, never>, AppState> {
     this.setState({ isLoading: true, error: null });
 
     try {
-      const response = await fetch(`${API_URL}/?offset=0&limit=20`);
+      const response = await fetch(`${API_URL}/?offset=0&limit=5`);
 
       if (!response.ok) {
         this.setState({
@@ -33,8 +33,9 @@ class App extends Component<Record<string, never>, AppState> {
 
       const requestedData = await response.json();
 
+      console.log(requestedData.products);
       this.setState({
-        data: requestedData.results,
+        data: requestedData.products,
         isLoading: false,
         query: '',
         error: null,
@@ -92,8 +93,11 @@ class App extends Component<Record<string, never>, AppState> {
       this.setState({
         data: [
           {
-            name: pokemonData.name,
-            url: `${API_URL}/${pokemonData.name}`,
+            id: pokemonData.id,
+            title: pokemonData.name,
+            description: pokemonData.description,
+            imgUrl: pokemonData.thumbnail,
+            imgAlt: pokemonData.name,
           },
         ],
         isLoading: false,

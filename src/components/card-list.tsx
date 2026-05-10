@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import Card from './card';
-import type { ListProps } from './types/interfaces';
+import Card from './card/card';
+import type { ListProps } from '../types/interfaces';
 
 class CardList extends Component<ListProps> {
   render() {
@@ -12,12 +12,10 @@ class CardList extends Component<ListProps> {
         </header>
         <main className="main">
           {this.props.data.map((card) => {
-            const urlParts = card.url.split('/');
-            const id = urlParts[urlParts.length - 2];
 
             return (
-              <div key={id} data-testid="card">
-                <Card name={card.name} description={card.url} />
+              <div key={card.id} data-testid="card">
+                <Card name={card.title} description={card.description} imgUrl={card.imgUrl} imgAlt={card.imgAlt} />
               </div>
             );
           })}

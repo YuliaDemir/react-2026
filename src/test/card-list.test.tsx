@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import CardList from "../components/card-list";
-import type { Pokemons } from "../components/types/interfaces";
+import type { Item } from "../types/interfaces";
 import { mockFetchFailure } from "./test-utils/mock-fetch-failure";
 import App from "../App";
 
@@ -54,7 +54,7 @@ describe('CardList', () => {
     it('Handles item with missing name gracefully', () => {
         const mockData = [
             { url: 'https://pokeapi.co/api/v2/pokemon/1/' },
-        ] as unknown as Pokemons[]
+        ] as unknown as Item[]
         render(<CardList data={mockData} />)
 
         expect(screen.getByText(/https:\/\/pokeapi/i)).toBeInTheDocument()
