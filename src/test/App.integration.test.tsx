@@ -1,11 +1,11 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
-import { bulbasaur, mockFetchSuccessBulbasaur, mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
+import { mockFetchSuccessBulbasaur, mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
 import { mockFetchSuccessWithDelay } from './test-utils/mock-fetch-with-delay';
 import userEvent from '@testing-library/user-event';
+import { API_URL, bulbasaurName, bulbasaurObject, pikachuName } from './constants';
 
-const API_URL = 'https://pokeapi.co/api/v2/pokemon';
 
 describe('App integration tests', () => {
     beforeEach(() => {
@@ -29,7 +29,7 @@ describe('App integration tests', () => {
         });
 
         expect(fetchMock).toHaveBeenCalledWith(`${API_URL}/?offset=0&limit=20`);
-        expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
+        expect(await screen.findByText(bulbasaurName)).toBeInTheDocument();
     });
 
     it('handles search term from localStorage on initial load', async () => {
@@ -48,7 +48,7 @@ describe('App integration tests', () => {
     });
 
     it('manages loading states during API calls', async () => {
-        mockFetchSuccessWithDelay([bulbasaur], 2000);
+        mockFetchSuccessWithDelay([bulbasaurObject], 2000);
 
         render(<App />);
 
@@ -56,13 +56,10 @@ describe('App integration tests', () => {
 
         expect(loadingText).toBeInTheDocument();
 
-        await act(async () => {
-            mockFetchSuccessBulbasaurArray();
-        });
-
+        mockFetchSuccessBulbasaurArray();
         await waitFor(() => { expect(loadingText).not.toBeInTheDocument(); }, { timeout: 3000 });
 
-        expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
+        expect(screen.getByText(bulbasaurName)).toBeInTheDocument();
     });
 
     it('calls API with correct parameters on initial load', async () => {
@@ -71,7 +68,7 @@ describe('App integration tests', () => {
             json: async () => ({
                 results: [
                     {
-                        name: 'bulbasaur',
+                        name: bulbasaurName,
                         url: `${API_URL}/1/`,
                     },
                 ],
@@ -100,7 +97,7 @@ describe('App integration tests', () => {
                 json: async () => ({
                     results: [
                         {
-                            name: 'pikachu',
+                            name: pikachuName,
                             url: `${API_URL}/25/`,
                         },
                     ],

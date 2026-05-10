@@ -24,3 +24,8 @@ export type AppState = {
 };
 
 export type MockFetchResponse = { results: Pokemons[] } | Pokemons;
+
+export type ResponseItem = {
+  name: string;
+  url: string;
+};

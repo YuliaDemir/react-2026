@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import Search from "../components/search";
 import userEvent from '@testing-library/user-event';
+import { bulbasaurName, localStorageKey } from "./constants";
 
 describe('Search component ', () => {
     it('renders search input and search button', () => {
@@ -17,19 +18,19 @@ describe('Search component ', () => {
     })
 
     it('Displays previously saved search term from localStorage on mount', () => {
-        localStorage.setItem('query', 'Pikachu');
+        localStorage.setItem(localStorageKey, bulbasaurName);
 
         const mockOnSearch = vi.fn();
         const text = 'Test search';
 
         render(<Search onSearch={mockOnSearch} value={text} />);
 
-        expect(screen.getByRole('textbox')).toHaveValue('Pikachu');
-        localStorage.removeItem('query');
+        expect(screen.getByRole('textbox')).toHaveValue(bulbasaurName);
+        localStorage.removeItem(localStorageKey);
     })
 
     it('Shows empty input when no saved term exists', () => {
-        localStorage.removeItem('query');
+        localStorage.removeItem(localStorageKey);
 
         const mockOnSearch = vi.fn();
         const text = 'Test search';
@@ -45,8 +46,8 @@ describe('Search component ', () => {
         render(<Search onSearch={mockOnSearch} value="" />);
         const input = screen.getByRole('textbox');
 
-        await user.type(input, 'Bulbasaur');
-        expect(input).toHaveValue('Bulbasaur');
+        await user.type(input, bulbasaurName);
+        expect(input).toHaveValue(bulbasaurName);
     })
 
     it('Triggers search callback with correct parameters', async () => {
@@ -58,10 +59,10 @@ describe('Search component ', () => {
         const input = screen.getByRole('textbox');
         const button = screen.getByRole('button', { name: /search/i });
 
-        await user.type(input, 'Bulbasaur');
+        await user.type(input, bulbasaurName);
         await user.click(button);
 
         expect(mockOnSearch).toHaveBeenCalledTimes(1);
-        expect(mockOnSearch).toHaveBeenCalledWith('Bulbasaur');
+        expect(mockOnSearch).toHaveBeenCalledWith(bulbasaurName);
     })
 })

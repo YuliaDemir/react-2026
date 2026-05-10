@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react'
-import Card from '../components/card'
+import Card from '../components/card';
+import { bulbasaurDescription, bulbasaurName } from './constants';
 
 describe('Card', () => {
     it('Displays item name and description correctly', () => {
-        render(<Card name="Bulbasaur" description="Grass/Poison Pokémon" />)
+        render(<Card name={bulbasaurName} description={bulbasaurDescription} />)
 
-        expect(screen.getByText('Bulbasaur')).toBeInTheDocument()
-        expect(screen.getByText('Grass/Poison Pokémon')).toBeInTheDocument()
+        expect(screen.getByText(bulbasaurName)).toBeInTheDocument()
+        expect(screen.getByText(bulbasaurDescription)).toBeInTheDocument()
     })
-
 })

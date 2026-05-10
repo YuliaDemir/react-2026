@@ -1,4 +1,5 @@
 import type { MockFetchResponse } from "../../components/types/interfaces"
+import { bulbasaurObject } from "../constants";
 
 export const createFetchMock = (results: MockFetchResponse) => {
     return vi.fn().mockResolvedValue({
@@ -15,12 +16,6 @@ export const mockFetchSuccess = (results: MockFetchResponse) => {
     return fetchMock;
 };
 
-export const mockFetchSuccessBulbasaurArray = () => mockFetchSuccess({ results: [bulbasaur] });
+export const mockFetchSuccessBulbasaurArray = () => mockFetchSuccess({ results: [bulbasaurObject] });
 
-export const mockFetchSuccessBulbasaur = () => mockFetchSuccess(bulbasaur);
-
-
-export const bulbasaur = {
-    name: 'Bulbasaur',
-    url: "https://pokeapi.co/api/v2/pokemon/1/",
-};
+export const mockFetchSuccessBulbasaur = () => mockFetchSuccess(bulbasaurObject);
