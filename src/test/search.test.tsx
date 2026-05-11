@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import Search from "../components/search";
+import Search from "../components/search/search";
 import userEvent from '@testing-library/user-event';
 
 describe('Search component ', () => {

@@ -1,4 +1,6 @@
-export const Card = (data: { imgUrl?: string, imgAlt?: string, name: string, description: string }) => {
+import type { CardProps } from "../../types/props";
+
+export const Card = (data: CardProps) => {
   return (
     <div className="card-row">
       <img src={data.imgUrl} alt={data.imgAlt} />

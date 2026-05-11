@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import Loader from '../components/loader';
+import { Loader } from './loader';
 
 describe('Loader', () => {
     it('renders loading indicator', () => {

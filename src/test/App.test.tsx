@@ -1,9 +1,9 @@
 import App from '../App';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
-import { bulbasaur, mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
-import { mockFetchFailure } from './test-utils/mock-fetch-failure';
-import { mockFetchSuccessWithDelay } from './test-utils/mock-fetch-with-delay';
+import { bulbasaur, mockFetchSuccessBulbasaurArray } from '../utils/test-utils/mock-fetch-success';
+import { mockFetchFailure } from '../utils/test-utils/mock-fetch-failure';
+import { mockFetchSuccessWithDelay } from '../utils/test-utils/mock-fetch-with-delay';
 
 describe('App', () => {
     beforeEach(() => {

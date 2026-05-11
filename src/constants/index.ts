@@ -1,0 +1,1 @@
+export const searchPlaceholder = "Search items by name (e.g., Mascara, Lipstick, etc.)...";

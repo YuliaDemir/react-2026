@@ -1,8 +1,8 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
-import { bulbasaur, mockFetchSuccessBulbasaur, mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
-import { mockFetchSuccessWithDelay } from './test-utils/mock-fetch-with-delay';
+import { bulbasaur, mockFetchSuccessBulbasaur, mockFetchSuccessBulbasaurArray } from '../utils/test-utils/mock-fetch-success';
+import { mockFetchSuccessWithDelay } from '../utils/test-utils/mock-fetch-with-delay';
 import userEvent from '@testing-library/user-event';
 
 const API_URL = 'https://pokeapi.co/api/v2/pokemon';

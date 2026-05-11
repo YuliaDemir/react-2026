@@ -7,10 +7,6 @@ export interface PropsData {
   data: CardProps[];
 }
 
-export interface ListProps {
-  data: Item[];
-}
-
 export interface Item {
   id: number;
   title: string;

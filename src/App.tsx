@@ -2,10 +2,8 @@ import { Component } from 'react';
 
 import './App.css';
 
-import Search from './components/search';
-import CardList from './components/card-list';
 import type { AppState } from './types/interfaces';
-import Loader from './components/loader';
+import { Loader, Search, CardList } from './components/';
 
 const API_URL = 'https://dummyjson.com/products';
 
@@ -121,7 +119,7 @@ class App extends Component<Record<string, never>, AppState> {
     }
     return (
       <div className="container">
-        <Search value="" onSearch={this.handleSearch} />
+        <Search />
 
         {this.state.error && <div className="error-message">{this.state.error}</div>}
 

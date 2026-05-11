@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ErrorBoundary from '../ErrorBoundary';
 import App from '../App';
-import { mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
-import { ThrowError } from './test-utils/thrown-error';
+import { mockFetchSuccessBulbasaurArray } from '../utils/test-utils/mock-fetch-success';
+import { ThrowError } from '../utils/test-utils/thrown-error';
 
 
 
