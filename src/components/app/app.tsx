@@ -19,11 +19,9 @@ export const App = () => {
       setState('loading');
 
       try {
-        const response = query
+        const data: ApiResponse = query
           ? await searchProductsByName(query)
           : await getAllProductsPerPage(1);
-
-        const data: ApiResponse = await response.json();
 
         setData(data.products);
         setState('success');
