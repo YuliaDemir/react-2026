@@ -1,4 +1,4 @@
-export { App } from "./app/app";
+export { App } from "../app/app";
 export { CardList } from "./card-list/card-list";
 export { Card } from "./card/card";
 export { Loader } from "./loader/loader";

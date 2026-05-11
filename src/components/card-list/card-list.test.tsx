@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import CardList from "./card-list";
 import type { Product } from "../../types/interfaces";
-import App from "../app/app";
 import { mockFetchFailure } from "../../utils/test-utils/mock-fetch-failure";
 
 const baseURL = 'https://pokeapi.co/api/v2/pokemon/';
