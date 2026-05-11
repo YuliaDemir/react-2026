@@ -1,28 +1,43 @@
 import { useState } from 'react';
 import { useLocalStorage } from '../../utils/hooks/use-local-storage-hook';
-import { searchPlaceholder } from '../../constants';
+import { SEARCH_PLACEHOLDER } from '../../constants';
 
-export const Search = () => {
+
+// Адекватный ли по тупости компонент? Или надо делать еще тупее?
+
+export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
   const [query, setQuery] = useLocalStorage('query');
   const [value, setValue] = useState(query);
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmedQuery = value.trim().toLowerCase();
+
+    if (trimmedQuery === query) {
+      return;
+    }
+
+    if (!trimmedQuery) {
+      return;
+    }
+
+    setQuery(trimmedQuery);
+    onSearch(trimmedQuery);
+  }
+
   return (
-    <form className="search-panel">
+    <form className="search-panel" onSubmit={handleSubmit}>
       <input
         className="search-input"
         type="text"
         value={value}
-        placeholder={searchPlaceholder}
+        placeholder={SEARCH_PLACEHOLDER}
         onChange={(e) => setValue(e.target.value)}
       />
 
       <button
         className="search-button"
         type="submit"
-        onClick={(e) => {
-          e.preventDefault();
-          setQuery(value);
-        }}
       >
         Search
       </button>

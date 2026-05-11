@@ -1,4 +1,4 @@
-import App from '../App';
+import App from '../components/app/app';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
 import { bulbasaur, mockFetchSuccessBulbasaurArray } from '../utils/test-utils/mock-fetch-success';

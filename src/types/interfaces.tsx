@@ -7,7 +7,7 @@ export interface PropsData {
   data: CardProps[];
 }
 
-export interface Item {
+export interface Product {
   id: number;
   title: string;
   description: string;
@@ -16,10 +16,17 @@ export interface Item {
 }
 
 export type AppState = {
-  data: Item[];
+  data: Product[];
   error: Error | string | null;
   isLoading: boolean;
   query: string | null;
 };
 
-export type MockFetchResponse = { results: Item[] } | Item;
+export type MockFetchResponse = { results: Product[] } | Product;
+
+export type ApiResponse = {
+  products: Product[];
+  total: number;
+  skip: number;
+  limit: number;
+}

@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import App from '../App';
+import App from '../components/app/app';
 import { bulbasaur, mockFetchSuccessBulbasaur, mockFetchSuccessBulbasaurArray } from '../utils/test-utils/mock-fetch-success';
 import { mockFetchSuccessWithDelay } from '../utils/test-utils/mock-fetch-with-delay';
 import userEvent from '@testing-library/user-event';

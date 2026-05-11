@@ -1,8 +1,8 @@
 import { vi } from 'vitest'
-import type { Item } from '../../types/interfaces'
+import type { Product } from '../../types/interfaces'
 
 export const mockFetchSuccessWithDelay = (
-    results: Item[],
+    results: Product[],
     delay = 100,
 ) =>
     vi.stubGlobal(
