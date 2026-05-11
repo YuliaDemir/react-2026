@@ -22,3 +22,10 @@ export type AppState = {
   isLoading: boolean;
   query: string | null;
 };
+
+export type MockFetchResponse = { results: Pokemons[] } | Pokemons;
+
+export type ResponseItem = {
+  name: string;
+  url: string;
+};
