@@ -25,23 +25,25 @@ export const ProductsPage = () => {
 
             {error ? <ErrorDisplay error={error} /> : isLoading ? <Loader /> : <CardList data={data} />}
 
-            <button
-                className={styles.paginationButton}
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                disabled={page === 1}
-            >
-                Previous
-            </button>
+            <div className={styles.actions}>
+                <button
+                    className={styles.paginationButton}
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={page === 1}
+                >
+                    Previous
+                </button>
 
-            <ThrowErrorButton handleClick={() => setFatalError(new Error('Simulated fatal error'))} />
+                <ThrowErrorButton handleClick={() => setFatalError(new Error('Simulated fatal error'))} />
 
-            <button
-                className={styles.paginationButton}
-                onClick={() => setPage((prev) => prev + 1)}
-                disabled={data.length < 10}
-            >
-                Next
-            </button>
+                <button
+                    className={styles.paginationButton}
+                    onClick={() => setPage((prev) => prev + 1)}
+                    disabled={data.length < 10}
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 };

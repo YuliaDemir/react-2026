@@ -1,9 +1,9 @@
+import styles from './throw-error-button.module.scss';
+
 export const ThrowErrorButton = ({ handleClick }: { handleClick: () => void }) => {
     return (
-        <button
-            className="error-button"
-            onClick={handleClick}
-        >
+        <button className={styles.button} onClick={handleClick}>
             Throw error
-        </button>)
-}
+        </button>
+    );
+};
