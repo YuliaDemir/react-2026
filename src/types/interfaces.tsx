@@ -8,11 +8,10 @@ export interface PropsData {
 }
 
 export interface Product {
-  id: number;
-  title: string;
-  description: string;
-  imgAlt: string;
-  imgUrl: string;
+  id: number,
+  images: string[],
+  title: string,
+  description: string
 }
 
 export type AppState = {

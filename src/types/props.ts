@@ -1,6 +1,6 @@
 import type { Product } from "./interfaces";
 
-export type CardProps = { imgUrl?: string, imgAlt?: string, name: string, description: string };
+export type CardProps = Product;
 
 export interface ListProps {
     data: Product[];

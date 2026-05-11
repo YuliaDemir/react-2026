@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useLocalStorage } from '../../utils/hooks/use-local-storage-hook';
 import { SEARCH_PLACEHOLDER } from '../../constants';
 
+import styles from './search.module.scss';
+
 export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
   const [query, setQuery] = useLocalStorage('query');
   const [value, setValue] = useState(query);
@@ -16,24 +18,21 @@ export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
 
     setQuery(trimmedQuery);
     onSearch(trimmedQuery);
-  }
+  };
 
   return (
-    <form className="search-panel" onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleSubmit}>
       <input
-        className="search-input"
+        className={styles.input}
         type="text"
         value={value}
         placeholder={SEARCH_PLACEHOLDER}
         onChange={(e) => setValue(e.target.value)}
       />
 
-      <button
-        className="search-button"
-        type="submit"
-      >
+      <button className={styles.button} type="submit">
         Search
       </button>
     </form>
   );
-}
+};

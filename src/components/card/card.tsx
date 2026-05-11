@@ -1,13 +1,15 @@
-import type { CardProps } from "../../types/props";
+import type { CardProps } from '../../types/props';
+
+import styles from './card.module.scss';
 
 export const Card = (data: CardProps) => {
   return (
-    <div className="card-row">
-      <img src={data.imgUrl} alt={data.imgAlt} />
-      <div className="card-name">{data.name}</div>
-      <div className="card-description">{data.description}</div>
+    <div className={styles.card}>
+      <img className={styles.image} src={data.images[0]} alt={data.title} />
+
+      <div className={styles.title}>{data.title}</div>
+
+      <div className={styles.description}>{data.description}</div>
     </div>
   );
-}
-
-export default Card;
+};

@@ -1,20 +1,25 @@
 import type { ListProps } from '../../types/props';
-import Card from '../card/card';
+import { Card } from '../card/card';
+
+import styles from './card-list.module.scss';
 
 export const CardList = ({ data }: ListProps) => {
   return (
-    <div className="main">
-      <ul className="container">
+    <div className={styles.main}>
+      <ul className={styles.list}>
         {data.map((card) => {
           return (
-            <li key={card.id} data-testid="card">
-              <Card name={card.title} description={card.description} imgUrl={card.imgUrl} imgAlt={card.imgAlt} />
+            <li className={styles.item} key={card.id} data-testid="card">
+              <Card
+                id={card.id}
+                title={card.title}
+                description={card.description}
+                images={card.images}
+              />
             </li>
           );
         })}
       </ul>
     </div>
   );
-}
-
-export default CardList;
+};

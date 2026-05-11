@@ -1,0 +1,64 @@
+.app {
+  min-height: 100vh;
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 16px 0 8px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.navLink {
+  padding: 10px 16px;
+
+  color: #64748b;
+  text-decoration: none;
+
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    color: #4f46e5;
+    border-color: rgba(129, 140, 248, 0.55);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(79, 70, 229, 0.12);
+  }
+}
+
+.shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 8px 0 32px;
+}
+
+@media (max-width: 680px) {
+  .nav,
+  .shell {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .nav {
+    justify-content: stretch;
+  }
+
+  .navLink {
+    flex: 1;
+    text-align: center;
+  }
+}
