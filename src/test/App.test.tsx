@@ -17,9 +17,10 @@ describe('App', () => {
         localStorage.removeItem('query');
     });
 
-    it('renders without crashing', () => {
+    it('renders without crashing', async () => {
         render(<App />);
-        expect(document.body).toBeInTheDocument();
+
+        await waitFor(() => expect(document.body).toBeInTheDocument());
     });
 
     it('Saves search term to localStorage when search button is clicked', async () => {
@@ -50,12 +51,12 @@ describe('App', () => {
         expect(localStorage.getItem(localStorageKey)).toBe('bulbasaur');
     })
 
-    it('Retrieves saved search term on component mount', () => {
+    it('Retrieves saved search term on component mount', async () => {
         localStorage.setItem(localStorageKey, bulbasaurName);
 
         render(<App />);
 
-        const input = screen.getByRole('textbox');
+        const input = await screen.findByRole('textbox');
 
         expect(input).toHaveValue('Bulbasaur');
     })

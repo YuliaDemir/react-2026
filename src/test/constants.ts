@@ -3,9 +3,9 @@ import type { ResponseItem } from "../components/types/interfaces";
 export const testURL = 'testURL';
 
 export const mockData = [
-    { name: 'Card 1', url: testURL },
-    { name: 'Card 2', url: testURL },
-    { name: 'Card 3', url: testURL },
+    { name: 'Card 1', url: `${testURL}/1` },
+    { name: 'Card 2', url: `${testURL}/2` },
+    { name: 'Card 3', url: `${testURL}/3` },
 ];
 
 export const missingNameData = [

@@ -18,7 +18,7 @@ describe('CardList', () => {
         render(<CardList data={mockData} />);
 
         const cardNames = screen.getAllByText(/Card \d/);
-        const cardUrls = screen.getAllByText(testURL);
+        const cardUrls = screen.getAllByText(/testURL\/\d/);
 
         expect(cardNames).toHaveLength(3);
         expect(cardUrls).toHaveLength(3);
@@ -27,8 +27,8 @@ describe('CardList', () => {
             expect(name).toHaveTextContent(`Card ${index + 1}`);
         });
 
-        cardUrls.forEach((url) => {
-            expect(url).toHaveTextContent(testURL);
+        cardUrls.forEach((url, index) => {
+            expect(url).toHaveTextContent(`${testURL}/${index + 1}`);
         });
     });
 
