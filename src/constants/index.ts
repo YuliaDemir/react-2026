@@ -5,3 +5,4 @@ export const API_URL = 'https://dummyjson.com/products';
 export const PRODUCTS_PER_PAGE = 10;
 
 export const LOCAL_STORAGE_KEY = 'query';
+

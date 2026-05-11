@@ -1,19 +1,15 @@
 import { API_URL, PRODUCTS_PER_PAGE } from "../constants"
-
-/// display4xx5xxErrors(); развести по ошибкам
+import { ErrorHandler } from "./error-handler";
 
 export const fetchData = async (url: string) => {
-    try {
-        const data = await fetch(url);
-        if (!data.ok) {
-            throw new Error(`API call failed with status ${data.status}`);
-        }
-        return await data.json();
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new ErrorHandler("API call failed with status", response.status);
     }
-}
+
+    return await response.json();
+};
 
 export const getAllProductsPerPage = async (page: number) => {
     return fetchData(`${API_URL}?limit=${PRODUCTS_PER_PAGE}&skip=${(page - 1) * PRODUCTS_PER_PAGE}`);

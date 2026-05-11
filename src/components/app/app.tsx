@@ -1,44 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import './App.css';
 
-import type { ApiResponse, AppState } from '../../types/interfaces';
 import { Loader, Search, CardList, ThrowErrorButton } from '..';
-import { getAllProductsPerPage, searchProductsByName } from '../../utils/fetch-data';
 import { ErrorDisplay } from '../error-display/error-display';
-
-
+import { useAppState } from '../../utils/hooks/use-app-state';
 
 export const App = () => {
-  const [state, setState] = useState<'' | 'error' | 'loading' | 'success'>('');
-  const [data, setData] = useState<AppState['data']>([]);
   const [query, setQuery] = useState<string>('');
+  const { data, isLoading, error, fatalError, setFatalError, page, setPage } = useAppState(query);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setState('loading');
+  if (fatalError) {
+    throw fatalError;
+  }
 
-      try {
-        const data: ApiResponse = query
-          ? await searchProductsByName(query)
-          : await getAllProductsPerPage(1);
-
-        setData(data.products);
-        setState('success');
-      } catch (err) {
-        console.log(err);//errorHandler(err);
-        setState('error');
-      }
-    };
-
-    fetchProducts();
-  }, [query]);
+  const handleSearch = (value: string) => {
+    setPage(1);
+    setQuery(value);
+  };
 
   return (
     <div className="container">
-      <Search onSearch={setQuery} />
-      {state === 'error' ? <ErrorDisplay /> : state === 'loading' ? <Loader /> : <CardList data={data} />}
-      <ThrowErrorButton />
+      <Search onSearch={handleSearch} />
+      {error ? <ErrorDisplay error={error} /> : isLoading ? <Loader /> : <CardList data={data} />}
+      <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1} >Previous</button>
+      <ThrowErrorButton handleClick = {() => setFatalError(new Error("Simulated fatal error"))}/>
+      <button onClick={() => setPage((prev) => prev + 1)} disabled={data.length < 10} >Next</button>
     </div>
   );
 }

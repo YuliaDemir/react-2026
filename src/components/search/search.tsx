@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { useLocalStorage } from '../../utils/hooks/use-local-storage-hook';
 import { SEARCH_PLACEHOLDER } from '../../constants';
 
-
-// Адекватный ли по тупости компонент? Или надо делать еще тупее?
-
 export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
   const [query, setQuery] = useLocalStorage('query');
   const [value, setValue] = useState(query);
@@ -14,10 +11,6 @@ export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
     const trimmedQuery = value.trim().toLowerCase();
 
     if (trimmedQuery === query) {
-      return;
-    }
-
-    if (!trimmedQuery) {
       return;
     }
 

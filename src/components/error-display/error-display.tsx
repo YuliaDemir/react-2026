@@ -1,8 +1,11 @@
-export const ErrorDisplay = () => {
+import type { ErrorHandler } from "../../utils/error-handler";
+
+export const ErrorDisplay = ({ error }: { error: ErrorHandler }) => {
+
     return (
-        <div className="error-display">
+        < div className="error-display" >
             <h2>An error occurred</h2>
-            <p>Please try again later.</p>
-        </div>
+            <p>{error.getErrorMessageByStatus()}</p>
+        </div >
     );
 }
