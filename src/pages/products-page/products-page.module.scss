@@ -73,3 +73,21 @@
     }
   }
 }
+
+.pageInfo {
+  margin: 0;
+  padding: 12px 18px;
+
+  align-self: center;
+
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(12px);
+}

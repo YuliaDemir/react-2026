@@ -5,10 +5,12 @@ import { ErrorDisplay } from '../../components/error-display/error-display';
 import { useAppState } from '../../utils/hooks/use-app-state';
 
 import styles from './products-page.module.scss';
+import { PRODUCTS_PER_PAGE } from '../../constants';
 
 export const ProductsPage = () => {
     const [query, setQuery] = useState<string>('');
-    const { data, isLoading, error, fatalError, setFatalError, page, setPage } = useAppState(query);
+
+    const { data, isLoading, error, fatalError, setFatalError, page, setPage, total } = useAppState(query);
 
     if (fatalError) {
         throw fatalError;
@@ -23,12 +25,20 @@ export const ProductsPage = () => {
         <div className={styles.page}>
             <Search onSearch={handleSearch} />
 
-            {error ? <ErrorDisplay error={error} /> : isLoading ? <Loader /> : <CardList data={data} />}
+            {error ? <ErrorDisplay error={error} /> : isLoading ? <Loader /> :
+                <>
+                    <p className={styles.pageInfo}>
+                        Page: {page} from{' '}
+                        {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
+                    </p>
+                    <CardList data={data} />
+                </>
+            }
 
             <div className={styles.actions}>
                 <button
                     className={styles.paginationButton}
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() => setPage(Math.max(page - 1, 1))}
                     disabled={page === 1}
                 >
                     Previous
@@ -38,7 +48,7 @@ export const ProductsPage = () => {
 
                 <button
                     className={styles.paginationButton}
-                    onClick={() => setPage((prev) => prev + 1)}
+                    onClick={() => setPage(page + 1)}
                     disabled={data.length < 10}
                 >
                     Next

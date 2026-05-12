@@ -2,13 +2,16 @@ import { useCallback, useEffect, useState } from "react";
 import type { ApiResponse } from "../../types/interfaces";
 import { getAllProductsPerPage, searchProductsByName } from "../fetch-data";
 import { ErrorHandler } from "../error-handler";
+import { usePagination } from "./use-pagination";
 
 export const useAppState = (query: string) => {
     const [data, setData] = useState<ApiResponse["products"]>([]);
+    const [total, setTotal] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<ErrorHandler | null>(null);
     const [fatalError, setFatalError] = useState<Error | null>(null);
-    const [page, setPage] = useState(1);
+
+    const { page, setPage } = usePagination();
 
     const refetch = useCallback(async () => {
         setIsLoading(true);
@@ -24,6 +27,7 @@ export const useAppState = (query: string) => {
                 throw new ErrorHandler("Products not found", 404);
             }
 
+            setTotal(result.total);
             setData(result.products);
         } catch (err) {
             setData([]);
@@ -57,8 +61,9 @@ export const useAppState = (query: string) => {
         isLoading,
         error,
         fatalError,
+        setFatalError,
         page,
         setPage,
-        setFatalError,
+        total,
     };
 };
