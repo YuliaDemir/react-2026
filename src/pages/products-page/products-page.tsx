@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router';
 
-import { Loader, Search, CardList, ThrowErrorButton } from '../../components';
-import { ErrorDisplay } from '../../components/error-display/error-display';
+import { Search, CardList, ThrowErrorButton } from '../../components';
 import { useAppState } from '../../utils/hooks/use-app-state';
 import { useDetalisation } from '../../utils/hooks/use-detalisation';
 import { PRODUCTS_PER_PAGE } from '../../constants';
 
 import styles from './products-page.module.scss';
+import { ContentState } from '../../components/content-state/content-state';
 
 export const ProductsPage = () => {
     const [query, setQuery] = useState<string>('');
@@ -32,32 +32,27 @@ export const ProductsPage = () => {
             <Search onSearch={handleSearch} />
 
             <>
-                <p className={styles.pageInfo}>
+                {!error && !isLoading && <p className={styles.pageInfo}>
                     Page: {page} from {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
-                </p>
+                </p>}
 
                 <div
                     className={`${styles.resultsBlock} ${isDetailsOpen ? styles.resultsBlockWithOutlet : ''
                         }`}
                 >
 
-                    {error ? (
-                        <ErrorDisplay error={error} />
-                    ) : isLoading ? (
-                        <Loader />
-                    ) : (<div className={styles.cardsBlock}>
+                    <ContentState error={error} isLoading={isLoading}>
                         <CardList
                             data={data}
-                            onCardClick={(id) => openDetails(String(id))}
+                            onCardClick={openDetails}
                             isTwoColumns={isDetailsOpen}
                         />
-                    </div>)}
+                    </ContentState>
 
-                    {detailsId && (
-                        <div className={styles.outletBlock}>
-                            <Outlet context={{ closeDetails }} />
-                        </div>
-                    )}
+                    <div className={styles.outletBlock}>
+                        <Outlet context={{ closeDetails }} />
+                    </div>
+
                 </div>
             </>
 

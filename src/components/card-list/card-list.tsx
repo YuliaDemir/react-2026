@@ -16,26 +16,24 @@ export const CardList = ({
     .join(' ');
 
   return (
-    <div className={styles.main}>
-      <ul className={listClassName}>
-        {data.map((card) => {
-          return (
-            <li className={styles.item} key={card.id} data-testid="card">
-              <button
-                className={styles.cardButton}
-                type="button"
-                onClick={() => onCardClick(card.id)}
-              >
-                <Card
-                  title={card.title}
-                  description={card.description}
-                  images={card.images}
-                />
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+    <ul className={listClassName}>
+      {data.map((card) => {
+        return (
+          <li className={styles.item} key={card.id} data-testid="card">
+            <button
+              className={styles.cardButton}
+              type="button"
+              onClick={() => onCardClick}
+            >
+              <Card
+                title={card.title}
+                description={card.description}
+                images={card.images}
+              />
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 };

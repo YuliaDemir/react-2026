@@ -4,23 +4,24 @@ import { Link, Navigate, Route, Routes } from 'react-router';
 import styles from './app.module.scss';
 import { AboutPage, NotFoundPage, ProductsPage } from '../pages';
 import { ProductDetails } from '../components/product-detail/product-detail';
+import { LINKS } from '../constants';
 
 export const App = () => {
   return (
     <div className={styles.app}>
       <nav className={styles.nav} aria-label="Main navigation">
-        <Link className={styles.navLink} to="/products?page=1">
+        <Link className={styles.navLink} to={LINKS.home}>
           Products
         </Link>
 
-        <Link className={styles.navLink} to="/about">
+        <Link className={styles.navLink} to={LINKS.about}>
           About
         </Link>
       </nav>
 
       <main className={styles.shell}>
         <Routes>
-          <Route path="/" element={<Navigate to="/products?page=1" replace />} />
+          <Route path="/" element={<Navigate to={LINKS.home} replace />} />
 
           <Route path="/products" element={<ProductsPage />}>
             <Route index element={<ProductDetails />} />

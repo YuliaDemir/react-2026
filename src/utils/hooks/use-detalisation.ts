@@ -13,10 +13,10 @@ export const useDetalisation = () => {
         });
     };
 
-    const openDetails = (id: string) => {
+    const openDetails = (id: number) => {
         setSearchParams((params) => {
             const newParams = new URLSearchParams(params);
-            newParams.set('details', id);
+            newParams.set('details', String(id));
 
             return newParams;
         });
