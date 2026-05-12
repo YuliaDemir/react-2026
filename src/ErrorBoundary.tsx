@@ -1,5 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
+import styles from './ErrorBoundary.module.scss';
+
 type ErrorBoundaryProps = {
   children: ReactNode;
 };
@@ -33,20 +35,20 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render() {
     if (this.state.hasError) {
       return (
-        <main className="error-boundary-page">
-          <section className="error-boundary-card">
-            <div className="error-boundary-icon" aria-hidden="true">
+        <main className={styles.page}>
+          <section className={styles.card}>
+            <div className={styles.icon} aria-hidden="true">
               !
             </div>
 
-            <h2 className="error-boundary-title">Something went wrong. TTT</h2>
+            <h2 className={styles.title}>Something went wrong. TTT</h2>
 
-            <p className="error-boundary-text">
+            <p className={styles.text}>
               The application encountered an unexpected error.
             </p>
 
             <button
-              className="error-boundary-button"
+              className={styles.button}
               type="button"
               onClick={() => this.setState({ hasError: false })}
             >
