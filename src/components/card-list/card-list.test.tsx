@@ -1,18 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import CardList from "./card-list";
-import type { Product } from "../../types/interfaces";
-import { mockFetchFailure } from "../../utils/test-utils/mock-fetch-failure";
+import CardList from "../components/card-list";
+import type { Pokemons } from "../components/types/interfaces";
+import { mockFetchFailure } from "./test-utils/mock-fetch-failure";
+import App from "../App";
 
-const baseURL = 'https://pokeapi.co/api/v2/pokemon/';
 
 describe('CardList', () => {
     it('Renders correct number of items when data is provided', () => {
-        const mockData = [
-            { name: 'Card 1', url: `${baseURL}1/` },
-            { name: 'Card 2', url: `${baseURL}2/` },
-            { name: 'Card 3', url: `${baseURL}3/` },
-        ];
-
         render(<CardList data={mockData} />);
 
         const cards = screen.getAllByTestId('card');
@@ -20,16 +14,10 @@ describe('CardList', () => {
     });
 
     it('Correctly displays item names and descriptions', () => {
-        const mockData = [
-            { name: 'Card 1', url: `${baseURL}1/` },
-            { name: 'Card 2', url: `${baseURL}2/` },
-            { name: 'Card 3', url: `${baseURL}3/` },
-        ];
-
         render(<CardList data={mockData} />);
 
         const cardNames = screen.getAllByText(/Card \d/);
-        const cardUrls = screen.getAllByText(/https:/);
+        const cardUrls = screen.getAllByText(/testURL\/\d/);
 
         expect(cardNames).toHaveLength(3);
         expect(cardUrls).toHaveLength(3);
@@ -39,7 +27,7 @@ describe('CardList', () => {
         });
 
         cardUrls.forEach((url, index) => {
-            expect(url).toHaveTextContent(`${baseURL}${index + 1}/`);
+            expect(url).toHaveTextContent(`${testURL}/${index + 1}`);
         });
     });
 
@@ -53,10 +41,10 @@ describe('CardList', () => {
     it('Handles item with missing name gracefully', () => {
         const mockData = [
             { url: 'https://pokeapi.co/api/v2/pokemon/1/' },
-        ] as unknown as Product[]
+        ] as unknown as Pokemons[]
         render(<CardList data={mockData} />)
 
-        expect(screen.getByText(/https:\/\/pokeapi/i)).toBeInTheDocument()
+        expect(screen.getByText(testURL)).toBeInTheDocument()
     });
 
     it('Displays error message when API call fails', async () => {

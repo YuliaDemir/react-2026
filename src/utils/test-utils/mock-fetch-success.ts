@@ -15,12 +15,6 @@ export const mockFetchSuccess = (results: MockFetchResponse) => {
     return fetchMock;
 };
 
-export const mockFetchSuccessBulbasaurArray = () => mockFetchSuccess({ results: [bulbasaur] });
+export const mockFetchSuccessBulbasaurArray = () => mockFetchSuccess({ results: [bulbasaurObject] });
 
-export const mockFetchSuccessBulbasaur = () => mockFetchSuccess(bulbasaur);
-
-
-export const bulbasaur = {
-    name: 'Bulbasaur',
-    url: "https://pokeapi.co/api/v2/pokemon/1/",
-};
+export const mockFetchSuccessBulbasaur = () => mockFetchSuccess(bulbasaurObject);
