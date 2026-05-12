@@ -33,8 +33,7 @@ export const ProductsPage = () => {
 
             <>
                 <p className={styles.pageInfo}>
-                    Page: {page} from {detailsId}
-                    {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
+                    Page: {page} from {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
                 </p>
 
                 <div
