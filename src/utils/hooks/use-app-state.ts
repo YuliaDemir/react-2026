@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ApiResponse } from "../../types/interfaces";
-import { getAllProductsPerPage, searchProductsByName } from "../fetch-data";
 import { ErrorHandler } from "../error-handler";
 import { usePagination } from "./use-pagination";
+import { getData } from "../get-data";
 
-export const useAppState = (query: string) => {
+export const useAppState = (query: string | null) => {
     const [data, setData] = useState<ApiResponse["products"]>([]);
     const [total, setTotal] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -19,13 +19,12 @@ export const useAppState = (query: string) => {
         setFatalError(null);
 
         try {
-            const result: ApiResponse = query
-                ? await searchProductsByName(query)
-                : await getAllProductsPerPage(page);
-
-            if (query && result.products.length === 0) {
-                throw new ErrorHandler("Products not found", 404);
+            if (query === null) {
+                setError(new ErrorHandler('Id is not provided', 404));
+                return;
             }
+
+            const result: ApiResponse = await getData(query!, page);
 
             setTotal(result.total);
             setData(result.products);

@@ -3,19 +3,35 @@ import { Card } from '../card/card';
 
 import styles from './card-list.module.scss';
 
-export const CardList = ({ data }: ListProps) => {
+export const CardList = ({
+  data,
+  onCardClick,
+  isTwoColumns = false,
+}: ListProps) => {
+  const listClassName = [
+    styles.list,
+    isTwoColumns ? styles.listTwoColumns : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <div className={styles.main}>
-      <ul className={styles.list}>
+      <ul className={listClassName}>
         {data.map((card) => {
           return (
             <li className={styles.item} key={card.id} data-testid="card">
-              <Card
-                id={card.id}
-                title={card.title}
-                description={card.description}
-                images={card.images}
-              />
+              <button
+                className={styles.cardButton}
+                type="button"
+                onClick={() => onCardClick(card.id)}
+              >
+                <Card
+                  title={card.title}
+                  description={card.description}
+                  images={card.images}
+                />
+              </button>
             </li>
           );
         })}

@@ -1,16 +1,20 @@
 import { useState } from 'react';
+import { Outlet } from 'react-router';
 
 import { Loader, Search, CardList, ThrowErrorButton } from '../../components';
 import { ErrorDisplay } from '../../components/error-display/error-display';
 import { useAppState } from '../../utils/hooks/use-app-state';
+import { useDetalisation } from '../../utils/hooks/use-detalisation';
+import { PRODUCTS_PER_PAGE } from '../../constants';
 
 import styles from './products-page.module.scss';
-import { PRODUCTS_PER_PAGE } from '../../constants';
 
 export const ProductsPage = () => {
     const [query, setQuery] = useState<string>('');
+    const { detailsId, openDetails, closeDetails } = useDetalisation();
 
-    const { data, isLoading, error, fatalError, setFatalError, page, setPage, total } = useAppState(query);
+    const { data, isLoading, error, fatalError, setFatalError, page, setPage, total } =
+        useAppState(query);
 
     if (fatalError) {
         throw fatalError;
@@ -21,19 +25,43 @@ export const ProductsPage = () => {
         setQuery(value);
     };
 
+    const isDetailsOpen = Boolean(detailsId);
+
     return (
         <div className={styles.page}>
             <Search onSearch={handleSearch} />
 
-            {error ? <ErrorDisplay error={error} /> : isLoading ? <Loader /> :
-                <>
-                    <p className={styles.pageInfo}>
-                        Page: {page} from{' '}
-                        {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
-                    </p>
-                    <CardList data={data} />
-                </>
-            }
+            <>
+                <p className={styles.pageInfo}>
+                    Page: {page} from {detailsId}
+                    {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
+                </p>
+
+                <div
+                    className={`${styles.resultsBlock} ${isDetailsOpen ? styles.resultsBlockWithOutlet : ''
+                        }`}
+                >
+
+                    {error ? (
+                        <ErrorDisplay error={error} />
+                    ) : isLoading ? (
+                        <Loader />
+                    ) : (<div className={styles.cardsBlock}>
+                        <CardList
+                            data={data}
+                            onCardClick={(id) => openDetails(String(id))}
+                            isTwoColumns={isDetailsOpen}
+                        />
+                    </div>)}
+
+                    {detailsId && (
+                        <div className={styles.outletBlock}>
+                            <Outlet context={{ closeDetails }} />
+                        </div>
+                    )}
+                </div>
+            </>
+
 
             <div className={styles.actions}>
                 <button

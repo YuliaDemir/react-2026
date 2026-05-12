@@ -91,3 +91,23 @@
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
   backdrop-filter: blur(12px);
 }
+.resultsBlock {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.resultsBlockWithOutlet {
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
+}
+
+.cardsBlock {
+  min-width: 0;
+}
+
+.outletBlock {
+  min-width: 0;
+}

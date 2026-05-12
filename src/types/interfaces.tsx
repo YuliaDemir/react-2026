@@ -11,7 +11,10 @@ export interface Product {
   id: number,
   images: string[],
   title: string,
-  description: string
+  description: string;
+  category: string;
+  price: string;
+  stock: number;
 }
 
 export type AppState = {
