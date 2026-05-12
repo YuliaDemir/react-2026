@@ -21,7 +21,7 @@ export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleSubmit} onMouseDown={(event) => event.stopPropagation()}>
       <input
         className={styles.input}
         type="text"

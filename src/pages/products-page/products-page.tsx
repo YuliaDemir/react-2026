@@ -65,6 +65,7 @@ export const ProductsPage = () => {
 
             <div className={styles.actions}>
                 <button
+                    onMouseDown={(event) => event.stopPropagation()}
                     className={styles.paginationButton}
                     onClick={() => setPage(Math.max(page - 1, 1))}
                     disabled={page === 1}
@@ -75,6 +76,7 @@ export const ProductsPage = () => {
                 <ThrowErrorButton handleClick={() => setFatalError(new Error('Simulated fatal error'))} />
 
                 <button
+                    onMouseDown={(event) => event.stopPropagation()}
                     className={styles.paginationButton}
                     onClick={() => setPage(page + 1)}
                     disabled={data.length < 10}
