@@ -1,13 +1,19 @@
-import type { ListProps } from '../../types/props';
+import type { Product } from '../../types/interfaces';
 import { Card } from '../card/card';
 
 import styles from './card-list.module.scss';
+
+export type Props = {
+  data: Product[];
+  onCardClick: (id: number) => void;
+  isTwoColumns?: boolean;
+}
 
 export const CardList = ({
   data,
   onCardClick,
   isTwoColumns = false,
-}: ListProps) => {
+}: Props) => {
   const listClassName = [
     styles.list,
     isTwoColumns ? styles.listTwoColumns : '',
