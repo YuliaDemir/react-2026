@@ -1,24 +1,19 @@
-import { useEffect, useRef } from 'react';
-import { useOutletContext } from 'react-router';
-
-import { useAppState } from '../../utils/hooks/use-app-state';
-import { useDetalisation } from '../../utils/hooks/use-detalisation';
+import { useEffect, useRef, type ReactNode } from 'react';
+import { useNavigate } from 'react-router';
 
 import styles from './side-card.module.scss';
-import { ContentState } from '../content-state/content-state';
-import { ProductInfo } from '../product-info/product-info';
+import { OpenCloseDetailsLink } from '../open-close-link/open-close-link';
+import { getToForLink } from '../../utils/get-to-for-link';
 
-type ProductDetailsContext = {
-    closeDetails: () => void;
-};
-
-export const SideCard = () => {
-    const { closeDetails } = useOutletContext<ProductDetailsContext>();
+export const SideCard = ({ children }: { children: ReactNode }) => {
     const detailsRef = useRef<HTMLElement | null>(null);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target;
+            const to = getToForLink();
 
             if (!(target instanceof Element)) {
                 return;
@@ -33,7 +28,7 @@ export const SideCard = () => {
                 event.target instanceof Node &&
                 !detailsRef.current.contains(event.target)
             ) {
-                closeDetails();
+                navigate(to);
             }
         };
 
@@ -42,19 +37,17 @@ export const SideCard = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [closeDetails]);
+    }, []);
 
     return (
         <aside ref={detailsRef} className={styles.details}>
-            <button
-                type="button"
+            <OpenCloseDetailsLink
                 className={styles.closeButton}
-                onClick={closeDetails}
                 aria-label="Close details"
             >
                 ×
-            </button>
-            <ProductInfo />
+            </OpenCloseDetailsLink>
+            {children}
         </aside>
     );
 };

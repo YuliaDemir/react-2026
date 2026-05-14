@@ -1,12 +1,16 @@
+import { useOutletContext } from "react-router";
 import { useAppState } from "../../utils/hooks/use-app-state";
-import { useDetalisation } from "../../utils/hooks/use-detalisation";
 import { ContentState } from "../content-state/content-state";
 
 import styles from './product-info.module.scss';
 
+type ProductDetailsContext = {
+    detailsId: string;
+};
+
 export const ProductInfo = () => {
-    const { detailsId } = useDetalisation();
-    const { data, isLoading, error } = useAppState(detailsId);
+    const { detailsId } = useOutletContext<ProductDetailsContext>();
+    const { data, isLoading, error } = useAppState(String(detailsId));
 
     const product = data[0];
 

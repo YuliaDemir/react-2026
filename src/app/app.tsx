@@ -5,6 +5,7 @@ import styles from './app.module.scss';
 import { AboutPage, NotFoundPage, ProductsPage } from '../pages';
 import { SideCard } from '../components/side-card/side-card';
 import { LINKS } from '../constants';
+import { ProductInfo } from '../components/product-info/product-info';
 
 export const App = () => {
   return (
@@ -24,7 +25,11 @@ export const App = () => {
           <Route path="/" element={<Navigate to={LINKS.home} replace />} />
 
           <Route path="/products" element={<ProductsPage />}>
-            <Route index element={<SideCard />} />
+            <Route index element={
+              <SideCard>
+                <ProductInfo />
+              </SideCard>
+              } />
           </Route>
 
           <Route path="/about" element={<AboutPage />} />

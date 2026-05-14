@@ -1,29 +1,28 @@
 import { PRODUCTS_PER_PAGE } from "../../constants";
 import { useAppState } from "../../utils/hooks/use-app-state";
+import { OpenCloseDetailsLink } from "../open-close-link/open-close-link";
 import styles from './pagination.module.scss';
 
 export const Pagination = ({ query }: { query: string }) => {
-    const { data, isLoading, error, page, total, setPage } = useAppState(query);
+    const { isLoading, error, page, total } = useAppState(query);
 
     return (<>
-        <button
+        <OpenCloseDetailsLink
             className={styles.paginationButton}
-            onClick={() => setPage(Math.max(page - 1, 1))}
-            disabled={page === 1}
+            page={Math.max(page - 1, 1)}
         >
             Previous
-        </button>
+        </OpenCloseDetailsLink>
 
         {!error && !isLoading && <p className={styles.pageInfo}>
             Page: {page} from {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
         </p>}
 
-        <button
+        <OpenCloseDetailsLink
             className={styles.paginationButton}
-            onClick={() => setPage(page + 1)}
-            disabled={data.length < 10}
+            page={page + 1}
         >
             Next
-        </button>
+        </OpenCloseDetailsLink>
     </>)
 }

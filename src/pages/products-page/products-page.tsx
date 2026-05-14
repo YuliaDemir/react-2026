@@ -11,7 +11,7 @@ import { Pagination } from '../../components/pagination/pagination';
 
 export const ProductsPage = () => {
     const [query, setQuery] = useState<string>('');
-    const { detailsId, openDetails, closeDetails } = useDetalisation();
+    const { detailsId } = useDetalisation();
 
     const { data, isLoading, error, fatalError, setFatalError, setPage } =
         useAppState(query);
@@ -38,16 +38,15 @@ export const ProductsPage = () => {
                 <ContentState error={error} isLoading={isLoading}>
                     <CardList
                         data={data}
-                        onCardClick={openDetails}
                         isTwoColumns={isDetailsOpen}
                     />
                 </ContentState>
 
-                {isDetailsOpen && <Outlet context={{ closeDetails }} />}
+                {isDetailsOpen && <Outlet context={{ detailsId }} />}
             </div>
 
             <div className={styles.actions}>
-                <Pagination query={query}/>
+                <Pagination query={query} />
             </div>
         </div>
     );
