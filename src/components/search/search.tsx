@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useLocalStorage } from '../../utils/hooks/use-local-storage-hook';
-import { SEARCH_PLACEHOLDER } from '../../constants';
 
 import styles from './search.module.scss';
+
+const SEARCH_PLACEHOLDER = "Search items by name (e.g., Mascara, Lipstick, etc.)...";
 
 export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
   const [query, setQuery] = useLocalStorage('query');

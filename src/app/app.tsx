@@ -3,7 +3,7 @@ import { Link, Navigate, Route, Routes } from 'react-router';
 
 import styles from './app.module.scss';
 import { AboutPage, NotFoundPage, ProductsPage } from '../pages';
-import { ProductDetails } from '../components/product-detail/product-detail';
+import { SideCard } from '../components/side-card/side-card';
 import { LINKS } from '../constants';
 
 export const App = () => {
@@ -24,7 +24,7 @@ export const App = () => {
           <Route path="/" element={<Navigate to={LINKS.home} replace />} />
 
           <Route path="/products" element={<ProductsPage />}>
-            <Route index element={<ProductDetails />} />
+            <Route index element={<SideCard />} />
           </Route>
 
           <Route path="/about" element={<AboutPage />} />

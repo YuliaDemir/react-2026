@@ -27,9 +27,16 @@ export const CardList = ({
         return (
           <li className={styles.item} key={card.id} data-testid="card">
             <button
+              data-product-card
               className={styles.cardButton}
               type="button"
-              onClick={() => onCardClick(card.id)}
+              onMouseDown={(event) => {
+                event.stopPropagation();
+              }}
+              onClick={(event) => {
+                event.stopPropagation();
+                onCardClick(card.id);
+              }}
             >
               <Card
                 title={card.title}
