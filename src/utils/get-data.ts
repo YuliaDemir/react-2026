@@ -17,7 +17,7 @@ const isValidProductId = (value: string) => {
   return Number.isInteger(id) && id > 0;
 };
 
-export const getData = async (query: string, page: number = 1) => {
+export const getProducts = async (query: string, page: number = 1) => {
   const trimmedQuery = query.trim();
 
   if (!trimmedQuery) {

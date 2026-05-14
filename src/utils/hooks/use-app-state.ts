@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { ApiResponse } from "../../types/interfaces";
 import { ErrorHandler } from "../error-handler";
 import { usePagination } from "./use-pagination";
-import { getData } from "../get-data";
+import { getProducts } from "../get-data";
 
 export const useAppState = (query: string | null) => {
     const [data, setData] = useState<ApiResponse["products"]>([]);
@@ -24,7 +24,7 @@ export const useAppState = (query: string | null) => {
                 return;
             }
 
-            const result: ApiResponse = await getData(query!, page);
+            const result: ApiResponse = await getProducts(query!, page);
 
             setTotal(result.total);
             setData(result.products);
