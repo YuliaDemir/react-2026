@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { useLocalStorage } from '../../utils/hooks/use-local-storage-hook';
 
 import styles from './search.module.scss';
 
 const SEARCH_PLACEHOLDER = "Search items by name (e.g., Mascara, Lipstick, etc.)...";
 
-export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
-  const [query, setQuery] = useLocalStorage('query');
+type Props = {
+  onSearch: (query: string) => void;
+  query: string;
+}
+
+export const Search = ({ onSearch, query }: Props) => {
   const [value, setValue] = useState(query);
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -17,13 +20,13 @@ export const Search = ({ onSearch }: { onSearch: (query: string) => void }) => {
       return;
     }
 
-    setQuery(trimmedQuery);
     onSearch(trimmedQuery);
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit} >
       <input
+        defaultValue={query}
         className={styles.input}
         type="text"
         value={value}
