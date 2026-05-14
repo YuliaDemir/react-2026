@@ -4,9 +4,15 @@ import { ErrorHandler } from "../error-handler";
 import { usePagination } from "./use-pagination";
 import { getProducts } from "../get-data";
 
+const EMPTY_PRODUCTS = {
+    products: [],
+    total: 0,
+    skip: 0,
+    limit: 0,
+}
+
 export const useAppState = (query: string | null) => {
-    const [data, setData] = useState<ApiResponse["products"]>([]);
-    const [total, setTotal] = useState<number>(0);
+    const [data, setData] = useState<ApiResponse>(EMPTY_PRODUCTS);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<ErrorHandler | null>(null);
     const [fatalError, setFatalError] = useState<Error | null>(null);
@@ -26,10 +32,9 @@ export const useAppState = (query: string | null) => {
 
             const result: ApiResponse = await getProducts(query!, page);
 
-            setTotal(result.total);
-            setData(result.products);
+            setData(result);
         } catch (err) {
-            setData([]);
+            setData(EMPTY_PRODUCTS);
 
             if (
                 err instanceof ErrorHandler &&
@@ -56,13 +61,13 @@ export const useAppState = (query: string | null) => {
     }, [refetch]);
 
     return {
-        data,
+        data: data.products,
         isLoading,
         error,
         fatalError,
         setFatalError,
         page,
         setPage,
-        total,
+        total: data.total,
     };
 };
