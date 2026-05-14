@@ -23,7 +23,7 @@ export const CardList = ({
             <button
               className={styles.cardButton}
               type="button"
-              onClick={() => onCardClick}
+              onClick={() => onCardClick(card.id)}
             >
               <Card
                 title={card.title}

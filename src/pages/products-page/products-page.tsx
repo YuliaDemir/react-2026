@@ -30,36 +30,29 @@ export const ProductsPage = () => {
     return (
         <div className={styles.page}>
             <Search onSearch={handleSearch} />
+            {!error && !isLoading && <p className={styles.pageInfo}>
+                Page: {page} from {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
+            </p>}
 
-            <>
-                {!error && !isLoading && <p className={styles.pageInfo}>
-                    Page: {page} from {total ? Math.ceil(total / PRODUCTS_PER_PAGE) : 'all products'}
-                </p>}
+            <div
+                className={`${styles.resultsBlock} ${isDetailsOpen ? styles.resultsBlockWithOutlet : ''}`}
+            >
+                <ContentState error={error} isLoading={isLoading}>
+                    <CardList
+                        data={data}
+                        onCardClick={openDetails}
+                        isTwoColumns={isDetailsOpen}
+                    />
+                </ContentState>
 
-                <div
-                    className={`${styles.resultsBlock} ${isDetailsOpen ? styles.resultsBlockWithOutlet : ''
-                        }`}
-                >
-
-                    <ContentState error={error} isLoading={isLoading}>
-                        <CardList
-                            data={data}
-                            onCardClick={openDetails}
-                            isTwoColumns={isDetailsOpen}
-                        />
-                    </ContentState>
-
-                    <div className={styles.outletBlock}>
-                        <Outlet context={{ closeDetails }} />
-                    </div>
-
+                <div className={styles.outletBlock}>
+                    {isDetailsOpen && <Outlet context={{ closeDetails }} />}
                 </div>
-            </>
 
+            </div>
 
             <div className={styles.actions}>
                 <button
-                    onMouseDown={(event) => event.stopPropagation()}
                     className={styles.paginationButton}
                     onClick={() => setPage(Math.max(page - 1, 1))}
                     disabled={page === 1}
@@ -70,7 +63,6 @@ export const ProductsPage = () => {
                 <ThrowErrorButton handleClick={() => setFatalError(new Error('Simulated fatal error'))} />
 
                 <button
-                    onMouseDown={(event) => event.stopPropagation()}
                     className={styles.paginationButton}
                     onClick={() => setPage(page + 1)}
                     disabled={data.length < 10}

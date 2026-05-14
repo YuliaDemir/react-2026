@@ -10,8 +10,7 @@ export const ContentState = ({ children, error, isLoading }: ContentStateProps) 
         ) : isLoading ? (
             <Loader />
         ) : (
-            { children }
-
+            children
         )}
     </>)
 }

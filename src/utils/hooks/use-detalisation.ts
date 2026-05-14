@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router";
 export const useDetalisation = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
-
     const closeDetails = () => {
         setSearchParams((params) => {
             const newParams = new URLSearchParams(params);
