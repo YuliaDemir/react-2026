@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router';
 
 import { Search, CardList } from '../../components';
@@ -33,10 +33,6 @@ export const ProductsPage = () => {
     };
 
     const isDetailsOpen = Boolean(detailsId);
-
-    useEffect(() => {
-        handleSearch(query);
-    }, []);
 
     return (
         <div className={styles.page}>
