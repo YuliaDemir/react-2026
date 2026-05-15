@@ -2,6 +2,9 @@ import { Link } from 'react-router';
 
 import rssLogo from '../../public/rss-logo.c19ce1b4.svg';
 import styles from './about-page.module.scss';
+import { LINKS } from '../../constants';
+
+const rss = "https://rs.school/";
 
 export const AboutPage = () => {
     return (
@@ -14,14 +17,14 @@ export const AboutPage = () => {
 
             <a
                 className={styles.schoolLink}
-                href="https://rs.school/"
+                href={rss}
                 target="_blank"
                 rel="noreferrer"
             >
                 <img className={styles.schoolLogo} src={rssLogo} alt="RS School logo" />
             </a>
 
-            <Link className={styles.link} to="/products">
+            <Link className={styles.link} to={LINKS.home}>
                 Back to products
             </Link>
         </div>
