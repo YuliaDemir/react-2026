@@ -19,6 +19,6 @@ export const getProductById = async (id: number) => {
     return fetchData(`${API_URL}/${id}`);
 }
 
-export const searchProductsByName = async (query: string) => {
-    return fetchData(`${API_URL}/search?q=${encodeURIComponent(query)}`);
+export const searchProductsByName = async (query: string, page: number) => {
+    return fetchData(`${API_URL}/search?q=${encodeURIComponent(query)}&limit=${PRODUCTS_PER_PAGE}&skip=${(page - 1) * PRODUCTS_PER_PAGE}`);
 }

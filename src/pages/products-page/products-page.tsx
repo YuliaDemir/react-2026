@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate, useSearchParams } from 'react-router';
 
 import { Search, CardList } from '../../components';
 import { useAppState } from '../../utils/hooks/use-app-state';
@@ -10,17 +10,24 @@ import { ContentState } from '../../components/content-state/content-state';
 import { Pagination } from '../../components/pagination/pagination';
 import { useLocalStorage } from '../../utils/hooks/use-local-storage-hook';
 import { LOCAL_STORAGE_KEY } from '../../constants';
+import { getToForLink } from '../../utils/get-to-for-link';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);
     const [query, setQuery] = useState<string>(lsValue);
-    const { detailsId } = useDetalisation();
 
-    const { data, isLoading, error, setPage } =
-        useAppState(query);
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get('page') ?? 1);
+
+    const { detailsId } = useDetalisation();
+    const navigate = useNavigate();
+    const to = getToForLink(undefined, 1);
+
+    const { data, isLoading, error, total } =
+        useAppState(query, page);
 
     const handleSearch = (value: string) => {
-        setPage(1);
+        navigate(to);
         setQuery(value);
         setLSValue(value);
     };
@@ -48,7 +55,7 @@ export const ProductsPage = () => {
             </div>
 
             <div className={styles.actions}>
-                <Pagination query={query} />
+                {!error && !isLoading && <Pagination page={page} total={total} />}
             </div>
         </div>
     );

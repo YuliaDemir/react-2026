@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ApiResponse } from "../../types/interfaces";
 import { ErrorHandler } from "../error-handler";
-import { usePagination } from "./use-pagination";
-import { getProducts } from "../get-data";
+import { getProducts } from "../get-products";
 
 const EMPTY_PRODUCTS = {
     products: [],
@@ -11,13 +10,11 @@ const EMPTY_PRODUCTS = {
     limit: 0,
 }
 
-export const useAppState = (query: string | null) => {
+export const useAppState = (query: string | null, page: number) => {
     const [data, setData] = useState<ApiResponse>(EMPTY_PRODUCTS);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<ErrorHandler | null>(null);
     const [fatalError, setFatalError] = useState<Error | null>(null);
-
-    const { page, setPage } = usePagination();
 
     const refetch = useCallback(async () => {
         setIsLoading(true);
@@ -66,8 +63,6 @@ export const useAppState = (query: string | null) => {
         error,
         fatalError,
         setFatalError,
-        page,
-        setPage,
         total: data.total,
     };
 };

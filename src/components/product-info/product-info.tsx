@@ -44,6 +44,6 @@ export const ProductInfo = () => {
 
                 <p className={styles.description}>{product.description}</p>
             </article>
-        ) : null}
+        ) : <p>Upss. Something went wrong.</p>}
     </ContentState>);
 }

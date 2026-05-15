@@ -11,13 +11,13 @@ type Props = {
 
 
 export const ContentState = ({ children, error, isLoading }: Props) => {
-    return (<>
-        {error ? (
-            <ErrorDisplay error={error} />
-        ) : isLoading ? (
-            <Loader />
-        ) : (
-            children
-        )}
-    </>)
+    if (error) {
+        return <ErrorDisplay error={error} />
+    }
+
+    if (isLoading) {
+        <Loader />
+    }
+
+    return children;
 }

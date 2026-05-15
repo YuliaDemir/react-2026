@@ -4,15 +4,15 @@ import styles from './card.module.scss';
 
 type Props = Pick<Product, 'title' | 'description' | 'images'>;;
 
-export const Card = (data: Props) => {
-  
+export const Card = ({ title, description, images }: Props) => {
+
   return (
     <div className={styles.card}>
-      <img className={styles.image} src={data.images[0]} alt={data.title} />
+      <img className={styles.image} src={images[0]} alt={title} />
 
-      <div className={styles.title}>{data.title}</div>
+      <div className={styles.title}>{title}</div>
 
-      <div className={styles.description}>{data.description}</div>
+      <div className={styles.description}>{description}</div>
     </div>
   );
 };

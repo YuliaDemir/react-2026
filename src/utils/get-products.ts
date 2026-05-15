@@ -35,7 +35,7 @@ export const getProducts = async (query: string, page: number = 1) => {
     };
   }
 
-  const data = await searchProductsByName(trimmedQuery);
+  const data = await searchProductsByName(trimmedQuery, page);
 
   if (data.products.length === 0) {
     throw new ErrorHandler('Products not found', 404);
