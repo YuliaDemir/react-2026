@@ -12,7 +12,7 @@ export const ProductInfo = () => {
     const { detailsId } = useOutletContext<ProductDetailsContext>();
     const { data, isLoading, error } = useAppState(String(detailsId));
 
-    const product = data[0];
+    const product = data?.[0];
 
     return (<ContentState error={error} isLoading={isLoading} >
         {product ? (

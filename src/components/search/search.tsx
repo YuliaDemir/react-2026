@@ -26,7 +26,6 @@ export const Search = ({ onSearch, query }: Props) => {
   return (
     <form className={styles.form} onSubmit={handleSubmit} >
       <input
-        defaultValue={query}
         className={styles.input}
         type="text"
         value={value}

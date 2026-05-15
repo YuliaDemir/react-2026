@@ -10,7 +10,7 @@ const EMPTY_PRODUCTS = {
     limit: 0,
 }
 
-export const useAppState = (query: string | null, page: number) => {
+export const useAppState = (query: string | null, page?: number) => {
     const [data, setData] = useState<ApiResponse>(EMPTY_PRODUCTS);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<ErrorHandler | null>(null);

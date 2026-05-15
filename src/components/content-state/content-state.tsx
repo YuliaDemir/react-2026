@@ -16,7 +16,7 @@ export const ContentState = ({ children, error, isLoading }: Props) => {
     }
 
     if (isLoading) {
-        <Loader />
+        return <Loader />
     }
 
     return children;
