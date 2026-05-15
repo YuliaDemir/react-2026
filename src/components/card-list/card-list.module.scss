@@ -1,6 +1,6 @@
 .list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
   gap: 20px;
 
   margin: 0;
@@ -13,25 +13,8 @@
   min-width: 0;
 }
 
-@media (max-width: 1024px) {
-  .list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .list {
-    grid-template-columns: 1fr;
-  }
-}
-
 .cardButton {
+  display: block;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -43,14 +26,4 @@
   background: transparent;
 
   cursor: pointer;
-}
-
-.list.listTwoColumns {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-@media (max-width: 520px) {
-  .list.listTwoColumns {
-    grid-template-columns: 1fr;
-  }
 }

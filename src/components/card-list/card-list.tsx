@@ -6,22 +6,13 @@ import styles from './card-list.module.scss';
 
 export type Props = {
   data: Product[];
-  isTwoColumns?: boolean;
 }
 
 export const CardList = ({
   data,
-  isTwoColumns = false,
 }: Props) => {
-  const listClassName = [
-    styles.list,
-    isTwoColumns ? styles.listTwoColumns : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
-    <ul className={listClassName}>
+    <ul className={styles.list}>
       {data.map((card) => {
         return (
           <li className={styles.item} key={card.id} data-testid="card">
