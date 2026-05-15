@@ -6,6 +6,7 @@ import { AboutPage, NotFoundPage, ProductsPage } from '../pages';
 import { SideCard } from '../components/side-card/side-card';
 import { LINKS } from '../constants';
 import { ProductInfo } from '../components/product-info/product-info';
+import { ThrowErrorButton } from '../components';
 
 export const App = () => {
   return (
@@ -18,6 +19,8 @@ export const App = () => {
         <Link className={styles.navLink} to={LINKS.about}>
           About
         </Link>
+
+        <ThrowErrorButton />
       </nav>
 
       <main className={styles.shell}>
@@ -29,7 +32,7 @@ export const App = () => {
               <SideCard>
                 <ProductInfo />
               </SideCard>
-              } />
+            } />
           </Route>
 
           <Route path="/about" element={<AboutPage />} />

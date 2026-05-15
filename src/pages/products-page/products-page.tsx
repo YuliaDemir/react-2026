@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router';
 
-import { Search, CardList, ThrowErrorButton } from '../../components';
+import { Search, CardList } from '../../components';
 import { useAppState } from '../../utils/hooks/use-app-state';
 import { useDetalisation } from '../../utils/hooks/use-detalisation';
 
@@ -16,12 +16,8 @@ export const ProductsPage = () => {
     const [query, setQuery] = useState<string>(lsValue);
     const { detailsId } = useDetalisation();
 
-    const { data, isLoading, error, fatalError, setFatalError, setPage } =
+    const { data, isLoading, error, setPage } =
         useAppState(query);
-
-    if (fatalError) {
-        throw fatalError;
-    }
 
     const handleSearch = (value: string) => {
         setPage(1);
@@ -38,7 +34,6 @@ export const ProductsPage = () => {
     return (
         <div className={styles.page}>
             <Search onSearch={handleSearch} query={lsValue} />
-            <ThrowErrorButton handleClick={() => setFatalError(new Error('Simulated fatal error'))} />
 
             <div
                 className={`${styles.resultsBlock} ${isDetailsOpen ? styles.resultsBlockWithOutlet : ''}`}
@@ -46,7 +41,6 @@ export const ProductsPage = () => {
                 <ContentState error={error} isLoading={isLoading}>
                     <CardList
                         data={data}
-                        isTwoColumns={isDetailsOpen}
                     />
                 </ContentState>
 
