@@ -1,4 +1,3 @@
-// error-handler.test.ts
 import { describe, expect, it } from 'vitest';
 
 import { ErrorHandler } from '../utils/error-handler';

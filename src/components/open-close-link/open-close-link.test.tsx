@@ -1,4 +1,3 @@
-// open-close-link.test.tsx
 import type { ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';

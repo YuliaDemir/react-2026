@@ -1,4 +1,3 @@
-// throw-error-button.test.tsx
 import type { ReactNode } from 'react';
 import { Component } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';

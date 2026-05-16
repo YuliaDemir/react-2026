@@ -1,4 +1,3 @@
-// app.test.tsx
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Outlet } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
@@ -23,13 +22,13 @@ vi.mock('../constants', () => ({
 
 vi.mock('../pages', () => ({
   ProductsPage: () => (
-    <section>
-      <h1>Products page</h1>
+    <div data-testid="products-page">
+      Products page
       <Outlet />
-    </section>
+    </div>
   ),
-  AboutPage: () => <h1>About page</h1>,
-  NotFoundPage: () => <h1>Not found page</h1>,
+  AboutPage: () => <div data-testid="about-page">About page</div>,
+  NotFoundPage: () => <div data-testid="not-found-page">Not found page</div>,
 }));
 
 vi.mock('../components/side-card/side-card', () => ({
@@ -39,7 +38,7 @@ vi.mock('../components/side-card/side-card', () => ({
 }));
 
 vi.mock('../components/product-info/product-info', () => ({
-  ProductInfo: () => <div>Product info</div>,
+  ProductInfo: () => <div data-testid="product-info">Product info</div>,
 }));
 
 vi.mock('../components', () => ({
@@ -80,29 +79,29 @@ describe('App', () => {
   it('redirects from root route to products page', () => {
     renderApp('/');
 
-    expect(screen.getByRole('heading', { name: /products page/i })).toBeInTheDocument();
+    expect(screen.getByTestId('products-page')).toBeInTheDocument();
     expect(screen.getByTestId('side-card')).toBeInTheDocument();
-    expect(screen.getByText(/product info/i)).toBeInTheDocument();
+    expect(screen.getByTestId('product-info')).toBeInTheDocument();
   });
 
   it('renders products page for /products route', () => {
     renderApp('/products');
 
-    expect(screen.getByRole('heading', { name: /products page/i })).toBeInTheDocument();
+    expect(screen.getByTestId('products-page')).toBeInTheDocument();
     expect(screen.getByTestId('side-card')).toBeInTheDocument();
-    expect(screen.getByText(/product info/i)).toBeInTheDocument();
+    expect(screen.getByTestId('product-info')).toBeInTheDocument();
   });
 
   it('renders about page for /about route', () => {
     renderApp('/about');
 
-    expect(screen.getByRole('heading', { name: /about page/i })).toBeInTheDocument();
-    expect(screen.queryByText(/product info/i)).not.toBeInTheDocument();
+    expect(screen.getByTestId('about-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('products-page')).not.toBeInTheDocument();
   });
 
   it('renders not found page for unknown route', () => {
     renderApp('/unknown-route');
 
-    expect(screen.getByRole('heading', { name: /not found page/i })).toBeInTheDocument();
+    expect(screen.getByTestId('not-found-page')).toBeInTheDocument();
   });
 });

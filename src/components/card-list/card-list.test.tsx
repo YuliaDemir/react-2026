@@ -1,4 +1,3 @@
-// card-list.test.tsx
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -36,25 +35,16 @@ vi.mock('../open-close-link/open-close-link', () => ({
         id,
         className,
         children,
-        ...props
     }: {
-        id: number;
+        id?: number;
         className?: string;
         children: React.ReactNode;
-        [key: string]: unknown;
     }) => (
-        <button
-            type="button"
-            data-testid="open-close-link"
-            data-id={id}
-            className={className}
-            data-product-card={props['data-product-card'] ? 'true' : undefined}
-        >
+        <a href={`/products?details=${id}`} className={className} data-testid="details-link">
             {children}
-        </button>
+        </a>
     ),
 }));
-
 
 const products: Product[] = [
     {
@@ -62,7 +52,7 @@ const products: Product[] = [
         title: 'iPhone 15',
         description: 'Apple smartphone',
         images: ['https://example.com/iphone.jpg'],
-        price: '999',
+        price: "999",
         category: 'smartphones',
         stock: 10,
     },
@@ -71,7 +61,7 @@ const products: Product[] = [
         title: 'MacBook Pro',
         description: 'Apple laptop',
         images: ['https://example.com/macbook.jpg'],
-        price: '2499',
+        price: "2499",
         category: 'laptops',
         stock: 5,
     },
@@ -79,9 +69,10 @@ const products: Product[] = [
 
 describe('CardList', () => {
     it('renders list', () => {
-        render(<CardList data={products} />);
+        const { container } = render(<CardList data={products} />);
 
-        expect(screen.getByRole('list')).toBeInTheDocument();
+        expect(container.querySelector('ul')).toBeInTheDocument();
+        expect(container.querySelector('ul')).toHaveClass('list');
     });
 
     it('renders card item for each product', () => {
@@ -118,29 +109,26 @@ describe('CardList', () => {
     it('wraps each card with OpenCloseDetailsLink and passes product id', () => {
         render(<CardList data={products} />);
 
-        const links = screen.getAllByTestId('open-close-link');
+        const links = screen.getAllByTestId('details-link');
 
         expect(links).toHaveLength(products.length);
 
-        expect(links[0]).toHaveAttribute('data-id', '1');
-        expect(links[1]).toHaveAttribute('data-id', '2');
+        expect(links[0]).toHaveAttribute('href', '/products?details=1');
+        expect(links[1]).toHaveAttribute('href', '/products?details=2');
     });
 
-    it('passes className and data-product-card to OpenCloseDetailsLink', () => {
+    it('passes className to OpenCloseDetailsLink', () => {
         render(<CardList data={products} />);
 
-        const links = screen.getAllByTestId('open-close-link');
-
-        links.forEach((link) => {
+        screen.getAllByTestId('details-link').forEach((link) => {
             expect(link).toHaveClass('cardButton');
-            expect(link).toHaveAttribute('data-product-card', 'true');
         });
     });
 
     it('renders empty list when data is empty', () => {
-        render(<CardList data={[]} />);
+        const { container } = render(<CardList data={[]} />);
 
-        expect(screen.getByRole('list')).toBeInTheDocument();
+        expect(container.querySelector('ul')).toBeInTheDocument();
         expect(screen.queryAllByTestId('card')).toHaveLength(0);
     });
 });

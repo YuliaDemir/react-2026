@@ -1,4 +1,3 @@
-// products-page.test.tsx
 import type { ReactNode } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router';

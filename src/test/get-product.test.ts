@@ -1,4 +1,3 @@
-// src/test/get-products.test.ts
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ErrorHandler } from '../utils/error-handler';
