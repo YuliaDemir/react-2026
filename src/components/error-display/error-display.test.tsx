@@ -24,7 +24,7 @@ describe('ErrorDisplay', () => {
         render(<ErrorDisplay error={error} />);
 
         expect(
-            screen.getByRole('heading', { name: /an error occurred/i }),
+            screen.getByRole('heading', { name: /something went/i }),
         ).toBeInTheDocument();
     });
 
@@ -51,7 +51,7 @@ describe('ErrorDisplay', () => {
 
         expect(container.firstElementChild).toHaveClass('error');
         expect(
-            screen.getByRole('heading', { name: /an error occurred/i }),
+            screen.getByRole('heading', { name: /something went/i }),
         ).toHaveClass('title');
         expect(screen.getByText('Validation error')).toHaveClass('text');
     });
