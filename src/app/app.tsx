@@ -2,11 +2,9 @@ import { Link, Navigate, Route, Routes } from 'react-router';
 
 
 import styles from './app.module.scss';
-import { AboutPage, NotFoundPage, ProductsPage } from '../pages';
-import { SideCard } from '../components/side-card/side-card';
-import { LINKS } from '../constants';
-import { ProductInfo } from '../components/product-info/product-info';
-import { ThrowErrorButton } from '../components';
+import { AboutPage, NotFoundPage, ProductsPage } from '@pages';
+import { ProductInfo, SideCard, ThrowErrorButton } from '@components';
+import { LINKS } from '@const';
 
 export const App = () => {
   return (

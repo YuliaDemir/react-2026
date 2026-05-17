@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import { getToForLink } from '../../utils/get-to-for-link';
+import { getToForLink } from '@/utils/get-to-for-link';
 
 type Props = {
     children: ReactNode,

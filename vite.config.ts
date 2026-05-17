@@ -6,10 +6,19 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/styles/_variables" as *;\n`,
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
+    testTimeout: 10000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

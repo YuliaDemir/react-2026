@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import styles from './side-card.module.scss';
-import { OpenCloseDetailsLink } from '../open-close-link/open-close-link';
+import { OpenCloseDetailsLink } from '@components';
 
 export const SideCard = ({ children }: { children: ReactNode }) => {
 

@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router';
 
-import { Search, CardList } from '../../components';
-import { useAppState } from '../../utils/hooks/use-app-state';
-import { useDetalisation } from '../../utils/hooks/use-detalisation';
+import { Search, CardList, ContentState, Pagination } from '@components';
+import { useAppState } from '@/utils/hooks/use-app-state';
+import { useDetalisation } from '@/utils/hooks/use-detalisation';
 
 import styles from './products-page.module.scss';
-import { ContentState } from '../../components/content-state/content-state';
-import { Pagination } from '../../components/pagination/pagination';
-import { useLocalStorage } from '../../utils/hooks/use-local-storage-hook';
-import { LOCAL_STORAGE_KEY } from '../../constants';
-import { getToForLink } from '../../utils/get-to-for-link';
+import { useLocalStorage } from '@/utils/hooks/use-local-storage-hook';
+import { LOCAL_STORAGE_KEY } from '@const';
+import { getToForLink } from '@/utils/get-to-for-link';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);

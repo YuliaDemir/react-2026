@@ -6,6 +6,6 @@ export const LOCAL_STORAGE_KEY = 'query';
 
 export const LINKS = {
     home: "/products?page=1",
-    about: "about",
+    about: "/about",
 }
 

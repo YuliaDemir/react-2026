@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 
 import styles from './not-found-page.module.scss';
-import { LINKS } from '../../constants';
+import { LINKS } from '@const';
 
 export const NotFoundPage = () => {
     return (

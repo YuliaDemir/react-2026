@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import rssLogo from '../../public/rss-logo.c19ce1b4.svg';
 import styles from './about-page.module.scss';
-import { LINKS } from '../../constants';
+import { LINKS } from '@const';
 
 const rss = "https://rs.school/";
 

@@ -1,4 +1,4 @@
-import type { ErrorHandler } from '../../utils/error-handler';
+import type { ErrorHandler } from '@/utils/error-handler';
 
 import styles from './error-display.module.scss';
 

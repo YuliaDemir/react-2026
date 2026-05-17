@@ -1,6 +1,6 @@
 import { useOutletContext } from "react-router";
-import { useAppState } from "../../utils/hooks/use-app-state";
-import { ContentState } from "../content-state/content-state";
+import { useAppState } from "@/utils/hooks/use-app-state";
+import { ContentState } from "@components";
 
 import styles from './product-info.module.scss';
 

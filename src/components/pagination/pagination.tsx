@@ -1,5 +1,5 @@
-import { PRODUCTS_PER_PAGE } from "../../constants";
-import { OpenCloseDetailsLink } from "../open-close-link/open-close-link";
+import { PRODUCTS_PER_PAGE } from "@const";
+import { OpenCloseDetailsLink } from "@components";
 import styles from './pagination.module.scss';
 
 type Props = {

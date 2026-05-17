@@ -1,6 +1,5 @@
-import { ErrorDisplay } from "../error-display/error-display";
-import { Loader } from "../loader/loader";
-import type { ErrorHandler } from "../../utils/error-handler";
+import { ErrorDisplay, Loader } from "@components";
+import type { ErrorHandler } from "@/utils/error-handler";
 import type { ReactNode } from "react";
 
 type Props = {

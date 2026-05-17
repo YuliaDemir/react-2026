@@ -1,6 +1,5 @@
 import type { Product } from '../../types/interfaces';
-import { Card } from '../card/card';
-import { OpenCloseDetailsLink } from '../open-close-link/open-close-link';
+import { Card, OpenCloseDetailsLink } from '@components';
 
 import styles from './card-list.module.scss';
 
