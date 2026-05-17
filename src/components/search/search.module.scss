@@ -6,9 +6,8 @@
   gap: 12px;
   align-items: center;
 
-  border: 1px solid $border-muted;
+  @include border(0.88);
   border-radius: 24px;
-  background: $surface;
   box-shadow: 0 18px 50px $shadow-form;
   backdrop-filter: blur(18px);
 }

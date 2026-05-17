@@ -2,15 +2,12 @@
   height: 100%;
   padding: 24px 20px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include column-center;
 
   text-align: center;
 
-  border: 1px solid $border-muted;
+  @include border(0.88);
   border-radius: 24px;
-  background: $surface;
   box-shadow: 0 14px 28px $shadow-card;
 
   transition:

@@ -2,14 +2,12 @@
   width: 100%;
   padding: 24px;
 
-  border: 1px solid $border-muted;
+  @include border(0.88);
   border-radius: 24px;
-  background: $surface;
   box-shadow: 0 18px 50px $shadow-form;
   backdrop-filter: blur(18px);
 
-  position: sticky;
-  top: 75px;
+  @include sticky(75px);
 }
 
 .card {

@@ -1,14 +1,10 @@
-@use '../styles/_mixins.scss' as *;
-
 .app {
   min-height: 100vh;
 }
 
 .nav {
   @include sticky(0);
-
-  width: min(1120px, calc(100% - 32px));
-  margin: 0 auto;
+  @include  container();
   padding: 16px 0 8px;
 
   display: flex;
@@ -22,9 +18,8 @@
   color: $text-secondary;
   text-decoration: none;
 
-  border: 1px solid $border-muted;
+  @include border(0.72);
   border-radius: 999px;
-  background: $surface-nav;
   box-shadow: 0 8px 24px $shadow-soft;
 
   transition:
@@ -42,8 +37,7 @@
 }
 
 .shell {
-  width: min(1120px, calc(100% - 32px));
-  margin: 0 auto;
+  @include  container();
   padding: 8px 0 32px;
 }
 
