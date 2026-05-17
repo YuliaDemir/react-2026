@@ -19,13 +19,13 @@
   min-height: 46px;
   padding: 0 22px;
 
-  color: #ffffff;
+  color: $white;
   font-weight: 800;
 
   border: 0;
   border-radius: 14px;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  box-shadow: 0 14px 28px rgba(79, 70, 229, 0.28);
+  background: $gradient-primary;
+  box-shadow: 0 14px 28px $shadow-primary-medium;
 
   cursor: pointer;
 
@@ -44,7 +44,7 @@
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 18px 36px rgba(79, 70, 229, 0.34);
+    box-shadow: 0 18px 36px $shadow-primary-strong;
     filter: brightness(1.04);
   }
 
@@ -80,15 +80,15 @@
 
   align-self: center;
 
-  color: #64748b;
+  color: $text-secondary;
   font-size: 0.95rem;
   font-weight: 700;
   text-align: center;
 
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  border: 1px solid $border-muted;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  background: $surface-soft;
+  box-shadow: 0 10px 24px $shadow-soft;
   backdrop-filter: blur(12px);
 }
 .resultsBlock {

@@ -1,0 +1,10 @@
+@mixin sticky($top){
+  position: sticky;
+  top: $top;
+  z-index: 10;
+}
+
+@mixin border($bg-trans) {
+     border: 1px solid $border-muted;
+     background: rgba($white, $bg-trans);
+}

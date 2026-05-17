@@ -5,17 +5,17 @@
 
   text-align: center;
 
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  border: 1px solid $border-muted;
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.1);
+  background: $surface;
+  box-shadow: 0 18px 50px $shadow-form;
   backdrop-filter: blur(18px);
 }
 
 .title {
   margin: 0 0 16px;
 
-  color: #172033;
+  color: $text-primary;
   font-size: clamp(2.2rem, 6vw, 4rem);
   line-height: 1;
   letter-spacing: -0.06em;
@@ -25,7 +25,7 @@
   max-width: 560px;
   margin: 0 auto 28px;
 
-  color: #64748b;
+  color: $text-secondary;
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -38,13 +38,13 @@
   min-height: 46px;
   padding: 0 20px;
 
-  color: #ffffff;
+  color: $white;
   font-weight: 800;
   text-decoration: none;
 
   border-radius: 14px;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  box-shadow: 0 14px 28px rgba(79, 70, 229, 0.24);
+  background: $gradient-primary;
+  box-shadow: 0 14px 28px $shadow-primary;
 
   transition:
     transform 0.2s ease,
@@ -53,7 +53,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 36px rgba(79, 70, 229, 0.32);
+    box-shadow: 0 18px 36px $shadow-primary-hover;
     filter: brightness(1.04);
   }
 

@@ -6,10 +6,10 @@
   gap: 12px;
   align-items: center;
 
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  border: 1px solid $border-muted;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.1);
+  background: $surface;
+  box-shadow: 0 18px 50px $shadow-form;
   backdrop-filter: blur(18px);
 }
 
@@ -18,11 +18,11 @@
   min-height: 48px;
   padding: 0 16px;
 
-  color: #172033;
+  color: $text-primary;
 
-  border: 1px solid #d9e2f1;
+  border: 1px solid $input-border;
   border-radius: 16px;
-  background: #f8fbff;
+  background: $input-bg;
 
   transition:
     border-color 0.2s ease,
@@ -30,14 +30,14 @@
     box-shadow 0.2s ease;
 
   &::placeholder {
-    color: #8a98ad;
+    color: $text-placeholder;
   }
 
   &:hover,
   &:focus {
-    border-color: #818cf8;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.14);
+    border-color: $primary-light;
+    background: $white;
+    box-shadow: 0 0 0 4px $focus-ring;
   }
 
   &:focus {
@@ -49,13 +49,13 @@
   min-height: 48px;
   padding: 0 22px;
 
-  color: #ffffff;
+  color: $white;
   font-weight: 800;
 
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  box-shadow: 0 14px 28px rgba(79, 70, 229, 0.28);
+  background: $gradient-primary;
+  box-shadow: 0 14px 28px $shadow-primary-medium;
 
   cursor: pointer;
 
@@ -66,7 +66,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 36px rgba(79, 70, 229, 0.34);
+    box-shadow: 0 18px 36px $shadow-primary-strong;
     filter: brightness(1.04);
   }
 
