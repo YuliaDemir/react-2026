@@ -9,13 +9,17 @@ export interface PropsData {
 
 export interface Product {
   id: number,
-  images: string[],
+  image: string,
   title: string,
   description: string;
   category: string;
   price: string;
   stock: number;
 }
+
+export type ApiProduct = Omit<Product, 'image'> & {
+  images: string[];
+};
 
 export type AppState = {
   data: Product[];
@@ -27,7 +31,7 @@ export type AppState = {
 export type MockFetchResponse = { results: Product[] } | Product;
 
 export type ApiResponse = {
-  products: Product[];
+  products: ApiProduct[];
   total: number;
   skip: number;
   limit: number;

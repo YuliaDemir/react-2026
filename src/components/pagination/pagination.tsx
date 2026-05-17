@@ -1,6 +1,7 @@
 import { PRODUCTS_PER_PAGE } from "@const";
 import { OpenCloseDetailsLink } from "@components";
 import styles from './pagination.module.scss';
+import classNames from "classnames";
 
 type Props = {
     page: number,
@@ -13,7 +14,9 @@ export const Pagination = ({ page, total }: Props) => {
 
     return (<>
         <OpenCloseDetailsLink
-            className={`${styles.paginationButton} ${isFirstPage && styles.disabled}`}
+            className={classNames(styles.paginationButton, {
+                [styles.disabled]: isFirstPage,
+            })}
             page={Math.max(page - 1, 1)}
         >
             Previous
@@ -24,7 +27,9 @@ export const Pagination = ({ page, total }: Props) => {
         </p>
 
         <OpenCloseDetailsLink
-            className={`${styles.paginationButton} ${isLastPage && styles.disabled}`}
+            className={classNames(styles.paginationButton, {
+                [styles.disabled]: isLastPage,
+            })}
             page={Math.min(page + 1, maxPage)}
         >
             Next

@@ -13,14 +13,14 @@ vi.mock('./app.module.scss', () => ({
   },
 }));
 
-vi.mock('../constants', () => ({
+vi.mock('@constants', () => ({
   LINKS: {
     home: '/products',
     about: '/about',
   },
 }));
 
-vi.mock('../pages', () => ({
+vi.mock('@pages', () => ({
   ProductsPage: () => (
     <div data-testid="products-page">
       Products page
@@ -31,18 +31,12 @@ vi.mock('../pages', () => ({
   NotFoundPage: () => <div data-testid="not-found-page">Not found page</div>,
 }));
 
-vi.mock('../components/side-card/side-card', () => ({
+vi.mock('@components', () => ({
+  ProductInfo: () => <div data-testid="product-info" />,
   SideCard: ({ children }: { children: React.ReactNode }) => (
-    <aside data-testid="side-card">{children}</aside>
+    <div data-testid="side-card">{children}</div>
   ),
-}));
-
-vi.mock('../components/product-info/product-info', () => ({
-  ProductInfo: () => <div data-testid="product-info">Product info</div>,
-}));
-
-vi.mock('../components', () => ({
-  ThrowErrorButton: () => <button type="button">Throw error</button>,
+  ThrowErrorButton: () => <button>Throw error</button>,
 }));
 
 const renderApp = (initialEntry = '/') => {

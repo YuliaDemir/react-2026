@@ -9,6 +9,7 @@ import styles from './products-page.module.scss';
 import { useLocalStorage } from '@/utils/hooks/use-local-storage-hook';
 import { LOCAL_STORAGE_KEY } from '@const';
 import { getToForLink } from '@/utils/get-to-for-link';
+import classNames from 'classnames';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);
@@ -37,7 +38,9 @@ export const ProductsPage = () => {
             <Search onSearch={handleSearch} query={lsValue} />
 
             <div
-                className={`${styles.resultsBlock} ${isDetailsOpen ? styles.resultsBlockWithOutlet : ''}`}
+                className={classNames(styles.resultsBlock, {
+                    [styles.resultsBlockWithOutlet]: isDetailsOpen,
+                })}
             >
                 <ContentState error={error} isLoading={isLoading}>
                     <CardList

@@ -19,7 +19,7 @@ export const ProductInfo = () => {
             <article className={styles.card}>
                 <img
                     className={styles.image}
-                    src={product.images[0]}
+                    src={product.image}
                     alt={product.title}
                 />
 

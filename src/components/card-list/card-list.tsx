@@ -12,7 +12,7 @@ export const CardList = ({
 }: Props) => {
   return (
     <ul className={styles.list}>
-      {data.map(({ id, title, images, description }) => {
+      {data.map(({ id, title, image, description }) => {
         return (
           <li className={styles.item} key={id} data-testid="card">
             <OpenCloseDetailsLink
@@ -23,7 +23,7 @@ export const CardList = ({
               <Card
                 title={title}
                 description={description}
-                images={images}
+                image={image}
               />
             </OpenCloseDetailsLink>
           </li>

@@ -57,8 +57,10 @@ export const useAppState = (query: string | null, page?: number) => {
         refetch();
     }, [refetch]);
 
+    const products = data.products.map(product => { return { ...product, image: product.images[0] } });
+
     return {
-        data: data.products,
+        data: products,
         isLoading,
         error,
         fatalError,
