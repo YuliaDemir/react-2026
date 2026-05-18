@@ -1,10 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import style from "./selected-items-flyout.module.scss";
 import { clearList } from "@/store/selected-items-slice";
-
-const onDownload = () => {
-
-}
+import { downloadProductsAsCsv } from "@/utils/downloadProductsAsSVC";
 
 export const SelectedItemsBlock = () => {
     const selectedProducts = useAppSelector(state => state.selectedItems).selectedProductList;
@@ -33,7 +30,7 @@ export const SelectedItemsBlock = () => {
                 <button
                     className={style.primaryButton}
                     type="button"
-                    onClick={onDownload}
+                    onClick={() => downloadProductsAsCsv(selectedProducts)}
                 >
                     Download
                 </button>
