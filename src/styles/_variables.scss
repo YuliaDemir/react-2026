@@ -1,0 +1,57 @@
+$white: #ffffff;
+$transparent: transparent;
+
+$text-primary: #172033;
+$text-secondary: #64748b;
+$text-placeholder: #8a98ad;
+
+$page-bg: #eef4ff;
+$surface: rgba($white, 0.88);
+$surface-soft: rgba($white, 0.78);
+$surface-nav: rgba($white, 0.72);
+$surface-strong: rgba($white, 0.9);
+
+$input-bg: #f8fbff;
+$image-bg: #f1f5f9;
+$input-border: #d9e2f1;
+
+$slate-400: #94a3b8;
+$slate-900: #0f172a;
+
+$primary: #4f46e5;
+$primary-dark: #7c3aed;
+$primary-light: #818cf8;
+$sky: #38bdf8;
+
+$error: #ef4444;
+$error-dark: #be123c;
+$error-text: #991b1b;
+$error-title: #7f1d1d;
+$error-bg: #fff1f2;
+
+$border-muted: rgba($slate-400, 0.28);
+$border-primary: rgba($primary-light, 0.55);
+$border-error: rgba($error, 0.24);
+$border-error-strong: rgba($error, 0.32);
+
+$gradient-primary: linear-gradient(135deg, $primary, $primary-dark);
+$gradient-error: linear-gradient(135deg, $error, $error-dark);
+
+$focus-outline: rgba($primary, 0.35);
+$focus-ring: rgba($primary-light, 0.14);
+
+$shadow-soft: rgba($slate-900, 0.06);
+$shadow-card: rgba($slate-900, 0.08);
+$shadow-form: rgba($slate-900, 0.1);
+
+$shadow-primary-light: rgba($primary, 0.12);
+$shadow-primary: rgba($primary, 0.24);
+$shadow-primary-medium: rgba($primary, 0.28);
+$shadow-primary-hover: rgba($primary, 0.32);
+$shadow-primary-strong: rgba($primary, 0.34);
+
+$shadow-error-soft: rgba($error-title, 0.09);
+$shadow-error: rgba($error-title, 0.12);
+$shadow-error-medium: rgba($error-dark, 0.24);
+$shadow-error-strong: rgba($error-dark, 0.28);
+$shadow-error-hover: rgba($error-dark, 0.32);

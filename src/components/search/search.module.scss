@@ -1,0 +1,87 @@
+.form {
+  width: 100%;
+  padding: 20px;
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  @include border(0.88);
+  border-radius: 24px;
+  box-shadow: 0 18px 50px $shadow-form;
+  backdrop-filter: blur(18px);
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+
+  color: $text-primary;
+
+  border: 1px solid $input-border;
+  border-radius: 16px;
+  background: $input-bg;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $text-placeholder;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $primary-light;
+    background: $white;
+    box-shadow: 0 0 0 4px $focus-ring;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.button {
+  min-height: 48px;
+  padding: 0 22px;
+
+  color: $white;
+  font-weight: 800;
+
+  border: 0;
+  border-radius: 16px;
+  background: $gradient-primary;
+  box-shadow: 0 14px 28px $shadow-primary-medium;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px $shadow-primary-strong;
+    filter: brightness(1.04);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .form {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

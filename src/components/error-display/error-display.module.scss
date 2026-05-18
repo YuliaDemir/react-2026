@@ -1,0 +1,29 @@
+.error {
+  width: min(620px, 100%);
+  margin: 24px auto;
+  padding: 24px;
+
+  text-align: center;
+
+  color: $error-text;
+
+  border: 1px solid $border-error;
+  border-radius: 24px;
+  background: $error-bg;
+  box-shadow: 0 18px 50px $shadow-error-soft;
+}
+
+.title {
+  margin: 0 0 8px;
+
+  color: $error-title;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.text {
+  margin: 0;
+
+  color: $error-text;
+  line-height: 1.6;
+}

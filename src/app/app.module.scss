@@ -1,0 +1,58 @@
+.app {
+  min-height: 100vh;
+}
+
+.nav {
+  @include sticky(0);
+  @include  container();
+  padding: 16px 0 8px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.navLink {
+  padding: 10px 16px;
+
+  color: $text-secondary;
+  text-decoration: none;
+
+  @include border(0.72);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px $shadow-soft;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    color: $primary;
+    border-color: $border-primary;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px $shadow-primary-light;
+  }
+}
+
+.shell {
+  @include  container();
+  padding: 8px 0 32px;
+}
+
+@media (max-width: 680px) {
+  .nav,
+  .shell {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .nav {
+    justify-content: stretch;
+  }
+
+  .navLink {
+    flex: 1;
+    text-align: center;
+  }
+}

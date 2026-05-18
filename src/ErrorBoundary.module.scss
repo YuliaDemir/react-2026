@@ -1,0 +1,108 @@
+.page {
+  min-height: 100vh;
+  padding: 24px;
+
+  display: grid;
+  place-items: center;
+
+  background:
+    radial-gradient(circle at top left, rgba($error, 0.18), transparent 32rem),
+    radial-gradient(circle at bottom right, rgba($primary, 0.16), transparent 30rem),
+    $page-bg;
+}
+
+.card {
+  width: min(520px, 100%);
+  padding: 42px 36px;
+
+  text-align: center;
+
+  border: 1px solid $border-error;
+  border-radius: 28px;
+  background: $surface-strong;
+  box-shadow: 0 28px 80px $shadow-error;
+  backdrop-filter: blur(18px);
+}
+
+.icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 22px;
+
+  display: grid;
+  place-items: center;
+
+  color: $white;
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1;
+
+  border-radius: 24px;
+  background: $gradient-error;
+  box-shadow: 0 18px 36px $shadow-error-strong;
+}
+
+.title {
+  margin: 0;
+
+  color: $text-primary;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.text {
+  max-width: 360px;
+  margin: 16px auto 28px;
+
+  color: $text-secondary;
+  line-height: 1.6;
+}
+
+.button {
+  min-height: 46px;
+  padding: 0 22px;
+
+  color: $white;
+  font-weight: 800;
+
+  border: 0;
+  border-radius: 14px;
+  background: $gradient-error;
+  box-shadow: 0 14px 28px $shadow-error-medium;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px $shadow-error-hover;
+    filter: brightness(1.04);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .card {
+    padding: 34px 22px;
+  }
+
+  .icon {
+    width: 64px;
+    height: 64px;
+
+    font-size: 2rem;
+    border-radius: 20px;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

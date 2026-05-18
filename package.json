@@ -16,8 +16,10 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react-dom": "^19.2.5",
+    "react-router": "^7.15.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -38,6 +40,7 @@
     "jsdom": "^29.1.1",
     "postcss": "^8.5.12",
     "prettier": "^3.8.3",
+    "sass": "^1.99.0",
     "tailwindcss": "^4.2.4",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.59.1",

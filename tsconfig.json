@@ -8,6 +8,23 @@
       "DOM",
       "DOM.Iterable"
     ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@components": [
+        "./src/components/index.ts"
+      ],
+      "@pages": [
+        "./src/pages/index.ts"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@const": [
+        "./src/constants/index.ts"
+      ]
+    },
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",

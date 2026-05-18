@@ -1,0 +1,240 @@
+@use "./variables" as *;
+
+@mixin sticky($top, $z-index: 10) {
+  position: sticky;
+  top: $top;
+  z-index: $z-index;
+}
+
+@mixin border($bg-trans) {
+  border: 1px solid $border-muted;
+  background: rgba($white, $bg-trans);
+}
+
+@mixin container($max-width: 1120px, $gutter: 32px) {
+  width: min($max-width, calc(100% - #{$gutter}));
+  margin: 0 auto;
+}
+
+@mixin flex-center($display: flex) {
+  display: $display;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+@mixin page-layout($min-height: calc(100vh - 88px), $gap: 18px) {
+  min-height: $min-height;
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin grid-list($min-card-width: 250px, $gap: 20px) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, $min-card-width), 1fr));
+  gap: $gap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@mixin surface-card(
+  $padding: 24px,
+  $radius: 24px,
+  $background: $surface,
+  $shadow: $shadow-form,
+  $border-color: $border-muted,
+  $blur: 18px
+) {
+  padding: $padding;
+  border: 1px solid $border-color;
+  border-radius: $radius;
+  background: $background;
+  box-shadow: 0 18px 50px $shadow;
+  backdrop-filter: blur($blur);
+}
+
+@mixin page-card($padding: clamp(28px, 6vw, 56px)) {
+  max-width: 720px;
+  margin: 32px auto 0;
+  padding: $padding;
+  text-align: center;
+  border: 1px solid $border-muted;
+  border-radius: 28px;
+  background: $surface;
+  box-shadow: 0 18px 50px $shadow-form;
+  backdrop-filter: blur(18px);
+}
+
+@mixin pill(
+  $padding: 12px 18px,
+  $background: $surface-soft,
+  $shadow: $shadow-soft
+) {
+  padding: $padding;
+  border: 1px solid $border-muted;
+  border-radius: 999px;
+  background: $background;
+  box-shadow: 0 10px 24px $shadow;
+}
+
+@mixin image-circle($size, $padding, $margin-bottom: 0) {
+  width: $size;
+  height: $size;
+  margin-bottom: $margin-bottom;
+  padding: $padding;
+  object-fit: contain;
+  border-radius: 50%;
+  background: $image-bg;
+}
+
+@mixin title(
+  $font-size,
+  $margin: 0,
+  $line-height: 1.2,
+  $letter-spacing: null
+) {
+  margin: $margin;
+  color: $text-primary;
+  font-size: $font-size;
+  line-height: $line-height;
+
+  @if $letter-spacing != null {
+    letter-spacing: $letter-spacing;
+  }
+}
+
+@mixin text($margin: 0, $font-size: 0.95rem, $line-height: 1.6) {
+  margin: $margin;
+  color: $text-secondary;
+  font-size: $font-size;
+  line-height: $line-height;
+}
+
+@mixin interactive-transition {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+@mixin hover-lift($shadow, $translate: -2px) {
+  transform: translateY($translate);
+  box-shadow: $shadow;
+  filter: brightness(1.04);
+}
+
+@mixin button-base($min-height: 46px, $padding: 0 22px, $radius: 14px) {
+  min-height: $min-height;
+  padding: $padding;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $white;
+  font-weight: 800;
+  text-decoration: none;
+  border: 0;
+  border-radius: $radius;
+  cursor: pointer;
+
+  @include interactive-transition;
+
+  &:active:not(:disabled):not(.disabled) {
+    transform: translateY(0);
+  }
+}
+
+@mixin primary-button(
+  $min-height: 46px,
+  $padding: 0 22px,
+  $radius: 14px,
+  $shadow: $shadow-primary-medium,
+  $hover-shadow: $shadow-primary-strong
+) {
+  @include button-base($min-height, $padding, $radius);
+
+  background: $gradient-primary;
+  box-shadow: 0 14px 28px $shadow;
+
+  &:hover:not(:disabled):not(.disabled) {
+    @include hover-lift(0 18px 36px $hover-shadow);
+  }
+}
+
+@mixin error-button(
+  $min-height: 46px,
+  $padding: 0 22px,
+  $radius: 14px,
+  $shadow: $shadow-error-medium,
+  $hover-shadow: $shadow-error-hover
+) {
+  @include button-base($min-height, $padding, $radius);
+
+  background: $gradient-error;
+  box-shadow: 0 14px 28px $shadow;
+
+  &:hover:not(:disabled):not(.disabled) {
+    @include hover-lift(0 18px 36px $hover-shadow);
+  }
+}
+
+@mixin disabled-control {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+@mixin input-control {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  color: $text-primary;
+  border: 1px solid $input-border;
+  border-radius: 16px;
+  background: $input-bg;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: $text-placeholder;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: $primary-light;
+    background: $white;
+    box-shadow: 0 0 0 4px $focus-ring;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@mixin close-button($top: 12px, $right: 12px) {
+  position: absolute;
+  top: $top;
+  right: $right;
+  color: inherit;
+  text-decoration: none;
+  border: none;
+  background: $transparent;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+@mixin mobile($max-width: 560px) {
+  @media (max-width: $max-width) {
+    @content;
+  }
+}

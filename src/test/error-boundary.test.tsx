@@ -1,120 +1,122 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import type { ReactNode } from 'react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import ErrorBoundary from '../ErrorBoundary';
-import App from '../App';
-import { mockFetchSuccessBulbasaurArray } from './test-utils/mock-fetch-success';
-import { ThrowError } from './test-utils/thrown-error';
 
+vi.mock('./ErrorBoundary.module.scss', () => ({
+    default: {
+        page: 'page',
+        card: 'card',
+        icon: 'icon',
+        title: 'title',
+        text: 'text',
+        button: 'button',
+    },
+}));
 
+const BrokenComponent = () => {
+    throw new Error('Test error');
+};
+
+const ControlledBrokenComponent = ({ shouldThrow }: { shouldThrow: boolean }) => {
+    if (shouldThrow) {
+        throw new Error('Controlled test error');
+    }
+
+    return <div>Recovered content</div>;
+};
+
+const renderWithBoundary = (children: ReactNode) => {
+    return render(<ErrorBoundary>{children}</ErrorBoundary>);
+};
 
 describe('ErrorBoundary', () => {
+    let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+
     beforeEach(() => {
-        vi.spyOn(console, 'error').mockImplementation(() => { });
+        consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
     });
 
     afterEach(() => {
-        vi.restoreAllMocks();
+        consoleErrorSpy.mockRestore();
     });
 
-    it('catches and handles JavaScript errors in child components', () => {
-        render(
-            <ErrorBoundary>
-                <ThrowError />
-            </ErrorBoundary>
-        );
+    it('renders children when there is no error', () => {
+        renderWithBoundary(<div>Application content</div>);
 
-        const text = screen.getByText(/something went wrong/i);
-
-        expect(text).toBeInTheDocument();
+        expect(screen.getByText('Application content')).toBeInTheDocument();
     });
 
-    it('displays fallback UI when error occurs', () => {
-        render(
-            <ErrorBoundary>
-                <ThrowError />
-            </ErrorBoundary>
-        );
+    it('renders fallback UI when child component throws error', () => {
+        renderWithBoundary(<BrokenComponent />);
 
-        const text = screen.getByText(/the application encountered an unexpected error/i);
-        const button = screen.getByRole('button', { name: /try again/i });
-
-        expect(text).toBeInTheDocument();
-        expect(button).toBeInTheDocument();
-    });
-
-    it('logs error to console', () => {
-        const consoleErrorSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => { });
-
-        render(
-            <ErrorBoundary>
-                <ThrowError />
-            </ErrorBoundary>
-        );
-
-        expect(consoleErrorSpy).toHaveBeenCalled();
+        expect(screen.getByRole('main')).toBeInTheDocument();
 
         expect(
-            consoleErrorSpy.mock.calls.some((call) =>
-                String(call[0]).includes('ErrorBoundary caught an error:')
-            )
-        ).toBe(true);
-    });
-});
+            screen.getByRole('heading', { name: /something went wrong\. ttt/i }),
+        ).toBeInTheDocument();
 
-describe('Error button', () => {
-    beforeEach(() => {
-        localStorage.removeItem('query');
-        mockFetchSuccessBulbasaurArray();
-        vi.spyOn(console, 'error').mockImplementation(() => { });
-    });
+        expect(
+            screen.getByText(
+                /the application encountered an unexpected error/i,
+            ),
+        ).toBeInTheDocument();
 
-    afterEach(() => {
-        vi.restoreAllMocks();
-        vi.unstubAllGlobals();
-        localStorage.clear();
+        expect(
+            screen.getByRole('button', { name: /try again/i }),
+        ).toBeInTheDocument();
     });
 
-    it('throws error when test button is clicked', async () => {
-        const user = userEvent.setup();
-
-        render(
-            <ErrorBoundary>
-                <App />
-            </ErrorBoundary>
+    it('does not render children after error', () => {
+        renderWithBoundary(
+            <>
+                <div>Application content</div>
+                <BrokenComponent />
+            </>,
         );
 
-        const errorButton = await screen.findByRole('button', {
-            name: /throw error/i,
-        });
+        expect(screen.queryByText('Application content')).not.toBeInTheDocument();
 
-        await user.click(errorButton);
-
-        const errorText = screen.getByText(/something went wrong/i);
-
-        expect(errorText).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: /something went wrong\. ttt/i }),
+        ).toBeInTheDocument();
     });
 
-    it('triggers error boundary fallback UI when test button is clicked', async () => {
-        const user = userEvent.setup();
+    it('logs caught error', () => {
+        renderWithBoundary(<BrokenComponent />);
 
-        render(
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+            'ErrorBoundary caught an error:',
+            expect.any(Error),
+            expect.any(Object),
+        );
+    });
+
+    it('resets error state after clicking Try again', () => {
+        const { rerender } = render(
             <ErrorBoundary>
-                <App />
-            </ErrorBoundary>
+                <ControlledBrokenComponent shouldThrow />
+            </ErrorBoundary>,
         );
 
-        const errorButton = await screen.findByRole('button', {
-            name: /throw error/i,
-        });
+        expect(
+            screen.getByRole('heading', { name: /something went wrong\. ttt/i }),
+        ).toBeInTheDocument();
 
-        await user.click(errorButton);
+        rerender(
+            <ErrorBoundary>
+                <ControlledBrokenComponent shouldThrow={false} />
+            </ErrorBoundary>,
+        );
 
-        const text = screen.getByText(/the application encountered an unexpected error/i);
-        const button = screen.getByRole('button', { name: /try again/i });
+        fireEvent.click(screen.getByRole('button', { name: /try again/i }));
 
-        expect(text).toBeInTheDocument();
-        expect(button).toBeInTheDocument();
+        expect(screen.getByText('Recovered content')).toBeInTheDocument();
+
+        expect(
+            screen.queryByRole('heading', { name: /something went wrong\. ttt/i }),
+        ).not.toBeInTheDocument();
     });
+
 });
