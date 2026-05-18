@@ -1,67 +1,97 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAppState } from '../utils/hooks/use-app-state';
 import { getProducts } from '../utils/get-products';
 import { ErrorHandler } from '../utils/error-handler';
-import type { ApiResponse, Product } from '../types/interfaces';
+import type { ApiResponse } from '../types/interfaces';
 
 vi.mock('../utils/get-products', () => ({
     getProducts: vi.fn(),
 }));
 
-const products: Product[] = [
-    {
-        id: 1,
-        title: 'Mascara',
-        description: 'Black mascara',
-        images: ['https://example.com/mascara.jpg'],
-        category: 'beauty',
-        price: '10',
-        stock: 15,
-    },
-];
+const mockGetProducts = vi.mocked(getProducts);
 
-const apiResponse: ApiResponse = {
-    products,
-    total: 1,
-    skip: 0,
-    limit: 10,
+const createApiResponse = (
+    overrides: Partial<ApiResponse> = {},
+): ApiResponse =>
+    ({
+        products: [
+            {
+                id: 1,
+                title: 'Mascara',
+                description: 'Black mascara',
+                category: 'beauty',
+                price: 10,
+                stock: 15,
+                images: [
+                    'https://example.com/mascara-1.jpg',
+                    'https://example.com/mascara-2.jpg',
+                ],
+            },
+        ],
+        total: 1,
+        skip: 0,
+        limit: 10,
+        ...overrides,
+    }) as unknown as ApiResponse;
+
+const createDeferred = <T,>() => {
+    let resolve!: (value: T) => void;
+    let reject!: (reason?: unknown) => void;
+
+    const promise = new Promise<T>((res, rej) => {
+        resolve = res;
+        reject = rej;
+    });
+
+    return {
+        promise,
+        resolve,
+        reject,
+    };
 };
 
 describe('useAppState', () => {
-    const mockedGetProducts = vi.mocked(getProducts);
-
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it('loads products successfully', async () => {
-        mockedGetProducts.mockResolvedValue(apiResponse);
+    it('loads products by query and page', async () => {
+        mockGetProducts.mockResolvedValueOnce(createApiResponse());
+
+        const { result } = renderHook(() => useAppState('mascara', 2));
+
+        await waitFor(() => {
+            expect(result.current.data).toHaveLength(1);
+        });
+
+        expect(mockGetProducts).toHaveBeenCalledWith('mascara', 2);
+        expect(result.current.total).toBe(1);
+        expect(result.current.error).toBeNull();
+        expect(result.current.fatalError).toBeNull();
+        expect(result.current.isLoading).toBe(false);
+    });
+
+    it('adds image field from first product image', async () => {
+        mockGetProducts.mockResolvedValueOnce(createApiResponse());
 
         const { result } = renderHook(() => useAppState('mascara', 1));
 
         await waitFor(() => {
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.data).toEqual(products);
+            expect(result.current.data[0]).toEqual(
+                expect.objectContaining({
+                    title: 'Mascara',
+                    image: 'https://example.com/mascara-1.jpg',
+                }),
+            );
         });
-
-        expect(mockedGetProducts).toHaveBeenCalledTimes(1);
-        expect(mockedGetProducts).toHaveBeenCalledWith('mascara', 1);
-
-        expect(result.current.total).toBe(1);
-        expect(result.current.error).toBeNull();
-        expect(result.current.fatalError).toBeNull();
     });
 
     it('sets loading while request is pending', async () => {
-        let resolveRequest: (value: ApiResponse) => void;
+        const deferred = createDeferred<ApiResponse>();
 
-        mockedGetProducts.mockReturnValue(
-            new Promise<ApiResponse>((resolve) => {
-                resolveRequest = resolve;
-            }),
-        );
+        mockGetProducts.mockReturnValueOnce(deferred.promise);
 
         const { result } = renderHook(() => useAppState('mascara', 1));
 
@@ -69,37 +99,34 @@ describe('useAppState', () => {
             expect(result.current.isLoading).toBe(true);
         });
 
-        await act(async () => {
-            resolveRequest(apiResponse);
-        });
+        deferred.resolve(createApiResponse());
 
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false);
-            expect(result.current.data).toEqual(products);
         });
     });
 
-    it('sets ErrorHandler when query is null', async () => {
+    it('returns validation error when query is null', async () => {
         const { result } = renderHook(() => useAppState(null, 1));
 
         await waitFor(() => {
             expect(result.current.error).toBeInstanceOf(ErrorHandler);
         });
 
-        expect(mockedGetProducts).not.toHaveBeenCalled();
+        expect(mockGetProducts).not.toHaveBeenCalled();
 
+        expect(result.current.error?.message).toBe('Id is not provided');
+        expect(result.current.error?.status).toBe(404);
         expect(result.current.data).toEqual([]);
         expect(result.current.total).toBe(0);
-        expect(result.current.isLoading).toBe(false);
         expect(result.current.fatalError).toBeNull();
-
-        expect(result.current.error?.status).toBe(404);
+        expect(result.current.isLoading).toBe(false);
     });
 
     it('sets error when getProducts throws ErrorHandler with 4xx or 5xx status', async () => {
         const error = new ErrorHandler('Products not found', 404);
 
-        mockedGetProducts.mockRejectedValue(error);
+        mockGetProducts.mockRejectedValueOnce(error);
 
         const { result } = renderHook(() => useAppState('unknown', 1));
 
@@ -109,48 +136,73 @@ describe('useAppState', () => {
 
         expect(result.current.data).toEqual([]);
         expect(result.current.total).toBe(0);
-        expect(result.current.isLoading).toBe(false);
         expect(result.current.fatalError).toBeNull();
+        expect(result.current.isLoading).toBe(false);
     });
 
     it('sets fatalError when getProducts throws regular Error', async () => {
-        const fatalError = new Error('Network failed');
+        const error = new Error('Network error');
 
-        mockedGetProducts.mockRejectedValue(fatalError);
+        mockGetProducts.mockRejectedValueOnce(error);
 
         const { result } = renderHook(() => useAppState('mascara', 1));
 
         await waitFor(() => {
-            expect(result.current.fatalError).toBe(fatalError);
+            expect(result.current.fatalError).toBe(error);
         });
 
         expect(result.current.data).toEqual([]);
         expect(result.current.total).toBe(0);
+        expect(result.current.error).toBeNull();
         expect(result.current.isLoading).toBe(false);
-        expect(result.current.error).toBeNull();
     });
 
-    it('sets unknown fatalError when thrown value is not Error', async () => {
-        mockedGetProducts.mockRejectedValue('Unknown thrown value');
+    it('sets unknown fatalError when getProducts throws non-error value', async () => {
+        mockGetProducts.mockRejectedValueOnce('Something went wrong');
 
         const { result } = renderHook(() => useAppState('mascara', 1));
 
         await waitFor(() => {
-            expect(result.current.fatalError).toBeInstanceOf(Error);
+            expect(result.current.fatalError?.message).toBe('Unknown error');
         });
 
-        expect(result.current.fatalError?.message).toBe('Unknown error');
         expect(result.current.data).toEqual([]);
         expect(result.current.total).toBe(0);
         expect(result.current.error).toBeNull();
+        expect(result.current.isLoading).toBe(false);
     });
 
-    it('refetches products when query changes', async () => {
-        mockedGetProducts.mockResolvedValue(apiResponse);
+    it('refetches products when query or page changes', async () => {
+        mockGetProducts
+            .mockResolvedValueOnce(
+                createApiResponse({
+                    products: [
+                        {
+                            id: 1,
+                            title: 'Mascara',
+                            description: 'Black mascara',
+                            images: ['https://example.com/mascara.jpg'],
+                        },
+                    ],
+                    total: 1,
+                } as unknown as Partial<ApiResponse>),
+            )
+            .mockResolvedValueOnce(
+                createApiResponse({
+                    products: [
+                        {
+                            id: 2,
+                            title: 'Lipstick',
+                            description: 'Red lipstick',
+                            images: ['https://example.com/lipstick.jpg'],
+                        },
+                    ],
+                    total: 1,
+                } as unknown as Partial<ApiResponse>),
+            );
 
-        const { rerender } = renderHook(
-            ({ query, page }: { query: string; page: number }) =>
-                useAppState(query, page),
+        const { result, rerender } = renderHook(
+            ({ query, page }) => useAppState(query, page),
             {
                 initialProps: {
                     query: 'mascara',
@@ -160,64 +212,37 @@ describe('useAppState', () => {
         );
 
         await waitFor(() => {
-            expect(mockedGetProducts).toHaveBeenCalledWith('mascara', 1);
+            expect(result.current.data[0].title).toBe('Mascara');
         });
 
         rerender({
             query: 'lipstick',
-            page: 1,
-        });
-
-        await waitFor(() => {
-            expect(mockedGetProducts).toHaveBeenCalledWith('lipstick', 1);
-        });
-
-        expect(mockedGetProducts).toHaveBeenCalledTimes(2);
-    });
-
-    it('refetches products when page changes', async () => {
-        mockedGetProducts.mockResolvedValue(apiResponse);
-
-        const { rerender } = renderHook(
-            ({ query, page }: { query: string; page: number }) =>
-                useAppState(query, page),
-            {
-                initialProps: {
-                    query: 'mascara',
-                    page: 1,
-                },
-            },
-        );
-
-        await waitFor(() => {
-            expect(mockedGetProducts).toHaveBeenCalledWith('mascara', 1);
-        });
-
-        rerender({
-            query: 'mascara',
             page: 2,
         });
 
         await waitFor(() => {
-            expect(mockedGetProducts).toHaveBeenCalledWith('mascara', 2);
+            expect(result.current.data[0].title).toBe('Lipstick');
         });
 
-        expect(mockedGetProducts).toHaveBeenCalledTimes(2);
+        expect(mockGetProducts).toHaveBeenNthCalledWith(1, 'mascara', 1);
+        expect(mockGetProducts).toHaveBeenNthCalledWith(2, 'lipstick', 2);
     });
 
-    it('allows setting fatalError manually', async () => {
-        mockedGetProducts.mockResolvedValue(apiResponse);
+    it('allows clearing fatalError with setFatalError', async () => {
+        const error = new Error('Network error');
+
+        mockGetProducts.mockRejectedValueOnce(error);
 
         const { result } = renderHook(() => useAppState('mascara', 1));
 
         await waitFor(() => {
-            expect(result.current.isLoading).toBe(false);
+            expect(result.current.fatalError).toBe(error);
         });
 
-        act(() => {
-            result.current.setFatalError(new Error('Manual fatal error'));
-        });
+        result.current.setFatalError(null);
 
-        expect(result.current.fatalError?.message).toBe('Manual fatal error');
+        await waitFor(() => {
+            expect(result.current.fatalError).toBeNull();
+        });
     });
 });

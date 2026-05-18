@@ -16,10 +16,8 @@ describe('Card', () => {
     const props = {
         title: 'iPhone 15',
         description: 'Apple smartphone description',
-        images: [
+        image:
             'https://example.com/iphone-15-main.jpg',
-            'https://example.com/iphone-15-second.jpg',
-        ],
     };
 
     it('renders product title', () => {
@@ -47,14 +45,5 @@ describe('Card', () => {
             'https://example.com/iphone-15-main.jpg',
         );
         expect(image).toHaveAttribute('alt', 'iPhone 15');
-    });
-
-    it('uses first image from images array', () => {
-        render(<Card {...props} />);
-
-        const image = screen.getByRole('img', { name: 'iPhone 15' });
-
-        expect(image).toHaveAttribute('src', props.images[0]);
-        expect(image).not.toHaveAttribute('src', props.images[1]);
     });
 });

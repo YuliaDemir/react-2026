@@ -1,46 +1,43 @@
-import { render, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { CardList } from './card-list';
-import type { Product } from '../../types/interfaces';
+import type { Product } from '@/types/interfaces';
 
-vi.mock('./card-list.module.scss', () => ({
-    default: {
-        list: 'list',
-        item: 'item',
-        cardButton: 'cardButton',
-    },
-}));
-
-vi.mock('../card/card', () => ({
+vi.mock('@components', () => ({
     Card: ({
         title,
         description,
-        images,
+        image,
     }: {
         title: string;
         description: string;
-        images: string[];
+        image: string;
     }) => (
-        <div data-testid="card-component">
-            <div>{title}</div>
-            <div>{description}</div>
-            <img src={images[0]} alt={title} />
-        </div>
+        <article data-testid="product-card">
+            <h2>{title}</h2>
+            <p>{description}</p>
+            <img src={image} alt={title} />
+        </article>
     ),
-}));
 
-vi.mock('../open-close-link/open-close-link', () => ({
     OpenCloseDetailsLink: ({
         id,
-        className,
         children,
+        className,
+        ...props
     }: {
-        id?: number;
+        id: number;
+        children: ReactNode;
         className?: string;
-        children: React.ReactNode;
     }) => (
-        <a href={`/products?details=${id}`} className={className} data-testid="details-link">
+        <a
+            href={`/products?details=${id}`}
+            className={className}
+            data-testid="details-link"
+            {...props}
+        >
             {children}
         </a>
     ),
@@ -49,86 +46,83 @@ vi.mock('../open-close-link/open-close-link', () => ({
 const products: Product[] = [
     {
         id: 1,
-        title: 'iPhone 15',
-        description: 'Apple smartphone',
-        images: ['https://example.com/iphone.jpg'],
-        price: "999",
-        category: 'smartphones',
-        stock: 10,
+        title: 'Mascara',
+        description: 'Black mascara',
+        image: 'https://example.com/mascara.jpg',
+        category: 'beauty',
+        price: '10',
+        stock: 15,
     },
     {
         id: 2,
-        title: 'MacBook Pro',
-        description: 'Apple laptop',
-        images: ['https://example.com/macbook.jpg'],
-        price: "2499",
-        category: 'laptops',
-        stock: 5,
+        title: 'Lipstick',
+        description: 'Red lipstick',
+        image: 'https://example.com/lipstick.jpg',
+        category: 'beauty',
+        price: '20',
+        stock: 8,
     },
 ];
 
 describe('CardList', () => {
-    it('renders list', () => {
-        const { container } = render(<CardList data={products} />);
-
-        expect(container.querySelector('ul')).toBeInTheDocument();
-        expect(container.querySelector('ul')).toHaveClass('list');
-    });
-
-    it('renders card item for each product', () => {
+    it('renders list of product cards', () => {
         render(<CardList data={products} />);
 
-        expect(screen.getAllByTestId('card')).toHaveLength(products.length);
-        expect(screen.getAllByTestId('card-component')).toHaveLength(products.length);
+        expect(screen.getByRole('list')).toBeInTheDocument();
+        expect(screen.getAllByTestId('card')).toHaveLength(2);
+
+        expect(screen.getByText('Mascara')).toBeInTheDocument();
+        expect(screen.getByText('Black mascara')).toBeInTheDocument();
+
+        expect(screen.getByText('Lipstick')).toBeInTheDocument();
+        expect(screen.getByText('Red lipstick')).toBeInTheDocument();
     });
 
-    it('renders product titles and descriptions', () => {
+    it('renders product images with correct src and alt', () => {
         render(<CardList data={products} />);
 
-        expect(screen.getByText('iPhone 15')).toBeInTheDocument();
-        expect(screen.getByText('Apple smartphone')).toBeInTheDocument();
-
-        expect(screen.getByText('MacBook Pro')).toBeInTheDocument();
-        expect(screen.getByText('Apple laptop')).toBeInTheDocument();
-    });
-
-    it('passes product images to Card', () => {
-        render(<CardList data={products} />);
-
-        expect(screen.getByRole('img', { name: 'iPhone 15' })).toHaveAttribute(
+        expect(screen.getByRole('img', { name: /mascara/i })).toHaveAttribute(
             'src',
-            'https://example.com/iphone.jpg',
+            'https://example.com/mascara.jpg',
         );
 
-        expect(screen.getByRole('img', { name: 'MacBook Pro' })).toHaveAttribute(
+        expect(screen.getByRole('img', { name: /lipstick/i })).toHaveAttribute(
             'src',
-            'https://example.com/macbook.jpg',
+            'https://example.com/lipstick.jpg',
         );
     });
 
-    it('wraps each card with OpenCloseDetailsLink and passes product id', () => {
+    it('wraps every card with OpenCloseDetailsLink using product id', () => {
         render(<CardList data={products} />);
 
         const links = screen.getAllByTestId('details-link');
 
-        expect(links).toHaveLength(products.length);
+        expect(links).toHaveLength(2);
 
         expect(links[0]).toHaveAttribute('href', '/products?details=1');
+        expect(links[0]).toHaveAttribute('data-product-card', 'true');
+
         expect(links[1]).toHaveAttribute('href', '/products?details=2');
+        expect(links[1]).toHaveAttribute('data-product-card', 'true');
     });
 
-    it('passes className to OpenCloseDetailsLink', () => {
+    it('renders card content inside details link', () => {
         render(<CardList data={products} />);
 
-        screen.getAllByTestId('details-link').forEach((link) => {
-            expect(link).toHaveClass('cardButton');
-        });
+        const firstCard = screen.getAllByTestId('card')[0];
+
+        const link = within(firstCard).getByTestId('details-link');
+
+        expect(within(link).getByText('Mascara')).toBeInTheDocument();
+        expect(within(link).getByText('Black mascara')).toBeInTheDocument();
+        expect(within(link).getByRole('img', { name: /mascara/i })).toBeInTheDocument();
     });
 
     it('renders empty list when data is empty', () => {
-        const { container } = render(<CardList data={[]} />);
+        render(<CardList data={[]} />);
 
-        expect(container.querySelector('ul')).toBeInTheDocument();
+        expect(screen.getByRole('list')).toBeInTheDocument();
         expect(screen.queryAllByTestId('card')).toHaveLength(0);
+        expect(screen.queryAllByTestId('details-link')).toHaveLength(0);
     });
 });

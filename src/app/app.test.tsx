@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Outlet } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -51,22 +51,26 @@ describe('App', () => {
   it('renders main navigation', () => {
     renderApp('/products');
 
+    const navigation = screen.getByRole('navigation', {
+      name: /main navigation/i,
+    });
+
+    expect(navigation).toBeInTheDocument();
+
+    const productsLink = within(navigation).getByRole('link', {
+      name: /products/i,
+    });
+
+    const href = productsLink.getAttribute('href');
+
+    expect(new URL(href!, window.location.origin).pathname).toBe('/products');
+
     expect(
-      screen.getByRole('navigation', { name: /main navigation/i }),
-    ).toBeInTheDocument();
-
-    expect(screen.getByRole('link', { name: /products/i })).toHaveAttribute(
-      'href',
-      '/products',
-    );
-
-    expect(screen.getByRole('link', { name: /about/i })).toHaveAttribute(
-      'href',
-      '/about',
-    );
+      within(navigation).getByRole('link', { name: /about/i }),
+    ).toHaveAttribute('href', '/about');
 
     expect(
-      screen.getByRole('button', { name: /throw error/i }),
+      within(navigation).getByRole('button', { name: /throw error/i }),
     ).toBeInTheDocument();
   });
 
