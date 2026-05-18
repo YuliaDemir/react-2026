@@ -3,8 +3,8 @@
 }
 
 .nav {
-  @include sticky(0);
-  @include  container();
+  @include sticky(0, 12);
+  @include container();
   padding: 16px 0 8px;
 
   display: flex;
@@ -37,7 +37,7 @@
 }
 
 .shell {
-  @include  container();
+  @include container();
   padding: 8px 0 32px;
 }
 
