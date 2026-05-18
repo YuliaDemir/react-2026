@@ -1,0 +1,5 @@
+.block {
+  @include sticky(75);
+  @include border(0.75);
+  position: absolute;
+}

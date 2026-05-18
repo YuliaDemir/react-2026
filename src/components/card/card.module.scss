@@ -1,4 +1,6 @@
 .card {
+  position: relative;
+
   height: 100%;
   padding: 24px 20px;
 
@@ -20,6 +22,13 @@
     border-color: $border-primary;
     box-shadow: 0 18px 36px rgba($primary, 0.14);
   }
+}
+
+.checkbox {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
 }
 
 .image {

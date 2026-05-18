@@ -10,6 +10,7 @@ import { useLocalStorage } from '@/utils/hooks/use-local-storage-hook';
 import { LOCAL_STORAGE_KEY } from '@const';
 import { getToForLink } from '@/utils/get-to-for-link';
 import classNames from 'classnames';
+import { SelectedItemsBlock } from '@/components/selected-items-block/selected-items-block';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);
@@ -42,6 +43,7 @@ export const ProductsPage = () => {
                     [styles.resultsBlockWithOutlet]: isDetailsOpen,
                 })}
             >
+
                 <ContentState error={error} isLoading={isLoading}>
                     <CardList
                         data={data}

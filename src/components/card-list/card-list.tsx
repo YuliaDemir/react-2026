@@ -12,18 +12,16 @@ export const CardList = ({
 }: Props) => {
   return (
     <ul className={styles.list}>
-      {data.map(({ id, title, image, description }) => {
+      {data.map((product) => {
         return (
-          <li className={styles.item} key={id} data-testid="card">
+          <li className={styles.item} key={product.id} data-testid="card">
             <OpenCloseDetailsLink
               data-product-card
               className={styles.cardButton}
-              id={id}
+              id={product.id}
             >
               <Card
-                title={title}
-                description={description}
-                image={image}
+                product={product}
               />
             </OpenCloseDetailsLink>
           </li>
