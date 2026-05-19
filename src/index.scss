@@ -10,14 +10,38 @@
 
   color: $text-primary;
   background:
-    radial-gradient(circle at top left, rgba($primary-light, 0.24), transparent 34rem),
+    radial-gradient(
+      circle at top left,
+      rgba($primary-light, 0.24),
+      transparent 34rem
+    ),
     radial-gradient(circle at bottom right, rgba($sky, 0.2), transparent 30rem),
     $page-bg;
+
+  color-scheme: light;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root.dark {
+  color: $dark-text-primary;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba($dark-primary-light, 0.18),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba($dark-sky, 0.12),
+      transparent 30rem
+    ),
+    $dark-page-bg;
+
+  color-scheme: dark;
 }
 
 *,
@@ -29,16 +53,26 @@
 html {
   min-width: 320px;
   min-height: 100%;
+
+  background: $page-bg;
+}
+
+html.dark {
+  background: $dark-page-bg;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+
+  color: inherit;
+  background: transparent;
 }
 
 #root {
   min-height: 100vh;
+  background: transparent;
 }
 
 button,
@@ -63,4 +97,12 @@ select:focus-visible,
 a:focus-visible {
   outline: 3px solid $focus-outline;
   outline-offset: 3px;
+}
+
+.dark button:focus-visible,
+.dark input:focus-visible,
+.dark textarea:focus-visible,
+.dark select:focus-visible,
+.dark a:focus-visible {
+  outline-color: $dark-focus-outline;
 }

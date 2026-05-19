@@ -39,4 +39,25 @@
     outline: none;
     box-shadow: 0 0 0 4px rgba($primary, 0.22);
   }
+
+  :global(.dark) & {
+    border-color: $dark-border-primary;
+    background-color: $dark-input-bg;
+  }
+
+  :global(.dark) &:hover {
+    border-color: $dark-primary;
+    box-shadow: 0 0 0 4px rgba($dark-primary, 0.16);
+  }
+
+  :global(.dark) &:checked {
+    border-color: $dark-primary;
+    background-color: $dark-primary;
+
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.5 8L6.7 11.2L12.5 4.8' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  :global(.dark) &:focus-visible {
+    box-shadow: 0 0 0 4px rgba($dark-primary, 0.24);
+  }
 }

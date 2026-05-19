@@ -1,5 +1,8 @@
 $white: #ffffff;
+$black: #020617;
 $transparent: transparent;
+
+// Light theme
 
 $text-primary: #172033;
 $text-secondary: #64748b;
@@ -55,3 +58,68 @@ $shadow-error: rgba($error-title, 0.12);
 $shadow-error-medium: rgba($error-dark, 0.24);
 $shadow-error-strong: rgba($error-dark, 0.28);
 $shadow-error-hover: rgba($error-dark, 0.32);
+
+// Dark theme
+
+$dark-text-primary: #f8fafc;
+$dark-text-secondary: #cbd5e1;
+$dark-text-placeholder: #94a3b8;
+
+$dark-page-bg: #020617;
+$dark-surface-base: #0f172a;
+$dark-surface-soft-base: #111827;
+$dark-surface-strong-base: #1e293b;
+
+$dark-surface: rgba($dark-surface-base, 0.9);
+$dark-surface-soft: rgba($dark-surface-soft-base, 0.78);
+$dark-surface-nav: rgba($dark-surface-base, 0.76);
+$dark-surface-strong: rgba($dark-surface-strong-base, 0.92);
+
+$dark-input-bg: #111827;
+$dark-image-bg: #1e293b;
+$dark-input-border: #334155;
+
+$dark-slate-400: #64748b;
+$dark-slate-900: #f8fafc;
+
+$dark-primary: #818cf8;
+$dark-primary-dark: #a78bfa;
+$dark-primary-light: #c4b5fd;
+$dark-sky: #38bdf8;
+
+$dark-error: #fb7185;
+$dark-error-dark: #e11d48;
+$dark-error-text: #fecdd3;
+$dark-error-title: #ffe4e6;
+$dark-error-bg: rgba(#881337, 0.26);
+
+$dark-border-muted: rgba(#94a3b8, 0.2);
+$dark-border-primary: rgba($dark-primary-light, 0.42);
+$dark-border-error: rgba($dark-error, 0.28);
+$dark-border-error-strong: rgba($dark-error, 0.4);
+
+$dark-gradient-primary: linear-gradient(
+  135deg,
+  $dark-primary,
+  $dark-primary-dark
+);
+$dark-gradient-error: linear-gradient(135deg, $dark-error, $dark-error-dark);
+
+$dark-focus-outline: rgba($dark-primary, 0.42);
+$dark-focus-ring: rgba($dark-primary-light, 0.16);
+
+$dark-shadow-soft: rgba($black, 0.24);
+$dark-shadow-card: rgba($black, 0.32);
+$dark-shadow-form: rgba($black, 0.42);
+
+$dark-shadow-primary-light: rgba($dark-primary, 0.16);
+$dark-shadow-primary: rgba($dark-primary, 0.26);
+$dark-shadow-primary-medium: rgba($dark-primary, 0.32);
+$dark-shadow-primary-hover: rgba($dark-primary, 0.38);
+$dark-shadow-primary-strong: rgba($dark-primary, 0.44);
+
+$dark-shadow-error-soft: rgba($dark-error-dark, 0.14);
+$dark-shadow-error: rgba($dark-error-dark, 0.2);
+$dark-shadow-error-medium: rgba($dark-error-dark, 0.3);
+$dark-shadow-error-strong: rgba($dark-error-dark, 0.36);
+$dark-shadow-error-hover: rgba($dark-error-dark, 0.42);

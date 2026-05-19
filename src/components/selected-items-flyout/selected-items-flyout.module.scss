@@ -20,14 +20,25 @@
   backdrop-filter: blur(18px);
 
   opacity: 0.8;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  :global(.dark) & {
+    background: $dark-surface-nav;
+    border-color: $dark-border-muted;
+    box-shadow: 0 18px 42px $dark-shadow-card;
+  }
 }
 
 .info {
+  min-width: 0;
+
   display: flex;
   align-items: center;
   gap: 10px;
-
-  min-width: 0;
 }
 
 .count {
@@ -45,12 +56,30 @@
   border-radius: 50%;
   background: linear-gradient(135deg, $primary-light, $primary);
   box-shadow: 0 10px 24px $shadow-primary;
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-text-primary;
+
+    background: linear-gradient(135deg, $dark-primary-light, $dark-primary);
+    box-shadow: 0 10px 24px $dark-shadow-primary;
+  }
 }
 
 .text {
   color: $text-primary;
   font-size: 0.98rem;
   font-weight: 800;
+
+  transition: color 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-text-primary;
+  }
 }
 
 .actions {
@@ -61,6 +90,25 @@
 
 .primaryButton {
   @include primary-button(42px, 0 20px, 14px);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-text-primary;
+
+    background: $dark-gradient-primary;
+    box-shadow: 0 14px 28px $dark-shadow-primary-medium;
+  }
+
+  :global(.dark) &:hover {
+    box-shadow: 0 18px 36px $dark-shadow-primary-strong;
+    filter: brightness(1.08);
+  }
 }
 
 .secondaryButton {
@@ -81,6 +129,7 @@
   cursor: pointer;
 
   transition:
+    color 0.2s ease,
     transform 0.2s ease,
     box-shadow 0.2s ease,
     border-color 0.2s ease,
@@ -95,6 +144,20 @@
 
   &:active {
     transform: translateY(0);
+  }
+
+  :global(.dark) & {
+    color: $dark-text-primary;
+
+    border-color: $dark-border-muted;
+    background: $dark-surface-soft;
+    box-shadow: 0 10px 24px $dark-shadow-soft;
+  }
+
+  :global(.dark) &:hover {
+    border-color: $dark-border-primary;
+    background: $dark-surface-strong;
+    box-shadow: 0 14px 30px $dark-shadow-primary-light;
   }
 }
 

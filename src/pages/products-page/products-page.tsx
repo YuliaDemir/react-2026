@@ -11,6 +11,7 @@ import { LOCAL_STORAGE_KEY } from '@const';
 import { getToForLink } from '@/utils/get-to-for-link';
 import classNames from 'classnames';
 import { SelectedItemsBlock } from '@/components/selected-items-flyout/selected-items-flyout';
+import { useTheme } from '@/dark-light-theme/use-theme';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);
@@ -34,8 +35,10 @@ export const ProductsPage = () => {
 
     const isDetailsOpen = Boolean(detailsId);
 
+    const { theme } = useTheme();
+
     return (<>
-        <div className={styles.page}>
+        <div className={classNames(styles.page, theme === 'dark' && 'dark')}>
             <Search onSearch={handleSearch} query={lsValue} />
 
             <div

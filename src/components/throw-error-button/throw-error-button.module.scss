@@ -15,7 +15,9 @@
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
-    filter 0.2s ease;
+    filter 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -25,5 +27,17 @@
 
   &:active {
     transform: translateY(0);
+  }
+
+  :global(.dark) & {
+    color: $dark-error-title;
+
+    background: $dark-gradient-error;
+    box-shadow: 0 14px 28px $dark-shadow-error-medium;
+  }
+
+  :global(.dark) &:hover {
+    box-shadow: 0 18px 36px $dark-shadow-error-hover;
+    filter: brightness(1.08);
   }
 }
