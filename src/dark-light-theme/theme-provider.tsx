@@ -1,8 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { ThemeContext, type Theme } from "./theme-context";
+import { useLocalStorage } from "@/utils/hooks/use-local-storage-hook";
+import { LOCAL_STORAGE_THEME_KEY } from "@/constants";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-    const [theme, setTheme] = useState<Theme>('light');
+    const [themeLS, setThemeLS] = useLocalStorage(LOCAL_STORAGE_THEME_KEY);
+    const [theme, setTheme] = useState<Theme>(themeLS);
 
     const toggle = () => {
         setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -10,7 +13,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', theme === 'dark');
-        localStorage.setItem('theme', theme);
+        setThemeLS(theme);
     }, [theme]);
 
     return (
