@@ -5,11 +5,13 @@ import styles from './app.module.scss';
 import { AboutPage, NotFoundPage, ProductsPage } from '@pages';
 import { ProductInfo, SideCard, ThrowErrorButton } from '@components';
 import { LINKS } from '@const';
+import { ThemeSwitcher } from '@/components/theme-switcher/theme-switcher';
 
 export const App = () => {
   return (
     <div className={styles.app}>
       <nav className={styles.nav} aria-label="Main navigation">
+        <ThemeSwitcher />
         <Link className={styles.navLink} to={LINKS.home}>
           Products
         </Link>
