@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import style from "./selected-items-flyout.module.scss";
 import { clearList } from "@/store/selected-items-slice";
-import { downloadProductsAsCsv } from "@/utils/downloadProductsAsSVC";
+import { downloadProductsAsCsv } from "@/utils/download-products-as-svc";
 
 export const SelectedItemsBlock = () => {
     const selectedProducts = useAppSelector(state => state.selectedItems).selectedProductList;

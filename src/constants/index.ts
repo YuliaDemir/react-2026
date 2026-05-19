@@ -10,3 +10,14 @@ export const LINKS = {
     about: "/about",
 }
 
+export const HEADERS_FOR_SVC = [
+    "id",
+    "name",
+    "description",
+    "category",
+    "price",
+    "stock",
+    "image",
+    "detailsUrl",
+];
+

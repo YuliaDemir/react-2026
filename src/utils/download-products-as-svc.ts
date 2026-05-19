@@ -1,3 +1,4 @@
+import { HEADERS_FOR_SVC } from "@/constants";
 import type { Product } from "@/types/interfaces";
 
 type CsvValue = string | number | null | undefined;
@@ -21,17 +22,6 @@ export const downloadProductsAsCsv = (products: Product[]) => {
     return;
   }
 
-  const headers = [
-    "id",
-    "name",
-    "description",
-    "category",
-    "price",
-    "stock",
-    "image",
-    "detailsUrl",
-  ];
-
   const rows = products.map((product) => [
     product.id,
     product.title,
@@ -43,7 +33,7 @@ export const downloadProductsAsCsv = (products: Product[]) => {
     getProductDetailsUrl(product.id),
   ]);
 
-  const csvContent = [headers, ...rows]
+  const csvContent = [HEADERS_FOR_SVC, ...rows]
     .map((row) => row.map(escapeCsvValue).join(","))
     .join("\n");
 
