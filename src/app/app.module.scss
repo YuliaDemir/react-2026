@@ -12,30 +12,6 @@
   gap: 10px;
 }
 
-.navLink {
-  padding: 10px 16px;
-
-  color: $text-secondary;
-  text-decoration: none;
-
-  @include border(0.72);
-  border-radius: 999px;
-  box-shadow: 0 8px 24px $shadow-soft;
-
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    color: $primary;
-    border-color: $border-primary;
-    transform: translateY(-1px);
-    box-shadow: 0 12px 28px $shadow-primary-light;
-  }
-}
-
 .shell {
   @include container();
   padding: 8px 0 32px;

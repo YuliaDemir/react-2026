@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import styles from './search.module.scss';
+import { ButtonOrLink } from '../button/button';
 
 const SEARCH_PLACEHOLDER = "Search items by name (e.g., Mascara, Lipstick, etc.)...";
 
@@ -33,9 +34,9 @@ export const Search = ({ onSearch, query }: Props) => {
         onChange={(e) => setValue(e.target.value)}
       />
 
-      <button className={styles.button} type="submit">
+      <ButtonOrLink border="round-rectangle" variant="primary" type="submit">
         Search
-      </button>
+      </ButtonOrLink>
     </form>
   );
 };
