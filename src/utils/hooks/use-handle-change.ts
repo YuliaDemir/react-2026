@@ -1,9 +1,10 @@
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { addProduct, removeProduct, selectIsProductSelected } from "@/store/selected-items-slice";
+import { addProduct, removeProduct } from "@/store/selected-items/selected-items-slice";
+import { selectSelectedProductById } from "@/store/selected-items/selectors";
 import type { Product } from "@/types/interfaces";
 
 export const useHandleChange = (product: Product) => {
-    const isChecked = useAppSelector(selectIsProductSelected(product.id));
+    const isChecked = useAppSelector(selectSelectedProductById(product.id));
     const dispatch = useAppDispatch();
 
     const handleChange = () => {

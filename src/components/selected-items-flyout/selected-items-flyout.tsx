@@ -1,11 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import style from "./selected-items-flyout.module.scss";
-import { clearList } from "@/store/selected-items-slice";
 import { downloadProductsAsCsv } from "@/utils/download-products-as-svc";
 import { ButtonOrLink } from "../button/button";
+import { selectSelectedProductList } from "@/store/selected-items/selectors";
+import { clearList } from "@/store/selected-items/selected-items-slice";
 
 export const SelectedItemsBlock = () => {
-    const selectedProducts = useAppSelector(state => state.selectedItems).selectedProductList;
+    const selectedProducts = useAppSelector(selectSelectedProductList);
     const dispatch = useAppDispatch();
 
     if (!selectedProducts.length) {
