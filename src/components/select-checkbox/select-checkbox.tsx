@@ -1,26 +1,24 @@
-import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { addProduct, removeProduct, selectIsProductSelected } from "@/store/selected-items-slice";
-import type { Product } from "@/types/interfaces";
 import styles from "./select-checkbox.module.scss";
 
-export const SelectCheckbox = ({ product }: { product: Product }) => {
-    const isChecked = useAppSelector(selectIsProductSelected(product.id));
-    const dispatch = useAppDispatch();
+const handleChangeDefault = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => { e.stopPropagation() }
 
-    const handleChange = () => {
-        if (isChecked) {
-            dispatch(removeProduct(product.id));
-        }
-        else {
-            dispatch(addProduct(product));
-        }
-    }
+type Props = {
+    handleClick?: (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => void,
+    handleChange?: () => void,
+    isChecked: boolean,
+}
+
+export const SelectCheckbox = ({
+    isChecked,
+    handleClick = handleChangeDefault,
+    handleChange
+}: Props) => {
 
     return (
         <input
             type="checkbox"
             className={styles.checkbox}
-            onClick={e => e.stopPropagation()}
+            onClick={handleClick}
             onChange={handleChange}
             checked={!!isChecked}
             aria-label="Select product"

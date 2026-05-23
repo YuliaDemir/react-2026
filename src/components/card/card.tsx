@@ -1,17 +1,19 @@
 import type { Product } from '../../types/interfaces';
-import { SelectCheckbox } from '../select-checkbox/select-checkbox';
 
 import styles from './card.module.scss';
 
-type Props = { product: Product };
+type Props = {
+  product: Product,
+  Checkbox?: React.ReactNode
+};
 
-export const Card = ({ product }: Props) => {
+export const Card = ({ product, Checkbox }: Props) => {
 
   return (
     <div className={styles.card}>
-      <div className={styles.checkbox}>
-        <SelectCheckbox product={product} />
-      </div>
+      {Checkbox && (<div className={styles.checkbox}>
+        {Checkbox}
+      </div>)}
       <img className={styles.image} src={product.image} alt={product.title} />
 
       <div className={styles.title}>{product.title}</div>
