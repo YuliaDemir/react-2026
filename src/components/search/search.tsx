@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import styles from './search.module.scss';
-import { ButtonOrLink } from '../button/button';
+import { ButtonOrLink } from '../button/button-or-link';
 
 const SEARCH_PLACEHOLDER = "Search items by name (e.g., Mascara, Lipstick, etc.)...";
 

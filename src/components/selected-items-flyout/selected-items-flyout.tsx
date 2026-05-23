@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import style from "./selected-items-flyout.module.scss";
 import { downloadProductsAsCsv } from "@/utils/download-products-as-svc";
-import { ButtonOrLink } from "../button/button";
+import { ButtonOrLink } from "../button/button-or-link";
 import { selectSelectedProductList } from "@/store/selected-items/selectors";
 import { clearList } from "@/store/selected-items/selected-items-slice";
 

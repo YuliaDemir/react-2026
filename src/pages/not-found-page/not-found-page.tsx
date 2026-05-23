@@ -1,6 +1,6 @@
 import styles from './not-found-page.module.scss';
 import { LINKS } from '@const';
-import { ButtonOrLink } from '@/components/button/button';
+import { ButtonOrLink } from '@/components/button/button-or-link';
 
 export const NotFoundPage = () => {
     return (

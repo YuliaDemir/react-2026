@@ -9,19 +9,20 @@ type Props = {
     variant: "primary" | "secondary" | "error",
     border: "round" | "round-rectangle",
     to?: string,
+    cn?: string,
 }
 
-export const ButtonOrLink = ({ onClick, type = "button", children, variant, border, to }: Props) => {
+export const ButtonOrLink = ({ onClick, type = "button", children, variant, border, to, cn }: Props) => {
     if (to) {
         return (
-            <Link className={classNames(style[variant], style[border])} type={type} onClick={onClick} to={to} >
+            <Link className={classNames(style[variant], style[border], cn)} onClick={onClick} to={to} >
                 {children}
             </Link>
         )
     }
 
     return (
-        <button className={classNames(style[variant], style[border])} type={type} onClick={onClick} >
+        <button className={classNames(style[variant], style[border], cn)} type={type} onClick={onClick} >
             {children}
         </button>
     )

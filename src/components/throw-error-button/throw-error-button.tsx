@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ButtonOrLink } from '../button/button';
+import { ButtonOrLink } from '../button/button-or-link';
 
 export const ThrowErrorButton = () => {
     const [error, setError] = useState<Error | null>(null);

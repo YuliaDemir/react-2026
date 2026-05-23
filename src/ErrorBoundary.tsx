@@ -1,7 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 import styles from './ErrorBoundary.module.scss';
-import { ButtonOrLink } from './components/button/button';
+import { ButtonOrLink } from './components/button/button-or-link';
 
 type ErrorBoundaryProps = {
   children: ReactNode;

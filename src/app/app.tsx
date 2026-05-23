@@ -6,7 +6,7 @@ import { AboutPage, NotFoundPage, ProductsPage } from '@pages';
 import { ProductInfo, SideCard, ThrowErrorButton } from '@components';
 import { LINKS } from '@const';
 import { ThemeSwitcher } from '@/components/theme-switcher/theme-switcher';
-import { ButtonOrLink } from '@/components/button/button';
+import { ButtonOrLink } from '@/components/button/button-or-link';
 
 export const App = () => {
   return (

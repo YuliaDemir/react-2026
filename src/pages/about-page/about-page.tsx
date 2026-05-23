@@ -1,8 +1,7 @@
-import { Link } from 'react-router';
-
 import rssLogo from '../../public/rss-logo.c19ce1b4.svg';
 import styles from './about-page.module.scss';
 import { LINKS } from '@const';
+import { ButtonOrLink } from '@/components/button/button-or-link';
 
 const rss = "https://rs.school/";
 
@@ -24,9 +23,9 @@ export const AboutPage = () => {
                 <img className={styles.schoolLogo} src={rssLogo} alt="RS School logo" />
             </a>
 
-            <Link className={styles.link} to={LINKS.home}>
+            <ButtonOrLink variant="primary" border="round-rectangle" to={LINKS.home} cn={styles.link}>
                 Back to products
-            </Link>
+            </ButtonOrLink>
         </div>
     );
 };
