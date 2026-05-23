@@ -6,23 +6,34 @@ type Props = {
     onClick?: () => void,
     type?: "button" | "submit",
     children: React.ReactNode,
-    variant: "primary" | "secondary" | "error",
-    border: "round" | "round-rectangle",
+    variant?: "primary" | "secondary" | "error",
+    border?: "round" | "round-rectangle",
     to?: string,
     cn?: string,
 }
 
-export const ButtonOrLink = ({ onClick, type = "button", children, variant, border, to, cn }: Props) => {
+export const ButtonOrLink = ({ onClick, type = "button", children, variant, border, to, cn, ...props }: Props) => {
     if (to) {
         return (
-            <Link className={classNames(style[variant], style[border], cn)} onClick={onClick} to={to} >
+            <Link className={
+                classNames(
+                    variant && style[variant],
+                    border && style[border],
+                    cn
+                )
+
+            } onClick={onClick} to={to} {...props}>
                 {children}
-            </Link>
+            </Link >
         )
     }
 
     return (
-        <button className={classNames(style[variant], style[border], cn)} type={type} onClick={onClick} >
+        <button className={classNames(
+            variant && style[variant],
+            border && style[border],
+            cn
+        )} type={type} onClick={onClick} {...props}>
             {children}
         </button>
     )

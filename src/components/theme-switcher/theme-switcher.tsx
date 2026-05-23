@@ -1,5 +1,6 @@
 import { useTheme } from '@/dark-light-theme/use-theme';
 import styles from './theme-switcher.module.scss';
+import { ButtonOrLink } from '../button/button-or-link';
 
 export const ThemeSwitcher = () => {
 
@@ -7,8 +8,8 @@ export const ThemeSwitcher = () => {
     const isDark = theme === 'dark';
 
     return (
-        <button
-            className={styles.switcher}
+        <ButtonOrLink
+            cn={styles.switcher}
             type="button"
             onClick={toggle}
             aria-pressed={isDark}
@@ -23,6 +24,6 @@ export const ThemeSwitcher = () => {
             <span className={styles.track} aria-hidden="true">
                 <span className={styles.thumb} />
             </span>
-        </button>
+        </ButtonOrLink>
     );
 };
