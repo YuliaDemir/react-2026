@@ -6,17 +6,19 @@ type Props = {
     handleClick?: (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => void,
     handleChange?: () => void,
     isChecked: boolean,
+    type?: "checkbox" | "radio",
 }
 
 export const SelectCheckbox = ({
     isChecked,
     handleClick = handleChangeDefault,
-    handleChange
+    handleChange,
+    type = "checkbox",
 }: Props) => {
 
     return (
         <input
-            type="checkbox"
+            type={type}
             className={styles.checkbox}
             onClick={handleClick}
             onChange={handleChange}
