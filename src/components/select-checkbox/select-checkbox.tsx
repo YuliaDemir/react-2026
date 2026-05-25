@@ -15,7 +15,6 @@ export const SelectCheckbox = ({
     handleChange,
     type = "checkbox",
 }: Props) => {
-
     return (
         <input
             type={type}

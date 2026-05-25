@@ -1,259 +1,277 @@
-import type { ReactNode } from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import {
-    MemoryRouter,
-    Route,
-    Routes,
-    useLocation,
-    useOutletContext,
-} from 'react-router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
 
-import { ProductsPage } from './products-page';
-import { useAppState } from '@/utils/hooks/use-app-state';
-import { useDetalisation } from '@/utils/hooks/use-detalisation';
-import { useLocalStorage } from '@/utils/hooks/use-local-storage-hook';
+import { ProductsPage } from "./products-page";
+import type { Product } from "@/types/interfaces";
 
 const mocks = vi.hoisted(() => ({
+    navigate: vi.fn(),
     setLSValue: vi.fn(),
-    setFatalError: vi.fn(),
-}));
-
-vi.mock('@/utils/hooks/use-app-state', () => ({
     useAppState: vi.fn(),
+    getToForLink: vi.fn(),
+    searchParams: "",
+    lsValue: "mascara",
+    detailsId: null as string | number | null,
+    theme: "light",
 }));
 
-vi.mock('@/utils/hooks/use-detalisation', () => ({
-    useDetalisation: vi.fn(),
+vi.mock("./products-page.module.scss", () => ({
+    default: {
+        page: "page",
+        resultsBlock: "resultsBlock",
+        resultsBlockWithOutlet: "resultsBlockWithOutlet",
+        actions: "actions",
+    },
 }));
 
-vi.mock('@/utils/hooks/use-local-storage-hook', () => ({
-    useLocalStorage: vi.fn(),
+vi.mock("react-router", () => ({
+    useNavigate: () => mocks.navigate,
+    useSearchParams: () => [new URLSearchParams(mocks.searchParams)],
+    Outlet: ({ context }: { context: { detailsId: string | number } }) => (
+        <div data-testid="outlet">Outlet detailsId: {context.detailsId}</div>
+    ),
 }));
 
-vi.mock('@components', () => ({
+vi.mock("@components", () => ({
     Search: ({
-        onSearch,
         query,
+        onSearch,
     }: {
+        query: string;
         onSearch: (value: string) => void;
-        query?: string;
     }) => (
-        <div>
+        <div data-testid="search">
             <span data-testid="search-query">{query}</span>
-
-            <button type="button" onClick={() => onSearch('lipstick')}>
-                Submit search
+            <button type="button" onClick={() => onSearch("lipstick")}>
+                Search lipstick
             </button>
         </div>
     ),
 
-    CardList: ({
-        data,
-    }: {
-        data: Array<{
-            id: number;
-            title: string;
-        }>;
-    }) => (
-        <ul data-testid="card-list">
+    CardList: ({ data }: { data: Product[] }) => (
+        <div data-testid="card-list">
             {data.map((product) => (
-                <li key={product.id}>{product.title}</li>
+                <div key={product.id}>{product.title}</div>
             ))}
-        </ul>
+        </div>
     ),
 
     ContentState: ({
-        children,
         error,
         isLoading,
+        children,
     }: {
-        children: ReactNode;
-        error: Error | null;
+        error: unknown;
         isLoading: boolean;
+        children: ReactNode;
     }) => {
         if (error) {
-            return <div role="alert">{error.message}</div>;
+            return <div data-testid="error">Error</div>;
         }
 
         if (isLoading) {
-            return <div data-testid="loader">Loading...</div>;
+            return <div data-testid="loader">Loading</div>;
         }
 
-        return <>{children}</>;
+        return <div data-testid="content">{children}</div>;
     },
 
     Pagination: ({ page, total }: { page: number; total: number }) => (
         <div data-testid="pagination">
-            Page {page} Total {total}
+            Page: {page}, Total: {total}
         </div>
     ),
 }));
 
-const mockUseAppState = vi.mocked(useAppState);
-const mockUseDetalisation = vi.mocked(useDetalisation);
-const mockUseLocalStorage = vi.mocked(useLocalStorage);
+vi.mock("@/utils/hooks/use-app-state", () => ({
+    useAppState: (...args: unknown[]) => mocks.useAppState(...args),
+}));
+
+vi.mock("@/utils/hooks/use-detalisation", () => ({
+    useDetalisation: () => ({
+        detailsId: mocks.detailsId,
+    }),
+}));
+
+vi.mock("@/utils/hooks/use-local-storage-hook", () => ({
+    useLocalStorage: () => [mocks.lsValue, mocks.setLSValue],
+}));
+
+vi.mock("@/utils/get-to-for-link", () => ({
+    getToForLink: (...args: unknown[]) => mocks.getToForLink(...args),
+}));
+
+vi.mock("@/components/selected-items-flyout/selected-items-flyout", () => ({
+    SelectedItemsBlock: () => <div data-testid="selected-items-block" />,
+}));
+
+vi.mock("@/dark-light-theme/use-theme", () => ({
+    useTheme: () => ({
+        theme: mocks.theme,
+    }),
+}));
 
 const products = [
     {
         id: 1,
-        title: 'Mascara',
-        description: 'Black mascara',
-        image: 'https://example.com/mascara.jpg',
-        category: 'beauty',
-        price: '10',
-        stock: 15,
+        title: "Mascara",
+        description: "Black mascara",
+        image: "mascara.jpg",
     },
-];
+    {
+        id: 2,
+        title: "Lipstick",
+        description: "Red lipstick",
+        image: "lipstick.jpg",
+    },
+] as Product[];
 
-const createAppState = (overrides: Record<string, unknown> = {}) =>
-    ({
-        data: products,
-        isLoading: false,
-        error: null,
-        fatalError: null,
-        setFatalError: mocks.setFatalError,
-        total: 24,
-        ...overrides,
-    }) as unknown as ReturnType<typeof useAppState>;
-
-const createDetalisation = (detailsId: string | null = null) =>
-    ({
-        detailsId,
-        searchParams: new URLSearchParams(
-            detailsId ? { details: detailsId } : undefined,
-        ),
-        openDetails: vi.fn(),
-        closeDetails: vi.fn(),
-    }) as ReturnType<typeof useDetalisation>;
-
-const LocationView = () => {
-    const location = useLocation();
-
-    return (
-        <div data-testid="location">
-            {location.pathname}
-            {location.search}
-        </div>
-    );
-};
-
-const DetailsOutlet = () => {
-    const { detailsId } = useOutletContext<{ detailsId: string }>();
-
-    return <div data-testid="details-outlet">Details id: {detailsId}</div>;
-};
-
-const renderProductsPage = (initialEntry = '/products?page=1') => {
-    window.history.pushState({}, '', initialEntry);
-
-    return render(
-        <MemoryRouter initialEntries={[initialEntry]}>
-            <Routes>
-                <Route path="/products" element={<ProductsPage />}>
-                    <Route index element={<DetailsOutlet />} />
-                </Route>
-            </Routes>
-
-            <LocationView />
-        </MemoryRouter>,
-    );
-};
-
-describe('ProductsPage', () => {
+describe("ProductsPage", () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        mockUseLocalStorage.mockReturnValue(['mascara', mocks.setLSValue]);
-        mockUseDetalisation.mockReturnValue(createDetalisation());
-        mockUseAppState.mockReturnValue(createAppState());
+        mocks.navigate.mockClear();
+        mocks.setLSValue.mockClear();
+
+        mocks.searchParams = "";
+        mocks.lsValue = "mascara";
+        mocks.detailsId = null;
+        mocks.theme = "light";
+
+        mocks.getToForLink.mockReturnValue("/?page=1");
+
+        mocks.useAppState.mockReturnValue({
+            data: products,
+            isLoading: false,
+            error: null,
+            total: 20,
+        });
     });
 
-    it('renders search, products and pagination', () => {
-        renderProductsPage('/products?page=2');
+    it("renders Search with query from localStorage", () => {
+        render(<ProductsPage />);
 
-        expect(screen.getByTestId('search-query')).toHaveTextContent('mascara');
-        expect(screen.getByTestId('card-list')).toHaveTextContent('Mascara');
-        expect(screen.getByTestId('pagination')).toHaveTextContent(
-            'Page 2 Total 24',
-        );
-
-        expect(mockUseAppState).toHaveBeenCalledWith('mascara', 2);
+        expect(screen.getByTestId("search")).toBeInTheDocument();
+        expect(screen.getByTestId("search-query")).toHaveTextContent("mascara");
     });
 
-    it('uses first page when page search param is missing', () => {
-        renderProductsPage('/products');
+    it("calls useAppState with query from localStorage and page from search params", () => {
+        mocks.searchParams = "page=3";
 
-        expect(mockUseAppState).toHaveBeenCalledWith('mascara', 1);
-        expect(screen.getByTestId('pagination')).toHaveTextContent(
-            'Page 1 Total 24',
-        );
+        render(<ProductsPage />);
+
+        expect(mocks.useAppState).toHaveBeenCalledWith("mascara", 3);
     });
 
-    it('shows loader and hides pagination while products are loading', () => {
-        mockUseAppState.mockReturnValue(
-            createAppState({
-                data: [],
-                isLoading: true,
-                total: 0,
-            }),
-        );
+    it("uses page 1 when page search param is missing", () => {
+        render(<ProductsPage />);
 
-        renderProductsPage('/products?page=1');
-
-        expect(screen.getByTestId('loader')).toBeInTheDocument();
-        expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('pagination')).not.toBeInTheDocument();
+        expect(mocks.useAppState).toHaveBeenCalledWith("mascara", 1);
     });
 
-    it('shows error and hides pagination when request failed', () => {
-        mockUseAppState.mockReturnValue(
-            createAppState({
-                data: [],
-                error: new Error('Products not found'),
-                total: 0,
-            }),
-        );
+    it("renders products", () => {
+        render(<ProductsPage />);
 
-        renderProductsPage('/products?page=1');
-
-        expect(screen.getByRole('alert')).toHaveTextContent('Products not found');
-        expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('pagination')).not.toBeInTheDocument();
+        expect(screen.getByTestId("card-list")).toBeInTheDocument();
+        expect(screen.getByText("Mascara")).toBeInTheDocument();
+        expect(screen.getByText("Lipstick")).toBeInTheDocument();
     });
 
-    it('does not render outlet when details are closed', () => {
-        renderProductsPage('/products?page=1');
+    it("renders pagination when there is no error and loading is false", () => {
+        mocks.searchParams = "page=2";
 
-        expect(screen.queryByTestId('details-outlet')).not.toBeInTheDocument();
-    });
+        render(<ProductsPage />);
 
-    it('renders outlet with detailsId when details are open', () => {
-        mockUseDetalisation.mockReturnValue(createDetalisation('42'));
-
-        renderProductsPage('/products?page=1&details=42');
-
-        expect(screen.getByTestId('details-outlet')).toHaveTextContent(
-            'Details id: 42',
+        expect(screen.getByTestId("pagination")).toHaveTextContent(
+            "Page: 2, Total: 20"
         );
     });
 
-    it('handles search: saves query, resets page and refetches products', async () => {
-        const user = userEvent.setup();
-
-        renderProductsPage('/products?page=4&details=10');
-
-        await user.click(screen.getByRole('button', { name: /submit search/i }));
-
-        expect(mocks.setLSValue).toHaveBeenCalledWith('lipstick');
-
-        await waitFor(() => {
-            expect(mockUseAppState).toHaveBeenLastCalledWith('lipstick', 1);
+    it("does not render pagination while loading", () => {
+        mocks.useAppState.mockReturnValue({
+            data: [],
+            isLoading: true,
+            error: null,
+            total: 0,
         });
 
-        expect(screen.getByTestId('location')).toHaveTextContent(
-            '/products?page=1',
+        render(<ProductsPage />);
+
+        expect(screen.getByTestId("loader")).toBeInTheDocument();
+        expect(screen.queryByTestId("pagination")).not.toBeInTheDocument();
+    });
+
+    it("does not render pagination when error exists", () => {
+        mocks.useAppState.mockReturnValue({
+            data: [],
+            isLoading: false,
+            error: new Error("Failed"),
+            total: 0,
+        });
+
+        render(<ProductsPage />);
+
+        expect(screen.getByTestId("error")).toBeInTheDocument();
+        expect(screen.queryByTestId("pagination")).not.toBeInTheDocument();
+    });
+
+    it("handles search: navigates to first page, updates query and localStorage", async () => {
+        const user = userEvent.setup();
+
+        render(<ProductsPage />);
+
+        await user.click(screen.getByRole("button", { name: /search lipstick/i }));
+
+        expect(mocks.getToForLink).toHaveBeenCalledWith(undefined, 1);
+        expect(mocks.navigate).toHaveBeenCalledWith("/?page=1");
+        expect(mocks.setLSValue).toHaveBeenCalledWith("lipstick");
+
+        await waitFor(() => {
+            expect(mocks.useAppState).toHaveBeenLastCalledWith("lipstick", 1);
+        });
+    });
+
+    it("renders Outlet when detailsId exists", () => {
+        mocks.detailsId = 10;
+
+        render(<ProductsPage />);
+
+        expect(screen.getByTestId("outlet")).toHaveTextContent(
+            "Outlet detailsId: 10"
         );
+    });
+
+    it("does not render Outlet when detailsId does not exist", () => {
+        mocks.detailsId = null;
+
+        render(<ProductsPage />);
+
+        expect(screen.queryByTestId("outlet")).not.toBeInTheDocument();
+    });
+
+    it("adds details class when details are open", () => {
+        mocks.detailsId = 10;
+
+        const { container } = render(<ProductsPage />);
+
+        expect(
+            container.querySelector(".resultsBlockWithOutlet")
+        ).toBeInTheDocument();
+    });
+
+    it("adds dark class when theme is dark", () => {
+        mocks.theme = "dark";
+
+        const { container } = render(<ProductsPage />);
+
+        expect(container.querySelector(".page")).toHaveClass("dark");
+    });
+
+    it("renders SelectedItemsBlock", () => {
+        render(<ProductsPage />);
+
+        expect(screen.getByTestId("selected-items-block")).toBeInTheDocument();
     });
 });

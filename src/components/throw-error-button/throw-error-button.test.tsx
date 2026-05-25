@@ -1,89 +1,84 @@
-import type { ReactNode } from 'react';
-import { Component } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+// throw-error-button.test.tsx
 
-import { ThrowErrorButton } from './throw-error-button';
+import { Component, type ReactNode } from "react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock('./throw-error-button.module.scss', () => ({
-    default: {
-        button: 'button',
-    },
+import { ThrowErrorButton } from "./throw-error-button";
+
+vi.mock("../button/button-or-link", () => ({
+  ButtonOrLink: ({
+    children,
+    onClick,
+    type = "button",
+    ...props
+  }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    children: ReactNode;
+  }) => (
+    <button type={type} onClick={onClick} {...props}>
+      {children}
+    </button>
+  ),
 }));
 
-type TestErrorBoundaryProps = {
-    children: ReactNode;
-};
-
-type TestErrorBoundaryState = {
-    error: Error | null;
+type ErrorBoundaryState = {
+  error: Error | null;
 };
 
 class TestErrorBoundary extends Component<
-    TestErrorBoundaryProps,
-    TestErrorBoundaryState
+  { children: ReactNode },
+  ErrorBoundaryState
 > {
-    state: TestErrorBoundaryState = {
-        error: null,
-    };
+  state: ErrorBoundaryState = {
+    error: null,
+  };
 
-    static getDerivedStateFromError(error: Error): TestErrorBoundaryState {
-        return { error };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return <div role="alert">{this.state.error.message}</div>;
     }
 
-    render() {
-        const { error } = this.state;
-
-        if (error) {
-            return <div role="alert">{error.message}</div>;
-        }
-
-        return this.props.children;
-    }
+    return this.props.children;
+  }
 }
 
-describe('ThrowErrorButton', () => {
-    let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+describe("ThrowErrorButton", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
-    beforeEach(() => {
-        consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
-    });
+  it("renders button", () => {
+    render(<ThrowErrorButton />);
 
-    afterEach(() => {
-        consoleErrorSpy.mockRestore();
-    });
+    expect(
+      screen.getByRole("button", { name: /throw error/i })
+    ).toBeInTheDocument();
+  });
 
-    it('renders throw error button', () => {
-        render(<ThrowErrorButton />);
+  it("throws simulated fatal error after click", async () => {
+    const user = userEvent.setup();
 
-        expect(
-            screen.getByRole('button', { name: /throw error/i }),
-        ).toBeInTheDocument();
-    });
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-    it('applies button class', () => {
-        render(<ThrowErrorButton />);
+    render(
+      <TestErrorBoundary>
+        <ThrowErrorButton />
+      </TestErrorBoundary>
+    );
 
-        expect(screen.getByRole('button', { name: /throw error/i })).toHaveClass(
-            'button',
-        );
-    });
+    await user.click(screen.getByRole("button", { name: /throw error/i }));
 
-    it('throws simulated fatal error after click', () => {
-        render(
-            <TestErrorBoundary>
-                <ThrowErrorButton />
-            </TestErrorBoundary>,
-        );
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Simulated fatal error"
+    );
 
-        fireEvent.click(screen.getByRole('button', { name: /throw error/i }));
-
-        expect(screen.getByRole('alert')).toHaveTextContent(
-            'Simulated fatal error',
-        );
-
-        expect(
-            screen.queryByRole('button', { name: /throw error/i }),
-        ).not.toBeInTheDocument();
-    });
+    expect(
+      screen.queryByRole("button", { name: /throw error/i })
+    ).not.toBeInTheDocument();
+  });
 });

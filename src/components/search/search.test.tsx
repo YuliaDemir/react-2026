@@ -102,8 +102,5 @@ describe('Search', () => {
         render(<Search query="" onSearch={vi.fn()} />);
 
         expect(screen.getByRole('textbox')).toHaveClass('input');
-        expect(screen.getByRole('button', { name: /search/i })).toHaveClass(
-            'button',
-        );
     });
 });

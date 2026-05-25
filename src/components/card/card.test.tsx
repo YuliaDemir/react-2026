@@ -1,49 +1,74 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+// card.test.tsx
 
-import { Card } from './card';
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-vi.mock('./card.module.scss', () => ({
+import { Card } from "./card";
+import type { Product } from "../../types/interfaces";
+
+vi.mock("./card.module.scss", () => ({
     default: {
-        card: 'card',
-        image: 'image',
-        title: 'title',
-        description: 'description',
+        card: "card",
+        checkbox: "checkbox",
+        image: "image",
+        title: "title",
+        description: "description",
     },
 }));
 
-describe('Card', () => {
-    const props = {
-        title: 'iPhone 15',
-        description: 'Apple smartphone description',
-        image:
-            'https://example.com/iphone-15-main.jpg',
-    };
+const product: Product = {
+    id: 1,
+    title: "Test product",
+    description: "Test product description",
+    image: "test-image.jspg",
+    category: "",
+    price: '40',
+    stock: 40
+};
 
-    it('renders product title', () => {
-        render(<Card {...props} />);
-
-        expect(screen.getByText('iPhone 15')).toBeInTheDocument();
-    });
-
-    it('renders product description', () => {
-        render(<Card {...props} />);
+describe("Card", () => {
+    it("renders product image, title and description", () => {
+        render(<Card product={product} />);
 
         expect(
-            screen.getByText('Apple smartphone description'),
+            screen.getByRole("img", { name: product.title })
+        ).toBeInTheDocument();
+
+        expect(screen.getByText(product.title)).toBeInTheDocument();
+        expect(screen.getByText(product.description)).toBeInTheDocument();
+    });
+
+    it("renders image with correct src and alt", () => {
+        render(<Card product={product} />);
+
+        const image = screen.getByRole("img", { name: product.title });
+
+        expect(image).toHaveAttribute("src", product.image);
+        expect(image).toHaveAttribute("alt", product.title);
+    });
+
+    it("does not render checkbox if Checkbox prop is not passed", () => {
+        render(<Card product={product} />);
+
+        expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    });
+
+    it("renders checkbox if Checkbox prop is passed", () => {
+        render(
+            <Card
+                product={product}
+                Checkbox={<input type="checkbox" aria-label="Select product" />}
+            />
+        );
+
+        expect(
+            screen.getByRole("checkbox", { name: "Select product" })
         ).toBeInTheDocument();
     });
 
-    it('renders product image with correct src and alt', () => {
-        render(<Card {...props} />);
+    it("applies card class", () => {
+        const { container } = render(<Card product={product} />);
 
-        const image = screen.getByRole('img', { name: 'iPhone 15' });
-
-        expect(image).toBeInTheDocument();
-        expect(image).toHaveAttribute(
-            'src',
-            'https://example.com/iphone-15-main.jpg',
-        );
-        expect(image).toHaveAttribute('alt', 'iPhone 15');
+        expect(container.firstChild).toHaveClass("card");
     });
 });
