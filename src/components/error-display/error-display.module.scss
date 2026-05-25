@@ -11,6 +11,20 @@
   border-radius: 24px;
   background: $error-bg;
   box-shadow: 0 18px 50px $shadow-error-soft;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-error-text;
+
+    border-color: $dark-border-error;
+    background: $dark-error-bg;
+    box-shadow: 0 18px 50px $dark-shadow-error-soft;
+  }
 }
 
 .title {
@@ -19,6 +33,12 @@
   color: $error-title;
   font-size: 1.4rem;
   line-height: 1.2;
+
+  transition: color 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-error-title;
+  }
 }
 
 .text {
@@ -26,4 +46,10 @@
 
   color: $error-text;
   line-height: 1.6;
+
+  transition: color 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-error-text;
+  }
 }

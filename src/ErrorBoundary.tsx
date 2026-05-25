@@ -1,6 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 import styles from './ErrorBoundary.module.scss';
+import { ButtonOrLink } from './components/button/button-or-link';
 
 type ErrorBoundaryProps = {
   children: ReactNode;
@@ -47,13 +48,14 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               The application encountered an unexpected error.
             </p>
 
-            <button
-              className={styles.button}
+            <ButtonOrLink
+              variant='error'
+              border="round-rectangle"
               type="button"
               onClick={() => this.setState({ hasError: false })}
             >
               Try again
-            </button>
+            </ButtonOrLink>
           </section>
         </main>
       );

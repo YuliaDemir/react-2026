@@ -1,0 +1,111 @@
+.block {
+  width: 100%;
+  min-height: 72px;
+  margin-top: 18px;
+  padding: 14px 18px;
+
+  position: sticky;
+  bottom: 10px;
+  z-index: 12;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  @include border(0.74);
+
+  border-radius: 22px;
+  box-shadow: 0 18px 42px $shadow-card;
+  backdrop-filter: blur(18px);
+
+  opacity: 0.8;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  :global(.dark) & {
+    background: $dark-surface-nav;
+    border-color: $dark-border-muted;
+    box-shadow: 0 18px 42px $dark-shadow-card;
+  }
+}
+
+.info {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.count {
+  min-width: 40px;
+  height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: $white;
+  font-size: 1rem;
+  font-weight: 900;
+
+  border-radius: 50%;
+  background: linear-gradient(135deg, $primary-light, $primary);
+  box-shadow: 0 10px 24px $shadow-primary;
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-text-primary;
+
+    background: linear-gradient(135deg, $dark-primary-light, $dark-primary);
+    box-shadow: 0 10px 24px $dark-shadow-primary;
+  }
+}
+
+.text {
+  color: $text-primary;
+  font-size: 0.98rem;
+  font-weight: 800;
+
+  transition: color 0.2s ease;
+
+  :global(.dark) & {
+    color: $dark-text-primary;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@include mobile {
+  .block {
+    padding: 14px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .info {
+    justify-content: center;
+  }
+
+  .actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+}

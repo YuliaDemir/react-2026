@@ -1,22 +1,25 @@
-import { Link, Navigate, Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 
 
 import styles from './app.module.scss';
 import { AboutPage, NotFoundPage, ProductsPage } from '@pages';
 import { ProductInfo, SideCard, ThrowErrorButton } from '@components';
 import { LINKS } from '@const';
+import { ThemeSwitcher } from '@/components/theme-switcher/theme-switcher';
+import { ButtonOrLink } from '@/components/button/button-or-link';
 
 export const App = () => {
   return (
     <div className={styles.app}>
       <nav className={styles.nav} aria-label="Main navigation">
-        <Link className={styles.navLink} to={LINKS.home}>
+        <ThemeSwitcher />
+        <ButtonOrLink variant="secondary" border="round" to={LINKS.home}>
           Products
-        </Link>
+        </ButtonOrLink>
 
-        <Link className={styles.navLink} to={LINKS.about}>
+        <ButtonOrLink variant="secondary" border="round" to={LINKS.about}>
           About
-        </Link>
+        </ButtonOrLink>
 
         <ThrowErrorButton />
       </nav>

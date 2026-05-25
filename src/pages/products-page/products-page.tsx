@@ -10,6 +10,8 @@ import { useLocalStorage } from '@/utils/hooks/use-local-storage-hook';
 import { LOCAL_STORAGE_KEY } from '@const';
 import { getToForLink } from '@/utils/get-to-for-link';
 import classNames from 'classnames';
+import { SelectedItemsBlock } from '@/components/selected-items-flyout/selected-items-flyout';
+import { useTheme } from '@/dark-light-theme/use-theme';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);
@@ -33,8 +35,10 @@ export const ProductsPage = () => {
 
     const isDetailsOpen = Boolean(detailsId);
 
-    return (
-        <div className={styles.page}>
+    const { theme } = useTheme();
+
+    return (<>
+        <div className={classNames(styles.page, theme === 'dark' && 'dark')}>
             <Search onSearch={handleSearch} query={lsValue} />
 
             <div
@@ -42,6 +46,7 @@ export const ProductsPage = () => {
                     [styles.resultsBlockWithOutlet]: isDetailsOpen,
                 })}
             >
+
                 <ContentState error={error} isLoading={isLoading}>
                     <CardList
                         data={data}
@@ -54,6 +59,9 @@ export const ProductsPage = () => {
             <div className={styles.actions}>
                 {!error && !isLoading && <Pagination page={page} total={total} />}
             </div>
+
         </div>
+        <SelectedItemsBlock />
+    </>
     );
 };

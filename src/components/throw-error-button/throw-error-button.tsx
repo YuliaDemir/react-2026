@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from './throw-error-button.module.scss';
+import { ButtonOrLink } from '../button/button-or-link';
 
 export const ThrowErrorButton = () => {
     const [error, setError] = useState<Error | null>(null);
@@ -9,11 +9,12 @@ export const ThrowErrorButton = () => {
     }
 
     return (
-        <button
-            className={styles.button}
+        <ButtonOrLink
+            variant="error"
+            border="round-rectangle"
             onClick={() => setError(new Error('Simulated fatal error'))}
         >
             Throw error
-        </button>
+        </ButtonOrLink>
     );
 };
