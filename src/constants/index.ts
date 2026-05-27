@@ -1,3 +1,5 @@
+import type { TransformedApiResponse } from "@/types/interfaces";
+
 export const API_URL = 'https://dummyjson.com/products';
 
 export const PRODUCTS_PER_PAGE = 12;
@@ -21,3 +23,11 @@ export const HEADERS_FOR_SVC = [
     "detailsUrl",
 ];
 
+export const API_CACHE_TTL_SECONDS = 60;
+
+export const EMPTY_PRODUCTS: TransformedApiResponse = {
+    products: [],
+    total: 0,
+    skip: 0,
+    limit: 0,
+};

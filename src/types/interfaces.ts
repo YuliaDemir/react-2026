@@ -36,3 +36,10 @@ export type ApiResponse = {
   skip: number;
   limit: number;
 }
+
+export type TransformedApiResponse = {
+  products: Product[];
+  total: number;
+  skip: number;
+  limit: number;
+}

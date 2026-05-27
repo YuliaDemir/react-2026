@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router';
 
 import { Search, CardList, ContentState, Pagination } from '@components';
-import { useAppState } from '@/utils/hooks/use-app-state';
 import { useDetalisation } from '@/utils/hooks/use-detalisation';
 
 import styles from './products-page.module.scss';
 import { useLocalStorage } from '@/utils/hooks/use-local-storage-hook';
-import { LOCAL_STORAGE_KEY } from '@const';
+import { EMPTY_PRODUCTS, LOCAL_STORAGE_KEY } from '@const';
 import { getToForLink } from '@/utils/get-to-for-link';
 import classNames from 'classnames';
 import { SelectedItemsBlock } from '@/components/selected-items-flyout/selected-items-flyout';
 import { useTheme } from '@/dark-light-theme/use-theme';
+import { useApiRequest } from '@/utils/hooks/use-api-request';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);
@@ -24,8 +24,8 @@ export const ProductsPage = () => {
     const navigate = useNavigate();
     const to = getToForLink(undefined, 1);
 
-    const { data, isLoading, error, total } =
-        useAppState(query, page);
+    const { data: {products, total} = EMPTY_PRODUCTS, isLoading, error } =
+        useApiRequest(query, page);
 
     const handleSearch = (value: string) => {
         navigate(to);
@@ -46,12 +46,12 @@ export const ProductsPage = () => {
                     [styles.resultsBlockWithOutlet]: isDetailsOpen,
                 })}
             >
-
+                {products &&
                 <ContentState error={error} isLoading={isLoading}>
                     <CardList
-                        data={data}
+                        data={products}
                     />
-                </ContentState>
+                </ContentState>}
 
                 {isDetailsOpen && <Outlet context={{ detailsId }} />}
             </div>

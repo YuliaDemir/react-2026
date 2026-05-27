@@ -1,9 +1,11 @@
 import { ErrorDisplay, Loader } from "@components";
 import type { ErrorHandler } from "@/utils/error-handler";
 import type { ReactNode } from "react";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
+import type { SerializedError } from "@reduxjs/toolkit/react";
 
 type Props = {
-    error: ErrorHandler | null;
+    error: ErrorHandler | null | FetchBaseQueryError | SerializedError | undefined;
     isLoading: boolean;
     children: ReactNode;
 };
