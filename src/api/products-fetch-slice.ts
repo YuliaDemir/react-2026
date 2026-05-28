@@ -1,4 +1,4 @@
-import { API_URL, PRODUCTS_PER_PAGE } from "@/constants";
+import { API_CACHE_TTL_SECONDS, API_URL, PRODUCTS_PER_PAGE } from "@/constants";
 import type { ApiProduct, ApiResponse, TransformedApiResponse } from "@/types/interfaces";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -14,9 +14,17 @@ function getTransformedResponse(data: ApiResponse): TransformedApiResponse {
 
 export const productFetchSlice = createApi({
     reducerPath: 'productsApi',
+
     baseQuery: fetchBaseQuery({
         baseUrl: API_URL,
     }),
+
+    tagTypes: ["Products"],
+
+    keepUnusedDataFor: API_CACHE_TTL_SECONDS,
+
+    refetchOnReconnect: true,
+
     endpoints: (builder) => ({
         getProducts: builder.query<TransformedApiResponse, number>({
             query: (page: number) => ({
@@ -27,13 +35,19 @@ export const productFetchSlice = createApi({
                 }
             }),
 
-            transformResponse: (res: ApiResponse) => getTransformedResponse(res),
+            transformResponse: getTransformedResponse,
+
+            providesTags: (_result, _error, page) => [
+                { type: "Products" as const, id: "ALL" },
+                { type: "Products" as const, id: `LIST-${page}` },
+            ],
         }),
 
         getProductDetails: builder.query<TransformedApiResponse, number>({
             query: (id: number) => ({
                 url: `/${id}`,
             }),
+
             transformResponse: (res: ApiProduct) => {
                 const product = { ...res, image: res.images[0] }
                 return {
@@ -42,7 +56,12 @@ export const productFetchSlice = createApi({
                     skip: 0,
                     limit: 1,
                 };
-            }
+            },
+
+            providesTags: (_result, _error, id) => [
+                { type: "Products" as const, id: "ALL" },
+                { type: "Products" as const, id },
+            ],
         }),
 
         searchProductsByName: builder.query<TransformedApiResponse, { q: string, page: number }>({
@@ -54,7 +73,13 @@ export const productFetchSlice = createApi({
                     skip: (page - 1) * PRODUCTS_PER_PAGE,
                 },
             }),
-            transformResponse: (res: ApiResponse) => getTransformedResponse(res),
+
+            transformResponse: getTransformedResponse,
+
+            providesTags: (_result, _error, { q, page }) => [
+                { type: "Products" as const, id: "ALL" },
+                { type: "Products" as const, id: `SEARCH-${q}-${page}` },
+            ],
         })
     })
 });

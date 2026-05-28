@@ -23,7 +23,8 @@ export const HEADERS_FOR_SVC = [
     "detailsUrl",
 ];
 
-export const API_CACHE_TTL_SECONDS = 60;
+export const API_CACHE_TTL_SECONDS =
+    Number(import.meta.env.VITE_API_CACHE_TTL_SECONDS) || 60;
 
 export const EMPTY_PRODUCTS: TransformedApiResponse = {
     products: [],
