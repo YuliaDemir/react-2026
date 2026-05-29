@@ -1,11 +1,8 @@
-import type { ErrorHandler } from '@/utils/error-handler';
-
 import styles from './error-display.module.scss';
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
-import type { SerializedError } from '@reduxjs/toolkit/react';
 import { getErrorMessage } from '@/utils/get-error-message';
+import type { AppError } from '@/types';
 
-export const ErrorDisplay = ({ error }: { error: ErrorHandler | FetchBaseQueryError | SerializedError }) => {
+export const ErrorDisplay = ({ error }: { error: AppError }) => {
     return (
         <div className={styles.error}>
             <h2 className={styles.title}>Something went wrong.</h2>

@@ -1,13 +1,5 @@
+import type { AppError } from "@/types";
 import { ErrorHandler } from "@/utils/error-handler";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import type { SerializedError } from "@reduxjs/toolkit";
-
-type AppError =
-    | ErrorHandler
-    | FetchBaseQueryError
-    | SerializedError
-    | undefined
-    | null;
 
 export const getErrorMessage = (error: AppError): string => {
     if (!error) {

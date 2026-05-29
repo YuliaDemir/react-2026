@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 
 import { ProductsPage } from "./products-page";
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 
 const mocks = vi.hoisted(() => ({
     navigate: vi.fn(),

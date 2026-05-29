@@ -1,5 +1,5 @@
 import { vi } from 'vitest'
-import type { Product } from '../../types/interfaces'
+import type { Product } from '../../types'
 
 export const mockFetchSuccessWithDelay = (
     results: Product[],

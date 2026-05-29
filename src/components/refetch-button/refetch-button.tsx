@@ -1,6 +1,6 @@
 import { useAppDispatch } from "@/store/hook";
 import { ButtonOrLink } from "../button/button-or-link";
-import { productFetchSlice } from "@/api/products-fetch-slice";
+import { productFetchSlice } from "@/api/products/products-fetch-slice";
 
 export const RefectButton = () => {
     const dispatch = useAppDispatch();

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 import { downloadProductsAsCsv } from "@/utils/download-products-as-svc";
 
 vi.mock("@/constants", () => ({

@@ -1,16 +1,9 @@
 import { API_CACHE_TTL_SECONDS, API_URL, PRODUCTS_PER_PAGE } from "@/constants";
-import type { ApiProduct, ApiResponse, TransformedApiResponse } from "@/types/interfaces";
+import type { ApiProduct, TransformedProductsApiResponse } from "@/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getTransformedProductsResponse } from "./get-transformed-products-response";
 
-function getTransformedResponse(data: ApiResponse): TransformedApiResponse {
-    const products = data.products.map(product => { return { ...product, image: product.images[0] } });
-    return {
-        products,
-        total: data.total,
-        skip: data.skip,
-        limit: data.limit,
-    };;
-}
+
 
 export const productFetchSlice = createApi({
     reducerPath: 'productsApi',
@@ -26,24 +19,24 @@ export const productFetchSlice = createApi({
     refetchOnReconnect: true,
 
     endpoints: (builder) => ({
-        getProducts: builder.query<TransformedApiResponse, number>({
-            query: (page: number) => ({
+        getProducts: builder.query<TransformedProductsApiResponse, { page: number, limit?: number }>({
+            query: ({ page, limit = PRODUCTS_PER_PAGE }: { page: number, limit?: number }) => ({
                 url: '',
                 params: {
-                    limit: PRODUCTS_PER_PAGE,
-                    skip: (page - 1) * PRODUCTS_PER_PAGE,
+                    limit,
+                    skip: (page - 1) * limit,
                 }
             }),
 
-            transformResponse: getTransformedResponse,
+            transformResponse: getTransformedProductsResponse,
 
             providesTags: (_result, _error, page) => [
                 { type: "Products" as const, id: "ALL" },
-                { type: "Products" as const, id: `LIST-${page}` },
+                { type: "Products" as const, id: `LIST--${page}` },
             ],
         }),
 
-        getProductDetails: builder.query<TransformedApiResponse, number>({
+        getProductDetails: builder.query<TransformedProductsApiResponse, number>({
             query: (id: number) => ({
                 url: `/${id}`,
             }),
@@ -64,21 +57,21 @@ export const productFetchSlice = createApi({
             ],
         }),
 
-        searchProductsByName: builder.query<TransformedApiResponse, { q: string, page: number }>({
-            query: ({ q, page }: { q: string, page: number }) => ({
+        searchProductsByName: builder.query<TransformedProductsApiResponse, { q: string, page: number }>({
+            query: ({ q, page, limit = PRODUCTS_PER_PAGE }: { q: string, page: number, limit?: number }) => ({
                 url: "/search",
                 params: {
                     q,
-                    limit: PRODUCTS_PER_PAGE,
-                    skip: (page - 1) * PRODUCTS_PER_PAGE,
+                    limit,
+                    skip: (page - 1) * limit,
                 },
             }),
 
-            transformResponse: getTransformedResponse,
+            transformResponse: getTransformedProductsResponse,
 
             providesTags: (_result, _error, { q, page }) => [
                 { type: "Products" as const, id: "ALL" },
-                { type: "Products" as const, id: `SEARCH-${q}-${page}` },
+                { type: "Products" as const, id: `LIST-${q}-${page}` },
             ],
         })
     })

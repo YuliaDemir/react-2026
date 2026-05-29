@@ -2,7 +2,7 @@ import { useOutletContext } from "react-router";
 import { ContentState } from "@components";
 
 import styles from './product-info.module.scss';
-import { useGetProductDetailsQuery } from "@/api/products-fetch-slice";
+import { useGetProductDetailsQuery } from "@/api/products/products-fetch-slice";
 
 type ProductDetailsContext = {
     detailsId: string;
