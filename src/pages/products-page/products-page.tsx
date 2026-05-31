@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router';
 
 import { Search, CardList, ContentState, Pagination } from '@components';
@@ -22,12 +22,12 @@ export const ProductsPage = () => {
 
     const { detailsId } = useDetalisation();
     const navigate = useNavigate();
-    const to = getToForLink(undefined, 1);
 
     const { data: { products, total } = EMPTY_PRODUCTS, isFetching: isLoading, error } =
         useApiRequest(query, page);
 
     const handleSearch = (value: string) => {
+        const to = getToForLink(undefined, 1, value);
         navigate(to);
         setQuery(value);
         setLSValue(value);
@@ -36,6 +36,11 @@ export const ProductsPage = () => {
     const isDetailsOpen = Boolean(detailsId);
 
     const { theme } = useTheme();
+
+    useEffect(
+        () => { navigate(getToForLink(undefined, 1, lsValue)) },
+        []
+    );
 
     return (<>
         <div className={classNames(styles.page, theme === 'dark' && 'dark')}>
@@ -47,15 +52,17 @@ export const ProductsPage = () => {
                 })}
             >
                 <ContentState error={error} isLoading={isLoading}>
-                    <div className={styles.listBlock}>
-                        <CardList data={products} />
-                    </div>
-
-                    {isDetailsOpen && (
-                        <div className={styles.outletBlock}>
-                            <Outlet context={{ detailsId }} />
+                    <div className={styles.contentGrid}>
+                        <div className={styles.listBlock}>
+                            <CardList data={products} />
                         </div>
-                    )}
+
+                        {isDetailsOpen && (
+                            <div className={styles.outletBlock}>
+                                <Outlet context={{ detailsId }} />
+                            </div>
+                        )}
+                    </div>
 
                     <div className={styles.actions}>
                         <Pagination page={page} total={total} />

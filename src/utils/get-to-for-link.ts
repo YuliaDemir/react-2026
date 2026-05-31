@@ -1,4 +1,4 @@
-export function getToForLink(id?: number, page?: number) {
+export function getToForLink(id?: number, page?: number, q: string = "") {
 
     const searchParams = new URLSearchParams(window.location.search);
 
@@ -11,6 +11,10 @@ export function getToForLink(id?: number, page?: number) {
 
     if (page) {
         searchParams.set('page', String(page));
+    }
+
+    if (q?.trim()) {
+        searchParams.set('q', String(q));
     }
 
     const to = {
