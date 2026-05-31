@@ -3,8 +3,15 @@ import type { ApiProduct, Product, TransformedProductsApiResponse } from "@/type
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getTransformedProductsResponse } from "./get-transformed-products-response";
 
-export const ProductsApiTags = {
-    Products: "Products",
+export const ProductsApiTagsAndIds = {
+    tags: {
+        products: "Products",
+    },
+    ids: {
+        all: "ALL",
+        listPerPage: (page: number) => `LIST--${page}`,
+        listPerPageAndQuery: (page: number, q: string) => `LIST-${q}-${page}`,
+    }
 } as const;
 
 export const productFetchSlice = createApi({
@@ -14,7 +21,7 @@ export const productFetchSlice = createApi({
         baseUrl: API_URL,
     }),
 
-    tagTypes: [ProductsApiTags.Products],
+    tagTypes: [ProductsApiTagsAndIds.tags.products],
 
     keepUnusedDataFor: API_CACHE_TTL_SECONDS,
 
@@ -32,9 +39,9 @@ export const productFetchSlice = createApi({
 
             transformResponse: getTransformedProductsResponse,
 
-            providesTags: (_result, _error, page) => [
-                { type: ProductsApiTags.Products, id: "ALL" },
-                { type: ProductsApiTags.Products, id: `LIST--${page}` },
+            providesTags: (_result, _error, { page }) => [
+                { type: ProductsApiTagsAndIds.tags.products, id: ProductsApiTagsAndIds.ids.all },
+                { type: ProductsApiTagsAndIds.tags.products, id: ProductsApiTagsAndIds.ids.listPerPage(page) },
             ],
         }),
 
@@ -49,8 +56,8 @@ export const productFetchSlice = createApi({
             },
 
             providesTags: (_result, _error, id) => [
-                { type: ProductsApiTags.Products, id: "ALL" },
-                { type: ProductsApiTags.Products, id },
+                { type: ProductsApiTagsAndIds.tags.products, id: ProductsApiTagsAndIds.ids.all },
+                { type: ProductsApiTagsAndIds.tags.products, id },
             ],
         }),
 
@@ -67,8 +74,8 @@ export const productFetchSlice = createApi({
             transformResponse: getTransformedProductsResponse,
 
             providesTags: (_result, _error, { q, page }) => [
-                { type: ProductsApiTags.Products, id: "ALL" },
-                { type: ProductsApiTags.Products, id: `LIST-${q}-${page}` },
+                { type: ProductsApiTagsAndIds.tags.products, id: ProductsApiTagsAndIds.ids.all },
+                { type: ProductsApiTagsAndIds.tags.products, id: ProductsApiTagsAndIds.ids.listPerPageAndQuery(page, q) },
             ],
         })
     })

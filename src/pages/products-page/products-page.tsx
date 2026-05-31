@@ -47,18 +47,21 @@ export const ProductsPage = () => {
                 })}
             >
                 <ContentState error={error} isLoading={isLoading}>
-                    <CardList
-                        data={products}
-                    />
+                    <div className={styles.listBlock}>
+                        <CardList data={products} />
+                    </div>
+
+                    {isDetailsOpen && (
+                        <div className={styles.outletBlock}>
+                            <Outlet context={{ detailsId }} />
+                        </div>
+                    )}
+
+                    <div className={styles.actions}>
+                        <Pagination page={page} total={total} />
+                    </div>
                 </ContentState>
-
-                {isDetailsOpen && <Outlet context={{ detailsId }} />}
             </div>
-
-            <div className={styles.actions}>
-                {!error && !isLoading && <Pagination page={page} total={total} />}
-            </div>
-
         </div>
         <SelectedItemsBlock />
     </>
