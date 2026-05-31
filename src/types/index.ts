@@ -1,6 +1,6 @@
 import type { ErrorHandler } from "@/utils/error-handler";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import type { SerializedError } from "vitest";
+import type { SerializedError } from "@reduxjs/toolkit/react";
 
 export interface CardProps {
   name: string;
@@ -42,8 +42,8 @@ export type TransformedProductsApiResponse = {
 }
 
 export type AppError =
-    | ErrorHandler
-    | FetchBaseQueryError
-    | SerializedError
-    | undefined
-    | null;
+  | ErrorHandler
+  | FetchBaseQueryError
+  | SerializedError
+  | undefined
+  | null;

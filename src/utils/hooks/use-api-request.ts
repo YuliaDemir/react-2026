@@ -1,36 +1,18 @@
-import { useGetProductDetailsQuery, useGetProductsQuery, useSearchProductsByNameQuery } from "@/api/products/products-fetch-slice";
-
-const isValidProductId = (value: string) => {
-    const trimmedValue = value.trim();
-
-    if (trimmedValue === '') {
-        return false;
-    }
-
-    const id = Number(trimmedValue);
-
-    return Number.isInteger(id) && id > 0;
-};
-
+import { useGetProductsQuery, useSearchProductsByNameQuery } from "@/api/products/products-fetch-slice";
 
 export const useApiRequest = (query: string, page: number = 1) => {
     const trimmedQuery = query.trim();
-    const isId = isValidProductId(trimmedQuery);
+    const shouldFetchAllProducts = !trimmedQuery;
 
-    const productList = useGetProductsQuery({ page }, { skip: !!trimmedQuery });
-    const productById = useGetProductDetailsQuery(+trimmedQuery, { skip: !isId });
+    const productList = useGetProductsQuery({ page }, { skip: !shouldFetchAllProducts });
     const searchedProductList = useSearchProductsByNameQuery(
         { q: trimmedQuery, page },
-        { skip: !trimmedQuery || isId }
+        { skip: shouldFetchAllProducts }
     );
 
     if (!trimmedQuery) {
         return productList;
     }
-
-    if (isId) {
-        return productById
-    };
 
     return searchedProductList;
 };

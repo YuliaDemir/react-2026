@@ -10,9 +10,7 @@ type ProductDetailsContext = {
 
 export const ProductInfo = () => {
     const { detailsId } = useOutletContext<ProductDetailsContext>();
-    const { data, isLoading, error } = useGetProductDetailsQuery(+detailsId);
-
-    const product = data?.products?.[0];
+    const { data: product, isFetching: isLoading, error } = useGetProductDetailsQuery(+detailsId);
 
     return (<ContentState error={error} isLoading={isLoading} >
         {product ? (

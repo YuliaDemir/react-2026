@@ -24,7 +24,7 @@ export const ProductsPage = () => {
     const navigate = useNavigate();
     const to = getToForLink(undefined, 1);
 
-    const { data: {products, total} = EMPTY_PRODUCTS, isLoading, error } =
+    const { data: { products, total } = EMPTY_PRODUCTS, isFetching: isLoading, error } =
         useApiRequest(query, page);
 
     const handleSearch = (value: string) => {
@@ -46,12 +46,11 @@ export const ProductsPage = () => {
                     [styles.resultsBlockWithOutlet]: isDetailsOpen,
                 })}
             >
-                {products &&
                 <ContentState error={error} isLoading={isLoading}>
                     <CardList
                         data={products}
                     />
-                </ContentState>}
+                </ContentState>
 
                 {isDetailsOpen && <Outlet context={{ detailsId }} />}
             </div>
