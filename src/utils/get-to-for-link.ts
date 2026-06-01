@@ -1,26 +1,35 @@
-export function getToForLink(id?: number, page?: number, q: string = "") {
+type GetToForLinkArg = {
+    id?: number | null;
+    page?: number | null;
+    q?: string | null;
+};
 
+const Params = {
+    id: "details",
+    page: "page",
+    q: "q",
+} as const satisfies Record<keyof GetToForLinkArg, string>;
+
+export function getToForLink(arg: GetToForLinkArg) {
     const searchParams = new URLSearchParams(window.location.search);
 
-    if (id) {
-        searchParams.set('details', String(id));
-    }
-    else {
-        searchParams.delete('details');
-    }
+    Object.entries(arg).forEach(([key, value]) => {
+        const paramName = Params[key as keyof GetToForLinkArg];
 
-    if (page) {
-        searchParams.set('page', String(page));
-    }
+        if (
+            value === undefined ||
+            value === null ||
+            (typeof value === "string" && !value.trim())
+        ) {
+            searchParams.delete(paramName);
+            return;
+        }
 
-    if (q?.trim()) {
-        searchParams.set('q', String(q));
-    }
+        searchParams.set(paramName, String(value).trim());
+    });
 
-    const to = {
-        pathname: location.pathname,
+    return {
+        pathname: window.location.pathname,
         search: searchParams.toString(),
     };
-
-    return to;
 }

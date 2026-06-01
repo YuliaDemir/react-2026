@@ -27,7 +27,7 @@ export const ProductsPage = () => {
         useApiRequest(query, page);
 
     const handleSearch = (value: string) => {
-        const to = getToForLink(undefined, 1, value);
+        const to = getToForLink({ q: value });
         navigate(to);
         setQuery(value);
         setLSValue(value);
@@ -38,7 +38,7 @@ export const ProductsPage = () => {
     const { theme } = useTheme();
 
     useEffect(
-        () => { navigate(getToForLink(undefined, 1, lsValue)) },
+        () => { navigate(getToForLink({ q: lsValue })) },
         []
     );
 
