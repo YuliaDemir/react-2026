@@ -1,131 +1,127 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import "@testing-library/jest-dom/vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { Pagination } from './pagination';
+import { OpenCloseDetailsLink } from "@components";
+import { Pagination } from "./pagination";
 
-vi.mock('../../constants', () => ({
+vi.mock("@const", () => ({
     PRODUCTS_PER_PAGE: 10,
 }));
 
-vi.mock('./pagination.module.scss', () => ({
+vi.mock("./pagination.module.scss", () => ({
     default: {
-        paginationButton: 'paginationButton',
-        disabled: 'disabled',
-        pageInfo: 'pageInfo',
+        paginationButton: "paginationButton",
+        disabled: "disabled",
+        pageInfo: "pageInfo",
     },
 }));
 
-vi.mock('../open-close-link/open-close-link', () => ({
-    OpenCloseDetailsLink: ({
-        children,
-        className,
-        page,
-    }: {
-        children: React.ReactNode;
-        className?: string;
-        page: number;
-    }) => (
-        <button type="button" className={className} data-page={page}>
-            {children}
-        </button>
+vi.mock("@components", () => ({
+    OpenCloseDetailsLink: vi.fn(
+        ({
+            children,
+            page,
+            className,
+        }: {
+            children: React.ReactNode;
+            page?: number;
+            className?: string;
+        }) => (
+            <a href={`/products?page=${page}`} className={className} data-page={page}>
+                {children}
+            </a>
+        )
     ),
 }));
 
-describe('Pagination', () => {
-    it('renders previous and next buttons', () => {
+describe("Pagination", () => {
+    it("renders Previous and Next links", () => {
         render(<Pagination page={2} total={30} />);
 
-        expect(screen.getByRole('button', { name: /previous/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: /previous/i })).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: /next/i })).toBeInTheDocument();
     });
 
-    it('renders current page and max page info', () => {
+    it("renders current page and max page", () => {
         render(<Pagination page={2} total={30} />);
 
-        expect(screen.getByText('Page: 2 from 3')).toBeInTheDocument();
+        expect(screen.getByText("Page: 2 from 3")).toBeInTheDocument();
     });
 
-    it('passes previous page to Previous button', () => {
-        render(<Pagination page={3} total={50} />);
-
-        expect(screen.getByRole('button', { name: /previous/i })).toHaveAttribute(
-            'data-page',
-            '2',
-        );
-    });
-
-    it('passes next page to Next button', () => {
-        render(<Pagination page={3} total={50} />);
-
-        expect(screen.getByRole('button', { name: /next/i })).toHaveAttribute(
-            'data-page',
-            '4',
-        );
-    });
-
-    it('does not allow previous page to be less than 1', () => {
-        render(<Pagination page={1} total={50} />);
-
-        expect(screen.getByRole('button', { name: /previous/i })).toHaveAttribute(
-            'data-page',
-            '1',
-        );
-    });
-
-    it('does not allow next page to be greater than max page', () => {
-        render(<Pagination page={5} total={50} />);
-
-        expect(screen.getByRole('button', { name: /next/i })).toHaveAttribute(
-            'data-page',
-            '5',
-        );
-    });
-
-    it('adds disabled class to Previous button on first page', () => {
-        render(<Pagination page={1} total={50} />);
-
-        expect(screen.getByRole('button', { name: /previous/i })).toHaveClass(
-            'paginationButton',
-            'disabled',
-        );
-    });
-
-    it('adds disabled class to Next button on last page', () => {
-        render(<Pagination page={5} total={50} />);
-
-        expect(screen.getByRole('button', { name: /next/i })).toHaveClass(
-            'paginationButton',
-            'disabled',
-        );
-    });
-
-    it('does not add disabled class to buttons on middle page', () => {
-        render(<Pagination page={3} total={50} />);
-
-        expect(screen.getByRole('button', { name: /previous/i })).toHaveClass(
-            'paginationButton',
-        );
-        expect(screen.getByRole('button', { name: /previous/i })).not.toHaveClass(
-            'disabled',
-        );
-
-        expect(screen.getByRole('button', { name: /next/i })).toHaveClass(
-            'paginationButton',
-        );
-        expect(screen.getByRole('button', { name: /next/i })).not.toHaveClass(
-            'disabled',
-        );
-    });
-
-    it('rounds max page up when total is not divisible by PRODUCTS_PER_PAGE', () => {
-        render(<Pagination page={1} total={25} />);
-
-        expect(screen.getByText('Page: 1 from 3')).toBeInTheDocument();
-    });
-
-    it('renders all products text when total is 0', () => {
+    it("renders all products text when total is 0", () => {
         render(<Pagination page={1} total={0} />);
 
-        expect(screen.getByText('Page: 1 from all products')).toBeInTheDocument();
+        expect(screen.getByText("Page: 1 from all products")).toBeInTheDocument();
+    });
+
+    it("passes previous page to Previous link", () => {
+        render(<Pagination page={3} total={50} />);
+
+        expect(screen.getByRole("link", { name: /previous/i })).toHaveAttribute(
+            "data-page",
+            "2"
+        );
+    });
+
+    it("does not pass page less than 1 to Previous link", () => {
+        render(<Pagination page={1} total={50} />);
+
+        expect(screen.getByRole("link", { name: /previous/i })).toHaveAttribute(
+            "data-page",
+            "1"
+        );
+    });
+
+    it("passes next page to Next link", () => {
+        render(<Pagination page={2} total={50} />);
+
+        expect(screen.getByRole("link", { name: /next/i })).toHaveAttribute(
+            "data-page",
+            "3"
+        );
+    });
+
+    it("does not pass page greater than maxPage to Next link", () => {
+        render(<Pagination page={5} total={50} />);
+
+        expect(screen.getByRole("link", { name: /next/i })).toHaveAttribute(
+            "data-page",
+            "5"
+        );
+    });
+
+    it("adds disabled class to Previous link on first page", () => {
+        render(<Pagination page={1} total={50} />);
+
+        expect(screen.getByRole("link", { name: /previous/i })).toHaveClass(
+            "disabled"
+        );
+    });
+
+    it("adds disabled class to Next link on last page", () => {
+        render(<Pagination page={5} total={50} />);
+
+        expect(screen.getByRole("link", { name: /next/i })).toHaveClass("disabled");
+    });
+
+    it("calls OpenCloseDetailsLink with correct pages", () => {
+        render(<Pagination page={2} total={30} />);
+
+        expect(OpenCloseDetailsLink).toHaveBeenCalledWith(
+            expect.objectContaining({
+                page: 1,
+                children: "Previous",
+            }),
+            undefined
+        );
+
+        expect(OpenCloseDetailsLink).toHaveBeenCalledWith(
+            expect.objectContaining({
+                page: 3,
+                children: "Next",
+            }),
+            undefined
+        );
     });
 });
