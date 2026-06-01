@@ -1,5 +1,5 @@
 import { HEADERS_FOR_SVC } from "@/constants";
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 
 type CsvValue = string | number | null | undefined;
 

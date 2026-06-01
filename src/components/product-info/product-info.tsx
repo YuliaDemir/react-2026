@@ -2,7 +2,7 @@ import { useOutletContext } from "react-router";
 import { ContentState } from "@components";
 
 import styles from './product-info.module.scss';
-import { useGetProductDetailsQuery } from "@/api/products-fetch-slice";
+import { useGetProductDetailsQuery } from "@/api/products/products-fetch-slice";
 
 type ProductDetailsContext = {
     detailsId: string;
@@ -10,9 +10,7 @@ type ProductDetailsContext = {
 
 export const ProductInfo = () => {
     const { detailsId } = useOutletContext<ProductDetailsContext>();
-    const { data, isLoading, error } = useGetProductDetailsQuery(+detailsId);
-
-    const product = data?.products?.[0];
+    const { data: product, isFetching: isLoading, error } = useGetProductDetailsQuery(+detailsId);
 
     return (<ContentState error={error} isLoading={isLoading} >
         {product ? (

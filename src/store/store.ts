@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import selectedItemListReducer from "./selected-items/selected-items-slice";
-import { productFetchSlice } from "@/api/products-fetch-slice";
+import { productFetchSlice } from "@/api/products/products-fetch-slice";
 import { setupListeners } from "@reduxjs/toolkit/query/react";
 
 export const store = configureStore({

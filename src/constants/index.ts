@@ -1,4 +1,4 @@
-import type { TransformedApiResponse } from "@/types/interfaces";
+import type { TransformedProductsApiResponse } from "@/types";
 
 export const API_URL = 'https://dummyjson.com/products';
 
@@ -26,7 +26,7 @@ export const HEADERS_FOR_SVC = [
 export const API_CACHE_TTL_SECONDS =
     Number(import.meta.env.VITE_API_CACHE_TTL_SECONDS) || 60;
 
-export const EMPTY_PRODUCTS: TransformedApiResponse = {
+export const EMPTY_PRODUCTS: TransformedProductsApiResponse = {
     products: [],
     total: 0,
     skip: 0,

@@ -1,4 +1,4 @@
-import type { Product } from '../../types/interfaces';
+import type { Product } from '../../types';
 import styles from './card-list.module.scss';
 import { ProductSectionCard } from '../product-section-card/product-section-card';
 

@@ -1,4 +1,4 @@
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 import { useHandleChange } from "@/utils/hooks/use-handle-change";
 import { OpenCloseDetailsLink } from "../open-close-link/open-close-link";
 import { Card } from "../card/card";

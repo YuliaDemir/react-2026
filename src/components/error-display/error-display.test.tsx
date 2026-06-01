@@ -1,58 +1,38 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import "@testing-library/jest-dom/vitest";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
-import { ErrorDisplay } from './error-display';
-import type { ErrorHandler } from '../../utils/error-handler';
+import type { AppError } from "@/types";
+import { getErrorMessage } from "@/utils/get-error-message";
+import { ErrorDisplay } from "./error-display";
 
-vi.mock('./error-display.module.scss', () => ({
-    default: {
-        error: 'error',
-        title: 'title',
-        text: 'text',
-    },
+vi.mock("@/utils/get-error-message", () => ({
+    getErrorMessage: vi.fn(() => "Test error message"),
 }));
 
-const createError = (message: string): ErrorHandler =>
-    ({
-        getErrorMessageByStatus: vi.fn(() => message),
-    }) as unknown as ErrorHandler;
-
-describe('ErrorDisplay', () => {
-    it('renders error title', () => {
-        const error = createError('Something went wrong');
-
-        render(<ErrorDisplay error={error} />);
+describe("ErrorDisplay", () => {
+    it("renders error title", () => {
+        render(<ErrorDisplay error={{} as AppError} />);
 
         expect(
-            screen.getByRole('heading', { name: /something went/i }),
+            screen.getByRole("heading", { name: /something went wrong/i })
         ).toBeInTheDocument();
     });
 
-    it('renders error message from ErrorHandler', () => {
-        const error = createError('Server error');
+    it("renders formatted error message", () => {
+        const error = { status: 500, data: "Server error" } as AppError;
 
         render(<ErrorDisplay error={error} />);
 
-        expect(screen.getByText('Server error')).toBeInTheDocument();
+        expect(getErrorMessage).toHaveBeenCalledWith(error);
+        expect(screen.getByText("Test error message")).toBeInTheDocument();
     });
 
-    it('calls getErrorMessageByStatus', () => {
-        const error = createError('Not found');
+    it("renders fallback funny text", () => {
+        render(<ErrorDisplay error={{} as AppError} />);
 
-        render(<ErrorDisplay error={error} />);
-
-        expect(error.getErrorMessageByStatus).toHaveBeenCalledTimes(1);
-    });
-
-    it('applies css module classes', () => {
-        const error = createError('Validation error');
-
-        const { container } = render(<ErrorDisplay error={error} />);
-
-        expect(container.firstElementChild).toHaveClass('error');
         expect(
-            screen.getByRole('heading', { name: /something went/i }),
-        ).toHaveClass('title');
-        expect(screen.getByText('Validation error')).toHaveClass('text');
+            screen.getByText(/don.t panic! the little hamsters/i)
+        ).toBeInTheDocument();
     });
 });

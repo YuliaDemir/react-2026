@@ -1,4 +1,4 @@
-import type { MockFetchResponse } from "../../types/interfaces"
+import type { MockFetchResponse } from "../../types"
 
 export const createFetchMock = (results: MockFetchResponse) => {
     return vi.fn().mockResolvedValue({

@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Card } from "./card";
-import type { Product } from "../../types/interfaces";
+import type { Product } from "../../types";
 
 vi.mock("./card.module.scss", () => ({
     default: {

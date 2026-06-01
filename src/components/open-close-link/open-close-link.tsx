@@ -10,5 +10,5 @@ type Props = {
 }
 
 export const OpenCloseDetailsLink = ({ children, id, page, className }: Props) => {
-    return <Link className={className} to={getToForLink(id, page)}> {children} </Link>;
+    return <Link className={className} to={getToForLink({ id, page })}> {children} </Link>;
 };
