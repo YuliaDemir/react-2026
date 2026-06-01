@@ -6,7 +6,7 @@ import reducer, {
     clearList,
 } from "../selected-items/selected-items-slice";
 
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 
 const product1: Product = {
     id: 1,

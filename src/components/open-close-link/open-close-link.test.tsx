@@ -1,103 +1,91 @@
-import type { ReactNode } from 'react';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import "@testing-library/jest-dom/vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
+import { describe, expect, it, vi } from "vitest";
 
-import { OpenCloseDetailsLink } from './open-close-link';
-import { getToForLink } from '../../utils/get-to-for-link';
+import { getToForLink } from "@/utils/get-to-for-link";
+import { OpenCloseDetailsLink } from "./open-close-link";
 
-vi.mock('../../utils/get-to-for-link', () => ({
-    getToForLink: vi.fn(),
+vi.mock("@/utils/get-to-for-link", () => ({
+    getToForLink: vi.fn(() => ({
+        pathname: "/products",
+        search: "details=10&page=2",
+    })),
 }));
 
-describe('OpenCloseDetailsLink', () => {
-    const mockedGetToForLink = vi.mocked(getToForLink);
-
-    beforeEach(() => {
-        vi.clearAllMocks();
-
-        mockedGetToForLink.mockReturnValue({
-            pathname: '/products',
-            search: 'page=2&details=15',
-        });
-    });
-
-    const renderOpenCloseDetailsLink = ({
-        children = 'Open details',
-        id,
-        page,
-        className,
-    }: {
-        children?: ReactNode;
-        id?: number;
-        page?: number;
-        className?: string;
-    } = {}) => {
-        return render(
+describe("OpenCloseDetailsLink", () => {
+    it("renders children inside link", () => {
+        render(
             <MemoryRouter>
-                <OpenCloseDetailsLink id={id} page={page} className={className}>
-                    {children}
+                <OpenCloseDetailsLink id={10} page={2}>
+                    Open details
                 </OpenCloseDetailsLink>
-            </MemoryRouter>,
+            </MemoryRouter>
         );
-    };
-
-    it('renders link with children', () => {
-        renderOpenCloseDetailsLink({
-            children: 'Product details',
-        });
 
         expect(
-            screen.getByRole('link', { name: /product details/i }),
+            screen.getByRole("link", { name: /open details/i })
         ).toBeInTheDocument();
     });
 
-    it('passes id and page to getToForLink', () => {
-        renderOpenCloseDetailsLink({
-            id: 15,
+    it("calls getToForLink with id and page", () => {
+        render(
+            <MemoryRouter>
+                <OpenCloseDetailsLink id={10} page={2}>
+                    Open details
+                </OpenCloseDetailsLink>
+            </MemoryRouter>
+        );
+
+        expect(getToForLink).toHaveBeenCalledWith({
+            id: 10,
             page: 2,
         });
-
-        expect(mockedGetToForLink).toHaveBeenCalledTimes(1);
-        expect(mockedGetToForLink).toHaveBeenCalledWith(15, 2);
     });
 
-    it('passes undefined values to getToForLink when id and page are not provided', () => {
-        renderOpenCloseDetailsLink();
+    it("uses getToForLink result as link href", () => {
+        render(
+            <MemoryRouter>
+                <OpenCloseDetailsLink id={10} page={2}>
+                    Open details
+                </OpenCloseDetailsLink>
+            </MemoryRouter>
+        );
 
-        expect(mockedGetToForLink).toHaveBeenCalledTimes(1);
-        expect(mockedGetToForLink).toHaveBeenCalledWith(undefined, undefined);
-    });
-
-    it('sets href from getToForLink result', () => {
-        renderOpenCloseDetailsLink({
-            id: 15,
-            page: 2,
-        });
-
-        expect(screen.getByRole('link', { name: /open details/i })).toHaveAttribute(
-            'href',
-            '/products?page=2&details=15',
+        expect(screen.getByRole("link", { name: /open details/i })).toHaveAttribute(
+            "href",
+            "/products?details=10&page=2"
         );
     });
 
-    it('applies className to link', () => {
-        renderOpenCloseDetailsLink({
-            className: 'linkClass',
-        });
+    it("passes className to link", () => {
+        render(
+            <MemoryRouter>
+                <OpenCloseDetailsLink id={10} page={2} className="test-class">
+                    Open details
+                </OpenCloseDetailsLink>
+            </MemoryRouter>
+        );
 
-        expect(screen.getByRole('link', { name: /open details/i })).toHaveClass(
-            'linkClass',
+        expect(screen.getByRole("link", { name: /open details/i })).toHaveClass(
+            "test-class"
         );
     });
 
-    it('renders ReactNode children', () => {
-        renderOpenCloseDetailsLink({
-            children: <span>Close details</span>,
+    it("works without id and page", () => {
+        render(
+            <MemoryRouter>
+                <OpenCloseDetailsLink>Close details</OpenCloseDetailsLink>
+            </MemoryRouter>
+        );
+
+        expect(getToForLink).toHaveBeenCalledWith({
+            id: undefined,
+            page: undefined,
         });
 
         expect(
-            screen.getByRole('link', { name: /close details/i }),
+            screen.getByRole("link", { name: /close details/i })
         ).toBeInTheDocument();
     });
 });

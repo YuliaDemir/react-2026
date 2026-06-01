@@ -7,6 +7,7 @@ import { ProductInfo, SideCard, ThrowErrorButton } from '@components';
 import { LINKS } from '@const';
 import { ThemeSwitcher } from '@/components/theme-switcher/theme-switcher';
 import { ButtonOrLink } from '@/components/button/button-or-link';
+import { RefetchButton } from '@/components/refetch-button/refetch-button';
 
 export const App = () => {
   return (
@@ -20,6 +21,8 @@ export const App = () => {
         <ButtonOrLink variant="secondary" border="round" to={LINKS.about}>
           About
         </ButtonOrLink>
+
+        <RefetchButton />
 
         <ThrowErrorButton />
       </nav>

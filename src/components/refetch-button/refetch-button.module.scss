@@ -1,0 +1,62 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+
+  min-width: 170px;
+  padding: 6px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  border: 1px solid $border-muted;
+  border-radius: 14px;
+  background: $surface-strong;
+  box-shadow: 0 14px 30px $shadow-primary-light;
+
+  :global(.dark) & {
+    border-color: $dark-border-muted;
+    background: $dark-surface-strong;
+    box-shadow: 0 14px 30px $dark-shadow-primary-light;
+  }
+}
+
+.menuButton {
+  width: 100%;
+  padding: 10px 12px;
+
+  color: $text-primary;
+  font-weight: 800;
+  text-align: left;
+
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    color: $primary;
+    background: $surface-soft;
+    transform: translateY(-1px);
+  }
+
+  :global(.dark) & {
+    color: $dark-text-primary;
+  }
+
+  :global(.dark) &:hover {
+    background: $dark-surface-soft;
+  }
+}

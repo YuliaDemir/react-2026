@@ -1,4 +1,4 @@
-import type { Product } from '../../types/interfaces';
+import type { Product } from '../../types';
 
 import styles from './card.module.scss';
 

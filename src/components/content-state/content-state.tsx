@@ -1,9 +1,9 @@
 import { ErrorDisplay, Loader } from "@components";
-import type { ErrorHandler } from "@/utils/error-handler";
 import type { ReactNode } from "react";
+import type { AppError } from "@/types";
 
 type Props = {
-    error: ErrorHandler | null;
+    error: AppError;
     isLoading: boolean;
     children: ReactNode;
 };

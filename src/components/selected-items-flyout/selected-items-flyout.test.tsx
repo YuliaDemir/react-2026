@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { SelectedItemsBlock } from "./selected-items-flyout";
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 
 const mocks = vi.hoisted(() => ({
     selectedProducts: [] as Product[],

@@ -5,7 +5,7 @@ import {
     selectSelectedProductById,
 } from "../selected-items/selectors";
 
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 import type { RootState } from "../store";
 
 const product1: Product = {

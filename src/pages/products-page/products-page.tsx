@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router';
 
 import { Search, CardList, ContentState, Pagination } from '@components';
-import { useAppState } from '@/utils/hooks/use-app-state';
 import { useDetalisation } from '@/utils/hooks/use-detalisation';
 
 import styles from './products-page.module.scss';
 import { useLocalStorage } from '@/utils/hooks/use-local-storage-hook';
-import { LOCAL_STORAGE_KEY } from '@const';
+import { EMPTY_PRODUCTS, LOCAL_STORAGE_KEY } from '@const';
 import { getToForLink } from '@/utils/get-to-for-link';
 import classNames from 'classnames';
 import { SelectedItemsBlock } from '@/components/selected-items-flyout/selected-items-flyout';
 import { useTheme } from '@/dark-light-theme/use-theme';
+import { useApiRequest } from '@/utils/hooks/use-api-request';
 
 export const ProductsPage = () => {
     const [lsValue, setLSValue] = useLocalStorage(LOCAL_STORAGE_KEY);
@@ -22,12 +22,12 @@ export const ProductsPage = () => {
 
     const { detailsId } = useDetalisation();
     const navigate = useNavigate();
-    const to = getToForLink(undefined, 1);
 
-    const { data, isLoading, error, total } =
-        useAppState(query, page);
+    const { data: { products, total } = EMPTY_PRODUCTS, isFetching: isLoading, error } =
+        useApiRequest(query, page);
 
     const handleSearch = (value: string) => {
+        const to = getToForLink({ q: value });
         navigate(to);
         setQuery(value);
         setLSValue(value);
@@ -36,6 +36,11 @@ export const ProductsPage = () => {
     const isDetailsOpen = Boolean(detailsId);
 
     const { theme } = useTheme();
+
+    useEffect(
+        () => { navigate(getToForLink({ q: lsValue })) },
+        []
+    );
 
     return (<>
         <div className={classNames(styles.page, theme === 'dark' && 'dark')}>
@@ -46,20 +51,24 @@ export const ProductsPage = () => {
                     [styles.resultsBlockWithOutlet]: isDetailsOpen,
                 })}
             >
-
                 <ContentState error={error} isLoading={isLoading}>
-                    <CardList
-                        data={data}
-                    />
+                    <div className={styles.contentGrid}>
+                        <div className={styles.listBlock}>
+                            <CardList data={products} />
+                        </div>
+
+                        {isDetailsOpen && (
+                            <div className={styles.outletBlock}>
+                                <Outlet context={{ detailsId }} />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={styles.actions}>
+                        <Pagination page={page} total={total} />
+                    </div>
                 </ContentState>
-
-                {isDetailsOpen && <Outlet context={{ detailsId }} />}
             </div>
-
-            <div className={styles.actions}>
-                {!error && !isLoading && <Pagination page={page} total={total} />}
-            </div>
-
         </div>
         <SelectedItemsBlock />
     </>

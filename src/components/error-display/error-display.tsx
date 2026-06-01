@@ -1,12 +1,12 @@
-import type { ErrorHandler } from '@/utils/error-handler';
-
 import styles from './error-display.module.scss';
+import { getErrorMessage } from '@/utils/get-error-message';
+import type { AppError } from '@/types';
 
-export const ErrorDisplay = ({ error }: { error: ErrorHandler }) => {
+export const ErrorDisplay = ({ error }: { error: AppError }) => {
     return (
         <div className={styles.error}>
             <h2 className={styles.title}>Something went wrong.</h2>
-            <p className={styles.text}>{error.getErrorMessageByStatus()}</p>
+            {getErrorMessage(error)}
             <p className={styles.text}>{'( '}Don’t panic! The little hamsters are already working on fixing this problem!{' )'}</p>
         </div>
     );

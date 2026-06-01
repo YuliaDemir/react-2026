@@ -1,4 +1,4 @@
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 import type { RootState } from "../store";
 import { createSelector } from "@reduxjs/toolkit";
 

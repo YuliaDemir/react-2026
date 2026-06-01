@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 
 import { ProductSectionCard } from "./product-section-card";
-import type { Product } from "@/types/interfaces";
+import type { Product } from "@/types";
 
 const mocks = vi.hoisted(() => ({
     useHandleChange: vi.fn(),

@@ -1,159 +1,159 @@
-import type { ReactNode } from 'react';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Outlet, Route, Routes } from 'react-router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import "@testing-library/jest-dom/vitest";
+import type { ReactNode } from "react";
+import { render, screen } from "@testing-library/react";
+import { useOutletContext } from "react-router";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
-import { ProductInfo } from './product-info';
-import { useAppState } from '@/utils/hooks/use-app-state';
+import { useGetProductDetailsQuery } from "@/api/products/products-fetch-slice";
+import { ProductInfo } from "./product-info";
 
-vi.mock('@/utils/hooks/use-app-state', () => ({
-    useAppState: vi.fn(),
+vi.mock("react-router", async () => {
+    const actual = await vi.importActual<typeof import("react-router")>(
+        "react-router"
+    );
+
+    return {
+        ...actual,
+        useOutletContext: vi.fn(),
+    };
+});
+
+vi.mock("@/api/products/products-fetch-slice", () => ({
+    useGetProductDetailsQuery: vi.fn(),
 }));
 
-vi.mock('@components', () => ({
+vi.mock("@components", () => ({
     ContentState: ({
         children,
-        error,
         isLoading,
+        error,
     }: {
         children: ReactNode;
-        error: Error | null;
-        isLoading: boolean;
-    }) => {
-        if (error) {
-            return <div role="alert">{error.message}</div>;
-        }
+        isLoading?: boolean;
+        error?: unknown;
+    }) => (
+        <div
+            data-testid="content-state"
+            data-loading={String(Boolean(isLoading))}
+            data-error={String(Boolean(error))}
+        >
+            {children}
+        </div>
+    ),
+}));
 
-        if (isLoading) {
-            return <div data-testid="loader">Loading...</div>;
-        }
-
-        return <>{children}</>;
+vi.mock("./product-info.module.scss", () => ({
+    default: {
+        card: "card",
+        image: "image",
+        title: "title",
+        info: "info",
+        infoItem: "infoItem",
+        label: "label",
+        value: "value",
+        description: "description",
     },
 }));
 
-const mockUseAppState = vi.mocked(useAppState);
-
 const product = {
-    id: 42,
-    title: 'Mascara',
-    description: 'Black mascara for long lashes',
-    image: 'https://example.com/mascara.jpg',
-    category: 'beauty',
-    price: 10,
-    stock: 15,
+    id: 10,
+    title: "iPhone 15",
+    description: "Nice phone",
+    category: "smartphones",
+    price: "999",
+    stock: 25,
+    image: "iphone.jpg",
 };
 
-const createAppState = (overrides: Record<string, unknown> = {}) =>
-    ({
-        data: [product],
-        isLoading: false,
-        error: null,
-        fatalError: null,
-        setFatalError: vi.fn(),
-        total: 1,
-        ...overrides,
-    }) as unknown as ReturnType<typeof useAppState>;
-
-const OutletWithContext = ({ detailsId }: { detailsId: string }) => {
-    return <Outlet context={{ detailsId }} />;
-};
-
-const renderProductInfo = (detailsId = '42') => {
-    return render(
-        <MemoryRouter initialEntries={['/products']}>
-            <Routes>
-                <Route
-                    path="/products"
-                    element={<OutletWithContext detailsId={detailsId} />}
-                >
-                    <Route index element={<ProductInfo />} />
-                </Route>
-            </Routes>
-        </MemoryRouter>,
-    );
-};
-
-describe('ProductInfo', () => {
+describe("ProductInfo", () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        mockUseAppState.mockReturnValue(createAppState());
+        vi.mocked(useOutletContext).mockReturnValue({
+            detailsId: "10",
+        });
+
+        vi.mocked(useGetProductDetailsQuery).mockReturnValue({
+            data: product,
+            isFetching: false,
+            error: undefined,
+        } as unknown as ReturnType<typeof useGetProductDetailsQuery>);
     });
 
-    it('loads product by detailsId from outlet context', () => {
-        renderProductInfo('42');
+    it("gets detailsId from outlet context and requests product by numeric id", () => {
+        render(<ProductInfo />);
 
-        expect(mockUseAppState).toHaveBeenCalledWith('42');
+        expect(useOutletContext).toHaveBeenCalled();
+        expect(useGetProductDetailsQuery).toHaveBeenCalledWith(10);
     });
 
-    it('renders product details', () => {
-        renderProductInfo();
+    it("renders product details", () => {
+        render(<ProductInfo />);
 
         expect(
-            screen.getByRole('heading', { name: /mascara/i }),
+            screen.getByRole("heading", { name: /iphone 15/i })
         ).toBeInTheDocument();
 
-        expect(screen.getByRole('img', { name: /mascara/i })).toHaveAttribute(
-            'src',
-            'https://example.com/mascara.jpg',
-        );
+        expect(screen.getByText("Category:")).toBeInTheDocument();
+        expect(screen.getByText("smartphones")).toBeInTheDocument();
 
-        expect(screen.getByText('Category:')).toBeInTheDocument();
-        expect(screen.getByText('beauty')).toBeInTheDocument();
+        expect(screen.getByText("Price:")).toBeInTheDocument();
+        expect(screen.getByText("$999")).toBeInTheDocument();
 
-        expect(screen.getByText('Price:')).toBeInTheDocument();
-        expect(screen.getByText('$10')).toBeInTheDocument();
+        expect(screen.getByText("Stock:")).toBeInTheDocument();
+        expect(screen.getByText("25")).toBeInTheDocument();
 
-        expect(screen.getByText('Stock:')).toBeInTheDocument();
-        expect(screen.getByText('15')).toBeInTheDocument();
-
-        expect(
-            screen.getByText('Black mascara for long lashes'),
-        ).toBeInTheDocument();
+        expect(screen.getByText("Nice phone")).toBeInTheDocument();
     });
 
-    it('shows loader while product is loading', () => {
-        mockUseAppState.mockReturnValue(
-            createAppState({
-                data: [],
-                isLoading: true,
-            }),
-        );
+    it("renders product image with correct src and alt", () => {
+        render(<ProductInfo />);
 
-        renderProductInfo();
+        const image = screen.getByRole("img", { name: /iphone 15/i });
 
-        expect(screen.getByTestId('loader')).toBeInTheDocument();
-        expect(
-            screen.queryByRole('heading', { name: /mascara/i }),
-        ).not.toBeInTheDocument();
+        expect(image).toHaveAttribute("src", "iphone.jpg");
+        expect(image).toHaveAttribute("alt", "iPhone 15");
     });
 
-    it('shows error when request failed', () => {
-        mockUseAppState.mockReturnValue(
-            createAppState({
-                data: [],
-                error: new Error('Product not found'),
-            }),
+    it("passes loading state to ContentState", () => {
+        vi.mocked(useGetProductDetailsQuery).mockReturnValue({
+            data: undefined,
+            isFetching: true,
+            error: undefined,
+        } as unknown as ReturnType<typeof useGetProductDetailsQuery>);
+
+        render(<ProductInfo />);
+
+        expect(screen.getByTestId("content-state")).toHaveAttribute(
+            "data-loading",
+            "true"
         );
-
-        renderProductInfo();
-
-        expect(screen.getByRole('alert')).toHaveTextContent('Product not found');
-        expect(
-            screen.queryByRole('heading', { name: /mascara/i }),
-        ).not.toBeInTheDocument();
     });
 
-    it('shows fallback message when product is empty', () => {
-        mockUseAppState.mockReturnValue(
-            createAppState({
-                data: [],
-            }),
+    it("passes error to ContentState", () => {
+        vi.mocked(useGetProductDetailsQuery).mockReturnValue({
+            data: undefined,
+            isFetching: false,
+            error: { status: 500 },
+        } as unknown as ReturnType<typeof useGetProductDetailsQuery>);
+
+        render(<ProductInfo />);
+
+        expect(screen.getByTestId("content-state")).toHaveAttribute(
+            "data-error",
+            "true"
         );
+    });
 
-        renderProductInfo();
+    it("renders fallback text when product is missing", () => {
+        vi.mocked(useGetProductDetailsQuery).mockReturnValue({
+            data: undefined,
+            isFetching: false,
+            error: undefined,
+        } as unknown as ReturnType<typeof useGetProductDetailsQuery>);
 
-        expect(screen.getByText('Upss. Something went wrong.')).toBeInTheDocument();
+        render(<ProductInfo />);
+
+        expect(screen.getByText("Upss. Something went wrong.")).toBeInTheDocument();
     });
 });
