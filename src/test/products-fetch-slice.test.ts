@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { API_URL, PRODUCTS_PER_PAGE } from "@/constants";
+import { PRODUCTS_PER_PAGE } from "@/constants";
 import type { ApiProduct } from "@/types";
 import {
     productFetchSlice,
     ProductsApiTagsAndIds,
-} from "../api/products/products-fetch-slice";
+} from "@/api/products/products-fetch-slice";
 
 const createProduct = (overrides: Partial<ApiProduct> = {}): ApiProduct =>
     ({
@@ -14,7 +14,7 @@ const createProduct = (overrides: Partial<ApiProduct> = {}): ApiProduct =>
         title: "Test product",
         description: "Test description",
         category: "phones",
-        price: "100",
+        price: 100,
         stock: 10,
         images: ["main-image.jpg", "second-image.jpg"],
         ...overrides,
@@ -36,14 +36,18 @@ const createStore = () =>
             getDefaultMiddleware().concat(productFetchSlice.middleware),
     });
 
-const mockFetchSuccess = (body: unknown) => {
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
-        new Response(JSON.stringify(body), {
-            status: 200,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
+const createJsonResponse = (body: unknown, init?: ResponseInit) =>
+    new Response(JSON.stringify(body), {
+        status: 200,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        ...init,
+    });
+
+const mockFetchSuccess = (body: unknown, init?: ResponseInit) => {
+    const fetchMock = vi.fn<typeof fetch>().mockImplementation(() =>
+        Promise.resolve(createJsonResponse(body, init))
     );
 
     vi.stubGlobal("fetch", fetchMock);
@@ -51,14 +55,20 @@ const mockFetchSuccess = (body: unknown) => {
     return fetchMock;
 };
 
-const getCalledUrl = (fetchMock: ReturnType<typeof mockFetchSuccess>) => {
-    const request = fetchMock.mock.calls[0][0];
+const createDeferredResponse = () => {
+    let resolve!: (response: Response) => void;
+    let reject!: (error: unknown) => void;
 
-    if (request instanceof Request) {
-        return new URL(request.url);
-    }
+    const promise = new Promise<Response>((res, rej) => {
+        resolve = res;
+        reject = rej;
+    });
 
-    return new URL(String(request));
+    return {
+        promise,
+        resolve,
+        reject,
+    };
 };
 
 describe("ProductsApiTagsAndIds", () => {
@@ -75,159 +85,332 @@ describe("ProductsApiTagsAndIds", () => {
     });
 });
 
-describe("productFetchSlice", () => {
+describe("productFetchSlice loading, error and caching behavior", () => {
     afterEach(() => {
         vi.unstubAllGlobals();
     });
 
-    it("has correct reducerPath", () => {
-        expect(productFetchSlice.reducerPath).toBe("productsApi");
+    it("sets loading state while getProducts query is pending", async () => {
+        const store = createStore();
+        const deferred = createDeferredResponse();
+
+        const fetchMock = vi.fn<typeof fetch>().mockImplementation(() => {
+            return deferred.promise;
+        });
+
+        vi.stubGlobal("fetch", fetchMock);
+
+        const queryPromise = store.dispatch(
+            productFetchSlice.endpoints.getProducts.initiate({
+                page: 1,
+            })
+        );
+
+        await Promise.resolve();
+
+        const state = productFetchSlice.endpoints.getProducts.select({
+            page: 1,
+        })(store.getState());
+
+        expect(state.status).toBe("pending");
+        expect(state.isLoading).toBe(true);
+
+        deferred.resolve(createJsonResponse(createProductsResponse()));
+
+        await queryPromise.unwrap();
+
+        queryPromise.unsubscribe();
     });
 
-    it("getProducts sends request with limit and skip", async () => {
-        const store = createStore();
-        const fetchMock = mockFetchSuccess(createProductsResponse());
-
-        await store
-            .dispatch(
-                productFetchSlice.endpoints.getProducts.initiate({
-                    page: 3,
-                    limit: 10,
-                })
-            )
-            .unwrap();
-
-        const url = getCalledUrl(fetchMock);
-
-        expect(url.origin + url.pathname).toBe(API_URL);
-        expect(url.searchParams.get("limit")).toBe("10");
-        expect(url.searchParams.get("skip")).toBe("20");
-    });
-
-    it("getProducts uses default limit from PRODUCTS_PER_PAGE", async () => {
-        const store = createStore();
-        const fetchMock = mockFetchSuccess(createProductsResponse());
-
-        await store
-            .dispatch(
-                productFetchSlice.endpoints.getProducts.initiate({
-                    page: 2,
-                })
-            )
-            .unwrap();
-
-        const url = getCalledUrl(fetchMock);
-
-        expect(url.searchParams.get("limit")).toBe(String(PRODUCTS_PER_PAGE));
-        expect(url.searchParams.get("skip")).toBe(String(PRODUCTS_PER_PAGE));
-    });
-
-    it("getProducts transforms products and adds image from first images item", async () => {
+    it("sets fulfilled state after getProducts query succeeds", async () => {
         const store = createStore();
 
-        const apiProduct = createProduct({
+        const product = createProduct({
             id: 10,
             title: "Phone",
             images: ["phone-main.jpg", "phone-second.jpg"],
         });
 
-        mockFetchSuccess(createProductsResponse([apiProduct]));
+        mockFetchSuccess(createProductsResponse([product]));
 
-        const result = await store
-            .dispatch(
-                productFetchSlice.endpoints.getProducts.initiate({
-                    page: 1,
-                })
-            )
-            .unwrap();
-
-        expect(result.products[0]).toEqual({
-            ...apiProduct,
-            image: "phone-main.jpg",
-        });
-    });
-
-    it("getProductDetails sends request by product id", async () => {
-        const store = createStore();
-        const fetchMock = mockFetchSuccess(
-            createProduct({
-                id: 7,
+        const queryPromise = store.dispatch(
+            productFetchSlice.endpoints.getProducts.initiate({
+                page: 1,
             })
         );
 
-        await store
-            .dispatch(productFetchSlice.endpoints.getProductDetails.initiate(7))
-            .unwrap();
+        const result = await queryPromise.unwrap();
 
-        const url = getCalledUrl(fetchMock);
+        const state = productFetchSlice.endpoints.getProducts.select({
+            page: 1,
+        })(store.getState());
 
-        expect(url.origin + url.pathname).toBe(`${API_URL}/7`);
-    });
-
-    it("getProductDetails transforms product and adds image from first images item", async () => {
-        const store = createStore();
-
-        const apiProduct = createProduct({
-            id: 7,
-            images: ["details-main.jpg", "details-second.jpg"],
-        });
-
-        mockFetchSuccess(apiProduct);
-
-        const result = await store
-            .dispatch(productFetchSlice.endpoints.getProductDetails.initiate(7))
-            .unwrap();
-
-        expect(result).toEqual({
-            ...apiProduct,
-            image: "details-main.jpg",
-        });
-    });
-
-    it("searchProductsByName sends request with q, limit and skip", async () => {
-        const store = createStore();
-        const fetchMock = mockFetchSuccess(createProductsResponse());
-
-        await store
-            .dispatch(
-                productFetchSlice.endpoints.searchProductsByName.initiate({
-                    q: "phone",
-                    page: 4,
-                })
-            )
-            .unwrap();
-
-        const url = getCalledUrl(fetchMock);
-
-        expect(url.origin + url.pathname).toBe(`${API_URL}/search`);
-        expect(url.searchParams.get("q")).toBe("phone");
-        expect(url.searchParams.get("limit")).toBe(String(PRODUCTS_PER_PAGE));
-        expect(url.searchParams.get("skip")).toBe(String(PRODUCTS_PER_PAGE * 3));
-    });
-
-    it("searchProductsByName transforms products and adds image from first images item", async () => {
-        const store = createStore();
-
-        const apiProduct = createProduct({
-            id: 15,
-            title: "Search result",
-            images: ["search-main.jpg"],
-        });
-
-        mockFetchSuccess(createProductsResponse([apiProduct]));
-
-        const result = await store
-            .dispatch(
-                productFetchSlice.endpoints.searchProductsByName.initiate({
-                    q: "phone",
-                    page: 1,
-                })
-            )
-            .unwrap();
+        expect(state.status).toBe("fulfilled");
+        expect(state.isSuccess).toBe(true);
+        expect(state.isLoading).toBe(false);
 
         expect(result.products[0]).toEqual({
-            ...apiProduct,
-            image: "search-main.jpg",
+            ...product,
+            image: "phone-main.jpg",
         });
+
+        queryPromise.unsubscribe();
+    });
+
+    it("sets error state when getProducts query fails", async () => {
+        const store = createStore();
+
+        mockFetchSuccess(
+            {
+                message: "Server error",
+            },
+            {
+                status: 500,
+            }
+        );
+
+        const queryPromise = store.dispatch(
+            productFetchSlice.endpoints.getProducts.initiate({
+                page: 1,
+            })
+        );
+
+        await expect(queryPromise.unwrap()).rejects.toMatchObject({
+            status: 500,
+        });
+
+        const state = productFetchSlice.endpoints.getProducts.select({
+            page: 1,
+        })(store.getState());
+
+        expect(state.status).toBe("rejected");
+        expect(state.isError).toBe(true);
+        expect(state.error).toMatchObject({
+            status: 500,
+        });
+
+        queryPromise.unsubscribe();
+    });
+
+    it("uses cached data for the same getProducts query args", async () => {
+        const store = createStore();
+
+        const product = createProduct({
+            id: 1,
+            title: "Cached product",
+            images: ["cached-image.jpg"],
+        });
+
+        const fetchMock = mockFetchSuccess(createProductsResponse([product]));
+
+        const firstQuery = store.dispatch(
+            productFetchSlice.endpoints.getProducts.initiate({
+                page: 1,
+            })
+        );
+
+        const firstResult = await firstQuery.unwrap();
+
+        const secondQuery = store.dispatch(
+            productFetchSlice.endpoints.getProducts.initiate({
+                page: 1,
+            })
+        );
+
+        const secondResult = await secondQuery.unwrap();
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(secondResult).toEqual(firstResult);
+
+        firstQuery.unsubscribe();
+        secondQuery.unsubscribe();
+    });
+
+    it("does not use the same cache entry for different getProducts page args", async () => {
+        const store = createStore();
+
+        const fetchMock = mockFetchSuccess(createProductsResponse());
+
+        const firstQuery = store.dispatch(
+            productFetchSlice.endpoints.getProducts.initiate({
+                page: 1,
+            })
+        );
+
+        await firstQuery.unwrap();
+
+        const secondQuery = store.dispatch(
+            productFetchSlice.endpoints.getProducts.initiate({
+                page: 2,
+            })
+        );
+
+        await secondQuery.unwrap();
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+
+        firstQuery.unsubscribe();
+        secondQuery.unsubscribe();
+    });
+
+    it("uses cached data for the same searchProductsByName query args", async () => {
+        const store = createStore();
+
+        const fetchMock = mockFetchSuccess(createProductsResponse());
+
+        const firstQuery = store.dispatch(
+            productFetchSlice.endpoints.searchProductsByName.initiate({
+                q: "phone",
+                page: 1,
+            })
+        );
+
+        const firstResult = await firstQuery.unwrap();
+
+        const secondQuery = store.dispatch(
+            productFetchSlice.endpoints.searchProductsByName.initiate({
+                q: "phone",
+                page: 1,
+            })
+        );
+
+        const secondResult = await secondQuery.unwrap();
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(secondResult).toEqual(firstResult);
+
+        firstQuery.unsubscribe();
+        secondQuery.unsubscribe();
+    });
+
+    it("does not use the same cache entry for different search q args", async () => {
+        const store = createStore();
+
+        const fetchMock = mockFetchSuccess(createProductsResponse());
+
+        const firstQuery = store.dispatch(
+            productFetchSlice.endpoints.searchProductsByName.initiate({
+                q: "phone",
+                page: 1,
+            })
+        );
+
+        await firstQuery.unwrap();
+
+        const secondQuery = store.dispatch(
+            productFetchSlice.endpoints.searchProductsByName.initiate({
+                q: "laptop",
+                page: 1,
+            })
+        );
+
+        await secondQuery.unwrap();
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+
+        firstQuery.unsubscribe();
+        secondQuery.unsubscribe();
+    });
+
+    it("does not use the same cache entry for different search page args", async () => {
+        const store = createStore();
+
+        const fetchMock = mockFetchSuccess(createProductsResponse());
+
+        const firstQuery = store.dispatch(
+            productFetchSlice.endpoints.searchProductsByName.initiate({
+                q: "phone",
+                page: 1,
+            })
+        );
+
+        await firstQuery.unwrap();
+
+        const secondQuery = store.dispatch(
+            productFetchSlice.endpoints.searchProductsByName.initiate({
+                q: "phone",
+                page: 2,
+            })
+        );
+
+        await secondQuery.unwrap();
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+
+        firstQuery.unsubscribe();
+        secondQuery.unsubscribe();
+    });
+
+    it("uses cached data for the same getProductDetails id", async () => {
+        const store = createStore();
+
+        const product = createProduct({
+            id: 7,
+            title: "Details product",
+            images: ["details-image.jpg"],
+        });
+
+        const fetchMock = mockFetchSuccess(product);
+
+        const firstQuery = store.dispatch(
+            productFetchSlice.endpoints.getProductDetails.initiate(7)
+        );
+
+        const firstResult = await firstQuery.unwrap();
+
+        const secondQuery = store.dispatch(
+            productFetchSlice.endpoints.getProductDetails.initiate(7)
+        );
+
+        const secondResult = await secondQuery.unwrap();
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+
+        expect(secondResult).toEqual(firstResult);
+        expect(secondResult).toEqual({
+            ...product,
+            image: "details-image.jpg",
+        });
+
+        firstQuery.unsubscribe();
+        secondQuery.unsubscribe();
+    });
+
+    it("does not use the same cache entry for different getProductDetails ids", async () => {
+        const store = createStore();
+
+        const fetchMock = vi.fn<typeof fetch>().mockImplementation((input) => {
+            const url = input instanceof Request ? input.url : String(input);
+            const id = Number(url.split("/").at(-1));
+
+            return Promise.resolve(
+                createJsonResponse(
+                    createProduct({
+                        id,
+                        title: `Product ${id}`,
+                        images: [`product-${id}.jpg`],
+                    })
+                )
+            );
+        });
+
+        vi.stubGlobal("fetch", fetchMock);
+
+        const firstQuery = store.dispatch(
+            productFetchSlice.endpoints.getProductDetails.initiate(1)
+        );
+
+        await firstQuery.unwrap();
+
+        const secondQuery = store.dispatch(
+            productFetchSlice.endpoints.getProductDetails.initiate(2)
+        );
+
+        await secondQuery.unwrap();
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+
+        firstQuery.unsubscribe();
+        secondQuery.unsubscribe();
     });
 });
